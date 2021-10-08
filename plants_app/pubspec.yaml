@@ -23,11 +23,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^1.7.0
+  firebase_auth: ^3.1.2
+  firebase_analytics: ^8.3.3
+  cloud_firestore: ^2.5.3
+  page_transition: ^2.0.4
+  flutter_search_bar: ^2.1.0
+  carousel_slider: ^4.0.0
+  kf_drawer: ^1.2.0
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  animator: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +59,16 @@ flutter:
     - assets/images/backgroundsplash.jpg
     - assets/images/backgroundreset.jpg
     - assets/images/logo.png
+    - assets/images/cut.jpg
+    - assets/images/cut1.jpg
+    - assets/images/cut2.jpg
+    - assets/images/cut3.jpg
+    - assets/images/cut4.jpg
+    - assets/images/cut5.jpg
+
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -70,10 +89,18 @@ flutter:
     - family: Rokkitt
       fonts:
         - asset: assets/fonts/Rokkitt-VariableFont_wght.ttf
+    - family: Acme
+      fonts:
+        - asset: assets/fonts/Acme-Regular.ttf
     - family: Peddana
       fonts:
         - asset: assets/fonts/Peddana-Regular.ttf
-        
+    - family: Ephesis
+      fonts:
+        - asset: assets/fonts/Ephesis-Regular.ttf
+    - family: Niconne
+      fonts:
+        - asset: assets/fonts/Niconne-Regular.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
