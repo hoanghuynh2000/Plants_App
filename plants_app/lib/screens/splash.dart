@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animator/animator.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:plants_app/layoutdrawer.dart';
 import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/drawer.dart';
 
@@ -21,7 +22,7 @@ class _SplashState extends State<Splash> {
     Timer(Duration(milliseconds: 5000), () {
       Navigator.of(context).push(
         PageTransition(
-            type: PageTransitionType.rightToLeft, child: MainWidget()),
+            type: PageTransitionType.rightToLeft, child: LayoutDrawer()),
       );
     });
   }
