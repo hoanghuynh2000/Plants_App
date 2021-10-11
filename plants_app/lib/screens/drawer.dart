@@ -1,123 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:kf_drawer/kf_drawer.dart';
-import 'package:plants_app/screens/classbuilder.dart';
-
-import 'package:plants_app/screens/home.dart';
 
 class MainWidget extends StatefulWidget {
-  MainWidget();
-
   @override
   _MainWidgetState createState() => _MainWidgetState();
 }
 
-class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
-  KFDrawerController? _drawerController;
-
-  @override
-  void initState() {
-    super.initState();
-    _drawerController = KFDrawerController(
-      initialPage: ClassBuilder.fromString('Home'),
-      items: [
-        KFDrawerItem.initWithPage(
-          text:
-              Text('Home', style: TextStyle(color: Colors.white, fontSize: 18)),
-          icon: Icon(Icons.home, color: Colors.white),
-          page: Home(),
-        ),
-        // KFDrawerItem.initWithPage(
-        //   text: Text(
-        //     'Profile',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   icon: Icon(Icons.account_box, color: Colors.white),
-        //   page: Favourite(),
-        // ),
-
-        // KFDrawerItem.initWithPage(
-        //   text: Text(
-        //     'Stats',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   icon: Icon(Icons.trending_up, color: Colors.white),
-        //   page: Stats(),
-        // ),
-        // KFDrawerItem.initWithPage(
-        //   text: Text(
-        //     'Schedules',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   icon: Icon(Icons.av_timer, color: Colors.white),
-        //   page: Schedules(),
-        // ),
-        // KFDrawerItem.initWithPage(
-        //   text: Text(
-        //     'Settings',
-        //     style: TextStyle(color: Colors.white, fontSize: 18),
-        //   ),
-        //   icon: Icon(Icons.settings, color: Colors.white),
-        //   page: Settings(),
-        // ),
-      ],
-    );
-  }
-
+class _MainWidgetState extends State<MainWidget> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: KFDrawer(
-        controller: _drawerController,
-        header: Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Row(
-              children: <Widget>[
+        backgroundColor: Colors.teal.shade900,
+        body: Container(
+            padding: EdgeInsets.only(
+                top: 50, bottom: 50, left: 30, right: size.width - 300),
+            color: Colors.teal.shade800,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: 120,
+                  width: 120,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      image: DecorationImage(
-                          image: AssetImage('images/image.jpg'),
-                          fit: BoxFit.cover)),
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(100))),
+                ),
+                Text(
+                  'data',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(
-                  width: 10,
+                  height: 15,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text('Scarlett Johansson',
-                        style:
-                            new TextStyle(fontSize: 17, color: Colors.white)),
-                    new SizedBox(height: 2),
-                    new Text('Actress',
-                        style: new TextStyle(fontSize: 15, color: Colors.grey)),
-                  ],
-                )
+                MenuItem('Trang Chủ', Icons.home_rounded),
+                MenuItem('Cá Nhân', Icons.people_alt_rounded),
+                MenuItem('Yêu Thích', Icons.favorite_rounded),
+                MenuItem('Đơn Hàng', Icons.receipt_long_rounded),
+                MenuItem('Điều Khoản', Icons.library_books_rounded),
+                SizedBox(height: 120),
+                MenuItem('Đăng Xuất', Icons.logout_outlined),
               ],
+            )));
+  }
+
+  Widget MenuItem(String Title, IconData icon) {
+    return Container(
+      child: GestureDetector(
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: Colors.white,
             ),
-          ),
-        ),
-        footer: KFDrawerItem(
-          text: Text(
-            'Logout',
-            style: TextStyle(color: Colors.grey, fontSize: 18),
-          ),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.fromRGBO(31, 58, 47, 1.0),
-              Color.fromRGBO(31, 58, 47, 1.0)
-            ],
-            tileMode: TileMode.repeated,
-          ),
+            SizedBox(
+              width: 20,
+            ),
+            Expanded(
+                child: Text(
+              Title,
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ))
+          ],
         ),
       ),
     );

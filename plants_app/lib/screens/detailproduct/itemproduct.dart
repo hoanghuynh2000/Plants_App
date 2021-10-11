@@ -15,8 +15,9 @@ class _ItemProductState extends State<ItemProduct> {
   Widget build(BuildContext context) {
     return Container(
       width: 150,
+
       margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(6),
+      padding: EdgeInsets.all(10),
       decoration: ShapeDecoration(
           shadows: [
             BoxShadow(
@@ -29,16 +30,18 @@ class _ItemProductState extends State<ItemProduct> {
               borderRadius: BorderRadius.all(Radius.circular(20)))),
       //margin: EdgeInsets.only(left: 10, right: 10),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 120,
+            width: 130,
             decoration: ShapeDecoration(
                 image: DecorationImage(
                   image: AssetImage('${widget.detailProduct.imgProduct}'),
                   fit: BoxFit.contain,
                   //height: 150,
                 ),
-                color: Colors.grey.shade300,
+                color: Colors.green.shade50,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15)))),
             height: 120,
@@ -46,24 +49,38 @@ class _ItemProductState extends State<ItemProduct> {
           SizedBox(
             height: 10,
           ),
-          Text(
-            '${widget.detailProduct.namePro}',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            softWrap: false,
-            style: TextStyle(fontSize: 18, color: Colors.teal.shade800),
-          ),
+          Container(
+              height: 40,
+              child: Text(
+                '${widget.detailProduct.namePro}',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: TextStyle(fontSize: 18, color: Colors.teal.shade800),
+              )),
           SizedBox(
             height: 5,
           ),
-          Row(
+          Text('${widget.detailProduct.idCate}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+          SizedBox(
+            height: 5,
+          ),
+          Expanded(
+              child: Row(
             children: [
               Text(
                 '${widget.detailProduct.pricePro}',
-                style: TextStyle(fontSize: 18, color: Colors.red.shade800),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.red.shade800,
+                    fontWeight: FontWeight.bold),
               ),
             ],
-          )
+          ))
         ],
       ),
     );

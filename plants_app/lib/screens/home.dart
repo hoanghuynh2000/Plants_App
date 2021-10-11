@@ -1,3 +1,4 @@
+import 'package:animator/animator.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/screens/detailproduct/itemproduct.dart';
 
-class Home extends KFDrawerContent {
+class Home extends StatefulWidget {
   Home({Key? key});
 
   @override
@@ -84,11 +85,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: _buildAppBar(),
+      backgroundColor: Colors.grey.shade50,
       body: SingleChildScrollView(
           child: Column(children: [
         InkWell(
@@ -144,7 +145,7 @@ class _HomeState extends State<Home> {
           height: 10,
         ),
         Container(
-          height: 250,
+          height: 260,
           child: _buildNewProduct(),
         ),
         SizedBox(
@@ -152,93 +153,6 @@ class _HomeState extends State<Home> {
         ),
       ])),
     ));
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-        backgroundColor: Colors.white,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 20.0),
-          child: IconButton(
-            onPressed: () => widget.onMenuPressed,
-            icon: Icon(
-              Icons.menu,
-              size: 30.0,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        title: Container(
-          child: (Text(
-            'Plants',
-            style: TextStyle(
-                color: Colors.teal.shade800,
-                fontSize: 50,
-                fontFamily: 'Niconne',
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(3.0, 3.0),
-                    blurRadius: 5,
-                    color: Colors.grey.shade400,
-                  ),
-                ]),
-          )),
-        ),
-        actions: <Widget>[
-          Stack(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 12.0, right: 20.0),
-                child: InkResponse(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => Home(),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.shopping_basket,
-                    size: 30.0,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 8.0,
-                right: 16.0,
-                child: Container(
-                  height: 20.0,
-                  width: 20.0,
-                  decoration: BoxDecoration(
-                    color: Colors.teal.shade600,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '5',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: InkResponse(
-              onTap: () => print('Search'),
-              child: Icon(
-                Icons.search,
-                size: 30.0,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ]);
   }
 
   Widget _buildCategory() {
@@ -271,7 +185,7 @@ class _HomeState extends State<Home> {
                       fit: BoxFit.contain,
                       //height: 150,
                     ),
-                    color: Colors.grey.shade300,
+                    color: Colors.blueGrey.shade50,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 height: 120,
