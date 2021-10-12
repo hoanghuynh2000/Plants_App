@@ -21,7 +21,7 @@ class _SplashState extends State<Splash> {
     Timer(Duration(milliseconds: 5000), () {
       Navigator.of(context).push(
         PageTransition(
-            type: PageTransitionType.rightToLeft, child: MainWidget()),
+            type: PageTransitionType.rightToLeft, child: Dashboard()),
       );
     });
   }

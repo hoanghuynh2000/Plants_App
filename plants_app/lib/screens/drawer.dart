@@ -4,7 +4,7 @@ import 'package:plants_app/screens/classbuilder.dart';
 
 import 'package:plants_app/screens/home.dart';
 
-class MainWidget extends StatefulWidget {
+class MainWidget extends KFDrawerContent {
   MainWidget();
 
   @override
@@ -18,7 +18,7 @@ class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _drawerController = KFDrawerController(
-      initialPage: ClassBuilder.fromString('Home'),
+      initialPage: ClassBuilder.fromString('Dashboard'),
       items: [
         KFDrawerItem.initWithPage(
           text:

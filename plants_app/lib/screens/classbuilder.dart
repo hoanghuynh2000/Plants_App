@@ -1,3 +1,4 @@
+import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/rules.dart';
 
@@ -12,7 +13,7 @@ void register<T>(Constructor<T> constructor) {
 
 class ClassBuilder {
   static void registerClasses() {
-    register<Home>(() => Home());
+    register<Dashboard>(() => Dashboard());
     register<Rules>(() => Rules());
     // register<Notifications>(() => Notifications());
   }
