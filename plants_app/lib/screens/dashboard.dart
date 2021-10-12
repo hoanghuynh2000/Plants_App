@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:kf_drawer/kf_drawer.dart';
 import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/notification.dart';
 import 'package:plants_app/screens/product.dart';
 import 'package:plants_app/screens/promotion.dart';
 
-class Dashboard extends StatefulWidget {
-  Dashboard({Key? key}) : super(key: key);
+class Dashboard extends KFDrawerContent {
+  Dashboard({Key? key});
 
   @override
   _DashboardState createState() => _DashboardState();

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/fake/feedfake.dart';
+import 'package:plants_app/handle/favorite.dart';
+import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/model/mdfeedback.dart';
+import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/feedback.dart';
 class DetailsProduct extends StatefulWidget {
   DetailsProduct({Key? key}) : super(key: key);
@@ -16,13 +19,19 @@ class _DetailsProductState extends State<DetailsProduct> {
   
   @override
   Widget build(BuildContext context) {
-    
+    String id='idSanPham';
+     
+   int isImportant=0;
+   String idProduct="123";
+   String productName="Cay Xuong Rong";
+   String categoryName="Xuong Roong";
+   int price=120000;
+   String images="";
+   String idFav =idProduct ;
     double height= MediaQuery.of(context).size.height;
     double width= MediaQuery.of(context).size.width;
-    String TenSanPham='Tên Sản Phẩm';  
-  String GiaSanPham='123.000';
-  String DanhMucSanPham='Danh Muc San Pham';
-    String id='idSanPham';
+    Favorites favorites= new Favorites(id: idFav, isImportant: isImportant, idProduct: idProduct, productName: productName, categoryName: categoryName, price: price, images: images);
+    
     return  Container(
       decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment(0.0,0.0),colors:[Color(0xFF009688),Color(0xFFffffff)])),
       child: 
@@ -31,28 +40,15 @@ class _DetailsProductState extends State<DetailsProduct> {
        persistentFooterButtons: <Widget>[
          
          Container(
-           decoration:BoxDecoration(color: Colors.white),
+           //decoration:BoxDecoration(color: Colors.white),
          child: Row(children: [
            SizedBox(width: 40,),
            //nút Yêu thích.
-          LikeButton(
-          size: 40,
-          circleColor:
-              CircleColor(start: Color(0xFFFF0000), end: Color(0xFFCC0000)),
-          bubblesColor: BubblesColor(
-            dotPrimaryColor: Color(0xFFE53333),
-            dotSecondaryColor: Color(0xFFCC0000),
-          ),
-          likeBuilder: (bool isLiked) {
-            return Icon(
-              Icons.favorite_sharp,
-              color: isLiked ? Colors.red : Colors.grey,
-              size: 40,
-            );
-          },
-        ),
+        FavIcon(favorites),
         SizedBox(width: 40,),
-        MaterialButton(onPressed: (){},
+        MaterialButton(onPressed: (){
+          Navigator.of(context).push( MaterialPageRoute(builder: (context)=>FavoritesScreen()));
+        },
            child: Text('Thêm Vào Giỏ Hàng',style: TextStyle(color: Colors.white,fontFamily:'Rokkitt',fontSize: 24)),
            color: Colors.teal.shade800,
            height: 50,
