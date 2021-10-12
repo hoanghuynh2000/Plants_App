@@ -164,6 +164,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "footer",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/footer-0.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "http",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.3",
       "packageUri": "lib/",
@@ -320,7 +326,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-10-08T17:32:41.672766Z",
+  "generated": "2021-10-11T15:23:41.555764Z",
   "generator": "pub",
   "generatorVersion": "2.13.3"
 }
