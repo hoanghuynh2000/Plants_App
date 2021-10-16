@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:plants_app/handle/favorite.dart';
+import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/sqlite/favorites.dart';
 class FavoritesScreen extends StatefulWidget {
@@ -9,53 +14,130 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesState extends State<FavoritesScreen> {
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> key= new GlobalKey<RefreshIndicatorState>();
+  List<int> dataload = [];
   final data= FavoritesDatabase.instance;
- 
- Favorites favorites= new Favorites(id: "1");
+ String id = "";
+ int isImportant= 1;
+ String idProduct= "";
+ String productName= "";
+ String categoryName= "";
+  int price= 1;
+  String images= "";
+ late Favorites favorites;
  // ignore: deprecated_member_use
  List<Favorites> listFav=[];
   void isFav() async{
-        // await data.deleteFav(2);
-      //await data.insertFav(new Favorites(id: "3", isImportant: 0, idProduct: '113', productName: 'XUong Rong', categoryName: 'categoryName', price: 120000, images: 'assets/images/brDangNhap.jpg'));
-      await data.deleteFav('113');
+      
        listFav=await data.readfavorites();
-       print(await listFav);
+      print(listFav);
      }
-    @override
+  @override
   void initState() {
-    // TODO: implement initState
-    
     super.initState();
 
+    loadList();
+  }
+
+  Future loadList() async {
+    keyRefresh.currentState?.show();
+    await Future.delayed(Duration(milliseconds: 4000));
+
+    final random = Random();
+    final data = List.generate(100, (_) => random.nextInt(100));
+
+    setState(() => this.dataload = data);
   }
     @override
   Widget build(BuildContext context) {
     isFav();
     
-    return ListView.builder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Danh Sách Yêu Thích'),
+        backgroundColor:Colors.teal[900],
+        ),
+        backgroundColor: Colors.white,
+      body:SafeArea(
+        
+        child:RefreshWidget(
+          onRefresh: loadList,
+          key: key,
+          keyRefresh: keyRefresh,
+          child:  ListView.builder(
         itemCount: listFav.length,
         itemBuilder: (context, index) {
-          return Card(                         
-            child: Container(
+          id=listFav[index].id.toString();
+          isImportant=listFav[index].isImportant!;
+          idProduct=listFav[index].idProduct.toString();
+          productName=listFav[index].productName.toString();
+          categoryName=listFav[index].categoryName.toString();
+          price=listFav[index].price!;
+          images=listFav[index].images!;
+          favorites= new Favorites(
+            id: id, 
+          isImportant: isImportant, 
+          idProduct: idProduct, 
+          productName: productName, 
+          categoryName: categoryName, 
+          price: price,
+           images:images);
+          print(id);
+          return  Container(
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+             borderRadius: BorderRadius.all(Radius.circular(20))),
+            padding: EdgeInsets.all(20,),
       child: Row(children: [
         Container(
+          height: 80,
+          width: 80,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
             image:DecorationImage(
-              image:AssetImage('assets/images/brDangNhap.jpg') ,
+              image:AssetImage('${images}') ,
               fit: BoxFit.cover) ),
         ),
+        SizedBox(width: 18,),
         Column(
           children: [
-            Text('${listFav[index].productName}'),
-            Text('${listFav[index].categoryName}'),
-            Text('${listFav[index].price}')
-          ],
-        )
+            Text('${productName}',style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
+            Text('${categoryName}'),
+            SizedBox(height: 10,),
+                Text('${NumberFormat('###,###').format(price)}',style: TextStyle(color: Colors.red,fontSize: 20),)
+              ],
+            
+            
+          
+        ),Expanded(
+          
+          child:Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children:[
+            
+            IconButton(onPressed: (){
+              
+              setState(() {
+                 data.deleteFav(id);
+               
+              });
+            }, icon: Icon(Icons.favorite_sharp,color: Colors.red,size: 40,))
+          ]
+            
+        ) )
+        
+        
       ],),
-    )
+    
           );
         },
-      );
+      ) ,) )
+    );
+     
   }
  
+
+  
 }

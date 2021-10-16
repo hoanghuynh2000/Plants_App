@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
+import 'package:plants_app/bloc/CouterBloc.dart';
+import 'package:plants_app/couter/event.dart';
 import 'package:plants_app/fake/feedfake.dart';
 import 'package:plants_app/handle/favorite.dart';
 import 'package:plants_app/model/mdfavorites.dart';
@@ -26,7 +29,7 @@ class _DetailsProductState extends State<DetailsProduct> {
    String productName="Cay Xuong Rong";
    String categoryName="Xuong Roong";
    int price=120000;
-   String images="";
+   String images="assets/images/brDangNhap.jpg";
    String idFav =idProduct ;
     double height= MediaQuery.of(context).size.height;
     double width= MediaQuery.of(context).size.width;
@@ -219,7 +222,7 @@ class ItemFeedback extends StatelessWidget {
   }
 }
 class ProductTitleWithImage extends StatelessWidget {
-  String TenSanPham='Tên Sản Phẩm';  
+  String TenSanPham='Tên Sản Phẩm Tên SảnPhaamr...';  
   int GiaSanPham=123000;
   String DanhMucSanPham='Danh Muc San Pham';
   String HinhSanPham='Hinh San Pham';
@@ -230,7 +233,7 @@ class ProductTitleWithImage extends StatelessWidget {
     
   double width= MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 25),
       child:
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,15 +249,16 @@ class ProductTitleWithImage extends StatelessWidget {
                 .copyWith(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 25),
           ),
            SizedBox(height: 10),
-          Text(
+          
+                    ],
+                  ),
+                  Text(
             '${DanhMucSanPham}',
             style: Theme.of(context)
                 .textTheme
                 .headline4!
                 .copyWith(color: Colors.teal.shade700, fontWeight: FontWeight.bold,fontSize: 17),
           ),
-                    ],
-                  ),
           SizedBox(height: 10),
               RichText(
                 text: TextSpan(
@@ -267,9 +271,7 @@ class ProductTitleWithImage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
               CartCounter(),
-              SizedBox(height: 20),
               Text('Mô Tả Sản Phẩm',style: TextStyle(fontSize: 20,color: Colors.teal.shade900,fontWeight: FontWeight.bold),),
               SizedBox(height: 10),              
               Text("${MoTaChiTietSanPham}"),
@@ -290,40 +292,55 @@ class CartCounter extends StatefulWidget {
 
 class _CartCounterState extends State<CartCounter> {
   int numOfItems = 1;
+  String? quatity;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        buildOutlineButton(
-          icon: Icons.remove,
-          press: () {
-            if (numOfItems > 1) {
-              setState(() {
-                numOfItems--;
-              });
-            }
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            // if our item is less  then 10 then  it shows 01 02 like that
-            '${numOfItems}',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
-        buildOutlineButton(
-            icon: Icons.add,
-            press: () {
-              setState(() {
-                if(numOfItems<20)
-                {
-                numOfItems++;
-                }
-              });
-            }),
-      ],
-    );
+    if(quatity==null){
+      quatity='1';
+    }
+    
+    return BlocProvider<CouterBloc>(create: (context)=>CouterBloc(),child:  BlocBuilder<CouterBloc,int>(
+                      builder: (context,couter){
+                        
+                        final CouterBloc couterBloc=context.bloc<CouterBloc>();
+                      return  
+                         Container(child:
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(right: 15),
+                                width: 30,
+                                child: IconButton(
+                                onPressed: (){
+                                  couterBloc.add(CouterEvent.decre);
+                                  setState(() {
+                                    
+                                  });
+                                    }
+                                     
+                                   
+                              , icon: Icon(Icons.remove)),),
+                              Container(width: 50,
+                                // ignore: unnecessary_brace_in_string_interps
+                                child:Text('${couter}',style: TextStyle(fontSize: 17),textAlign: TextAlign.center,)),
+                              Container(
+                                width: 30,
+                                child: IconButton(onPressed: (){
+                                couterBloc.add(CouterEvent.incre);
+                                setState(() {
+                                  
+                                });
+                                }
+                               
+                              , icon: Icon(Icons.add)) ,
+                              
+                              )],
+                          )
+                    
+                    );
+                 
+                    },));
   }
 
   SizedBox buildOutlineButton({required IconData icon, required Function press}) {

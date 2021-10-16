@@ -50,7 +50,8 @@ class FavoritesDatabase  {
   }
    Future<List<Favorites>> getFavById(String? id) async {
       final db = await database; 
-      List<Map<String, dynamic>> maps = await db.query("tablefavorites1", where: 'idProduct = ?', whereArgs: [id]); 
+      List<Map<String, dynamic>> maps = await db.query("tablefavorites1", where: 'id = ?', whereArgs: [id]); 
+      
       return List.generate(maps.length, (i) {
       return Favorites(
         id: maps[i]['id'], 
