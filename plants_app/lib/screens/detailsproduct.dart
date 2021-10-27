@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
-import 'package:plants_app/bloc/CouterBloc.dart';
-import 'package:plants_app/couter/event.dart';
+
 import 'package:plants_app/fake/feedfake.dart';
+import 'package:plants_app/handle/cartcounter.dart';
 import 'package:plants_app/handle/favorite.dart';
 import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/model/mdfeedback.dart';
 import 'package:plants_app/screens/favorites.dart';
-import 'package:plants_app/screens/feedback.dart';
+
 
 class DetailsProduct extends StatefulWidget {
   DetailsProduct({Key? key}) : super(key: key);
@@ -90,6 +90,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                 children: <Widget>[
                   Stack(
                     children: <Widget>[
+                       
                       Container(
                         margin: EdgeInsets.only(top: height * 0.25),
                         padding: EdgeInsets.only(
@@ -105,30 +106,30 @@ class _DetailsProductState extends State<DetailsProduct> {
                         ),
                         child: ProductTitleWithImage(),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                       Row(
+                        
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(
-                            width: width / 3,
+                            width: width / 2.5,
                           ),
                           Expanded(
                             child: Hero(
                               tag: "${id}",
                               child: Image.asset(
                                 '${"assets/images/cay1.png"}',
-                                fit: BoxFit.cover,
+                                fit: BoxFit.cover,height: 240,width: 170,
                               ),
                             ),
                           ),
                           SizedBox(
-                            width: width / 9,
-                          ),
+                            width: 10,
+                          )
                         ],
-                      )
-                    ],
+                      ),
+                         
+                     
+                       ],
                   ),
                 ],
               ),
@@ -265,19 +266,23 @@ class ProductTitleWithImage extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Column(
             children: [
-              Text(
+              Container(
+                width: width*0.55,
+              child:Text(
                 '${TenSanPham}',
                 style: Theme.of(context).textTheme.headline4!.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 25),
               ),
+              ),
+             
               SizedBox(height: 10),
             ],
           ),
@@ -329,61 +334,7 @@ class ProductTitleWithImage extends StatelessWidget {
   }
 }
 
-class CartCounter extends StatefulWidget {
-  @override
-  _CartCounterState createState() => _CartCounterState();
-}
 
-class _CartCounterState extends State<CartCounter> {
-  int numOfItems = 1;
-  String? quatity;
-  @override
-  Widget build(BuildContext context) {
-    if (quatity == null) {
-      quatity = '1';
-    }
-
-    return BlocProvider<CouterBloc>(
-        create: (context) => CouterBloc(),
-        child: BlocBuilder<CouterBloc, int>(
-          builder: (context, couter) {
-            final CouterBloc couterBloc = context.read<CouterBloc>();
-            return Container(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: 15),
-                  width: 30,
-                  child: IconButton(
-                      onPressed: () {
-                        couterBloc.add(CouterEvent.decre);
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.remove)),
-                ),
-                Container(
-                    width: 50,
-                    // ignore: unnecessary_brace_in_string_interps
-                    child: Text(
-                      '${couter}',
-                      style: TextStyle(fontSize: 17),
-                      textAlign: TextAlign.center,
-                    )),
-                Container(
-                  width: 30,
-                  child: IconButton(
-                      onPressed: () {
-                        couterBloc.add(CouterEvent.incre);
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.add)),
-                )
-              ],
-            ));
-          },
-        ));
-  }
 
   SizedBox buildOutlineButton(
       {required IconData icon, required Function press}) {
@@ -403,4 +354,4 @@ class _CartCounterState extends State<CartCounter> {
       ),
     );
   }
-}
+

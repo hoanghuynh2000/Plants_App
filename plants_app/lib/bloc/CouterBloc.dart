@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plants_app/couter/event.dart';
 class CouterBloc extends Bloc<CouterEvent,int>{
+  CouterBloc() : super(0);
+
   @override
   // TODO: implement initialState
   int get initialState => 1;
