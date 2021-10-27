@@ -26,7 +26,7 @@ class _ProductState extends State<Product> {
     Category(
         id: '5', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png')
   ];
-  List<DetailProduct> _list = FakeFeedback.toList();
+  List<DetailProduct> _list = FakeProduct.toList();
 
   List<DetailProduct> _foundProduct = [];
   @override

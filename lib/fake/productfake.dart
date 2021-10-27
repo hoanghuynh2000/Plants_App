@@ -1,6 +1,6 @@
 import 'package:plants_app/model/mddetailproduct.dart';
 
-var FakeFeedback = [
+var FakeProduct = [
   DetailProduct(
       id: '1',
       namePro:
