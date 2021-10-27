@@ -13,7 +13,7 @@ class ListProduct extends StatefulWidget {
 }
 
 class _ListProductState extends State<ListProduct> {
-  List<DetailProduct> _list = FakeFeedback.toList();
+  List<DetailProduct> _list = FakeProduct.toList();
   @override
   Widget build(BuildContext context) {
     _list =
