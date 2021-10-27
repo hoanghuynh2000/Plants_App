@@ -28,6 +28,16 @@ class _DetailsOrderState extends State<DetailsOrder> {
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: <Color>[
+                    Colors.teal.shade900,
+                    Colors.teal.shade600
+                  ])),
+            ),
             title: Text('Chi tiết đơn hàng'),
             backgroundColor: Colors.teal.shade900),
         body: SingleChildScrollView(
