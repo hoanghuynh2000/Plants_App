@@ -15,13 +15,19 @@
     },
     {
       "name": "bloc",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/bloc-4.0.0",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/bloc-7.2.1",
       "packageUri": "lib/",
-      "languageVersion": "2.6"
+      "languageVersion": "2.12"
     },
     {
       "name": "boolean_selector",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "buttons_tabbar",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/buttons_tabbar-1.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -153,15 +159,21 @@
     },
     {
       "name": "flutter_bloc",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_bloc-4.0.1",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_bloc-7.3.1",
       "packageUri": "lib/",
-      "languageVersion": "2.6"
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_search_bar",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_search_bar-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.7"
+    },
+    {
+      "name": "flutter_switch",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_switch-0.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_test",
@@ -261,9 +273,9 @@
     },
     {
       "name": "provider",
-      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/provider-4.3.3",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/provider-6.0.1",
       "packageUri": "lib/",
-      "languageVersion": "2.7"
+      "languageVersion": "2.12"
     },
     {
       "name": "sky_engine",
@@ -350,7 +362,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-10-16T03:34:51.602868Z",
+  "generated": "2021-10-23T14:40:34.750770Z",
   "generator": "pub",
   "generatorVersion": "2.13.3"
 }
