@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Projects\\E-Commerce\\Plants_App\\plants_app\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ko\\values-ko.xml",
+            "outputFile": "D:\\Projects\\E-Commerce\\Plants_App\\Plants_App\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ko\\values-ko.xml",
             "map": [
                 {
                     "source": "C:\\Users\\ASUS\\.gradle\\caches\\transforms-2\\files-2.1\\fc37094cae7bcab02e53cd05528600fd\\jetified-play-services-basement-17.1.0\\res\\values-ko\\values.xml",

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Projects\\E-Commerce\\Plants_App\\plants_app\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ms\\values-ms.xml",
+            "outputFile": "D:\\Projects\\E-Commerce\\Plants_App\\Plants_App\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ms\\values-ms.xml",
             "map": [
                 {
                     "source": "C:\\Users\\ASUS\\.gradle\\caches\\transforms-2\\files-2.1\\3379954b54da4c690bd742f1e4b2cf6f\\jetified-play-services-base-17.1.0\\res\\values-ms\\values.xml",
