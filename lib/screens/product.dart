@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:plants_app/fake/productfake.dart';
 import 'package:plants_app/handle/favoritelistproduct.dart';
 import 'package:plants_app/handle/refresh.dart';
@@ -20,7 +21,7 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-   final keyRefresh = GlobalKey<RefreshIndicatorState>();
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
   final GlobalKey<RefreshIndicatorState> key =
       new GlobalKey<RefreshIndicatorState>();
   List<int> dataload = [];
@@ -55,7 +56,7 @@ class _ProductState extends State<Product> {
   void initState() {
     // TODO: implement initState
     _foundProduct = _list;
-    
+
     super.initState();
   }
 
@@ -67,7 +68,6 @@ class _ProductState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       color: Colors.grey.shade200,
       child: Column(
@@ -100,7 +100,7 @@ class _ProductState extends State<Product> {
                       )),
                 ),
                 Expanded(
-                  child:  ListView.builder(
+                  child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: listCate.length,
                       itemBuilder: (context, index) {
@@ -123,25 +123,27 @@ class _ProductState extends State<Product> {
                             ));
                       }),
                 )
-            ])),
+              ])),
           Expanded(
               child: Container(
                   margin: EdgeInsets.all(5),
-                  child:RefreshWidget(
-          onRefresh: loadList,
-          key: key,
-          keyRefresh: keyRefresh,
-          child: GridView(
-                    children: _foundProduct
-                        .map((e) => ItemGridViewProduct(detailProduct: e))
-                        .toList(),
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        childAspectRatio: 0.72,
-                        // mainAxisSpacing: 1,
-                        // crossAxisSpacing: 1,
-                        maxCrossAxisExtent: 220),
-                  )))
-             )   ],
+                  child: RefreshWidget(
+                      onRefresh: loadList,
+                      key: key,
+                      keyRefresh: keyRefresh,
+                      child: StaggeredGridView.countBuilder(
+                        crossAxisSpacing: 4.0,
+                        mainAxisSpacing: 5.0,
+                        itemCount: _foundProduct.length,
+                        crossAxisCount: 4,
+                        itemBuilder: (BuildContext context, int index) =>
+                            ItemGridViewProduct(
+                          detailProduct: _foundProduct[index],
+                        ),
+                        staggeredTileBuilder: (int index) =>
+                            new StaggeredTile.fit(2),
+                      ))))
+        ],
       ),
     );
   }

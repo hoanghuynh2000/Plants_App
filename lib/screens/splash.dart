@@ -19,7 +19,7 @@ class _SplashState extends State<Splash> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(Duration(milliseconds: 5000), () {
+    Timer(Duration(milliseconds: 6000), () {
       Navigator.of(context).push(
         PageTransition(
             type: PageTransitionType.rightToLeft, child: LayoutDrawer()),
@@ -29,8 +29,10 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
+      //backgroundColor: Colors.teal.shade500,
       body: Stack(
         children: [
           Positioned.fill(
@@ -45,11 +47,11 @@ class _SplashState extends State<Splash> {
                       flex: 2,
                       child: Column(
                         children: [
-                          _buildAnimateLogo(),
+                          _buildAnimateLogo(size),
                           // SizedBox(
                           //   height: 10,
                           // ),
-                          _buildAnimateName()
+                          _buildAnimateName(size)
                         ],
                       ))
                 ],
@@ -59,7 +61,7 @@ class _SplashState extends State<Splash> {
     ));
   }
 
-  Widget _buildAnimateLogo() {
+  Widget _buildAnimateLogo(Size size) {
     return Container(
       child: Animator(
           tweenMap: {
@@ -68,7 +70,7 @@ class _SplashState extends State<Splash> {
           },
           cycles: 1,
           curve: Curves.easeInOut,
-          duration: Duration(milliseconds: 1500),
+          duration: Duration(milliseconds: 3000),
           // endAnimationListener: (amin) {
           //   setState(() {
 
@@ -79,12 +81,11 @@ class _SplashState extends State<Splash> {
                 child: Transform.scale(
                   scale: amin.getValue('scale'),
                   child: Container(
+                    width: size.width * 0.8,
                     child: ClipOval(
                       child: Image.asset(
                         'assets/images/logo.png',
                         fit: BoxFit.fitWidth,
-                        width: 160,
-                        height: 160,
                       ),
                     ),
                   ),
@@ -93,7 +94,7 @@ class _SplashState extends State<Splash> {
     );
   }
 
-  Widget _buildAnimateName() {
+  Widget _buildAnimateName(Size size) {
     return Container(
       child: Animator(
           tweenMap: {

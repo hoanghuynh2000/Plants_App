@@ -36,7 +36,7 @@ class _DetailNewsState extends State<DetailNews> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('${widget.news!.imageNews}'),
-                    fit: BoxFit.fill)),
+                    fit: BoxFit.cover)),
           ),
           Container(
             padding: EdgeInsets.all(20),

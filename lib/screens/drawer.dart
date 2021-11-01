@@ -4,6 +4,7 @@ import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/listorder.dart';
+import 'package:plants_app/screens/profile/profile.dart';
 import 'package:plants_app/screens/rules.dart';
 
 class MainWidget extends StatefulWidget {
@@ -22,7 +23,11 @@ class _MainWidgetState extends State<MainWidget> {
                 gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.topRight,
-                    colors: [Colors.teal.shade900, Colors.teal.shade500])),
+                    colors: [
+                  Colors.teal.shade900,
+                  Colors.teal.shade800,
+                  Colors.teal.shade600
+                ])),
             child: Container(
                 padding: EdgeInsets.only(top: 100, bottom: 20, left: 40),
                 child: Column(
@@ -57,11 +62,8 @@ class _MainWidgetState extends State<MainWidget> {
                     SizedBox(),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: Dashboard()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Profile()));
                       },
                       child: MenuItem('Cá Nhân', Icons.people_alt_rounded),
                     ),
@@ -69,9 +71,8 @@ class _MainWidgetState extends State<MainWidget> {
                       onTap: () {
                         Navigator.push(
                             context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: FavoritesScreen()));
+                            MaterialPageRoute(
+                                builder: (context) => FavoritesScreen()));
                       },
                       child: MenuItem('Yêu Thích', Icons.favorite_rounded),
                     ),
@@ -79,30 +80,23 @@ class _MainWidgetState extends State<MainWidget> {
                       onTap: () {
                         Navigator.push(
                             context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                duration: Duration(milliseconds: 500),
-                                child: ListOrder()));
+                            MaterialPageRoute(
+                                builder: (context) => ListOrder()));
                       },
-                      child: MenuItem('Đơn Hàng', Icons.receipt_long_rounded),
+                      child: MenuItem(
+                          'Lịch Sử Hóa Đơn', Icons.receipt_long_rounded),
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: Contact()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Contact()));
                       },
                       child: MenuItem('Liên Hệ', Icons.contact_support_rounded),
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: Rules()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Rules()));
                       },
                       child: MenuItem('Điều Khoản', Icons.feed_rounded),
                     ),
@@ -111,9 +105,8 @@ class _MainWidgetState extends State<MainWidget> {
                       onTap: () {
                         Navigator.push(
                             context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: Rules()));
+                            MaterialPageRoute(
+                                builder: (context) => Dashboard()));
                       },
                       child: MenuItem('Đăng Xuất', Icons.logout_outlined),
                     )

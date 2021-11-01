@@ -70,7 +70,7 @@ class _NewsState extends State<News> {
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     image: DecorationImage(
                         image: AssetImage('${lsNews[index].imageNews}'),
-                        fit: BoxFit.fill)),
+                        fit: BoxFit.cover)),
               ),
               Expanded(
                   child: Container(

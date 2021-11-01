@@ -13,19 +13,18 @@ class ItemGridViewProduct extends StatefulWidget {
 }
 
 class _ItemGridViewProductState extends State<ItemGridViewProduct> {
- 
   @override
   Widget build(BuildContext context) {
-     int isimportant=0;
-     Favorites favorites = new Favorites(
+    int isimportant = 0;
+    Favorites favorites = new Favorites(
         id: widget.detailProduct.id,
-        isImportant:0 ,
+        isImportant: 0,
         idProduct: widget.detailProduct.id,
         productName: widget.detailProduct.namePro,
         categoryName: widget.detailProduct.idCate,
         price: widget.detailProduct.pricePro,
         images: widget.detailProduct.imgProduct);
-       
+
     return Container(
       decoration: BoxDecoration(),
       padding: EdgeInsets.all(5),
@@ -74,7 +73,7 @@ class _ItemGridViewProductState extends State<ItemGridViewProduct> {
                     children: [
                       Text(
                         '${widget.detailProduct.namePro}',
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             fontSize: 16, color: Colors.teal.shade800),
@@ -86,7 +85,7 @@ class _ItemGridViewProductState extends State<ItemGridViewProduct> {
                           style: TextStyle(
                               fontSize: 14, color: Colors.grey.shade600)),
                       Row(
-                        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             '${widget.detailProduct.pricePro}',

@@ -206,6 +206,7 @@ class _HomeState extends State<Home> {
               ])),
             )));
   }
+
 //CATEGORY
   Widget _buildCategory() {
     //print(listCate[0].imgCate);
@@ -223,9 +224,8 @@ class _HomeState extends State<Home> {
                             ListProduct(category: listCate[index])));
               },
               child: Container(
-                  width: 130,
+                  width: 160,
                   margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(6),
                   decoration: ShapeDecoration(
                       shadows: [
                         BoxShadow(
@@ -235,12 +235,14 @@ class _HomeState extends State<Home> {
                       ],
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)))),
+                          borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ))),
                   //margin: EdgeInsets.only(left: 10, right: 10),
                   child: Column(
                     children: [
                       Container(
-                        width: 128,
+                        width: 160,
                         height: 90,
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
@@ -254,23 +256,25 @@ class _HomeState extends State<Home> {
                                   fit: BoxFit.fitHeight,
                                 ))),
                         decoration: ShapeDecoration(
-                            color: Colors.blueGrey.shade50,
+                            color: Colors.brown.shade100.withOpacity(0.8),
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)))),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20)))),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
                         '${listCate[0].nameCate}',
-                        maxLines: 2,
+                        maxLines: 1,
                         style: TextStyle(fontSize: 14),
                       )
                     ],
                   )));
         });
   }
+
 // TIN TỨC
   Widget _buildNews() {
     return ListView.builder(
@@ -303,7 +307,7 @@ class _HomeState extends State<Home> {
                                     BorderRadius.all(Radius.circular(20))),
                             image: DecorationImage(
                                 image: AssetImage('${lsNews[index].imageNews}'),
-                                fit: BoxFit.fill)),
+                                fit: BoxFit.cover)),
                       ),
                       Expanded(
                           child: Container(

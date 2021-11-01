@@ -8,6 +8,7 @@ import 'package:plants_app/screens/news_screen.dart/news.dart';
 import 'package:plants_app/screens/notification.dart';
 import 'package:plants_app/screens/product.dart';
 import 'package:plants_app/screens/promotionscreen/promotion.dart';
+import 'package:plants_app/screens/shoppingcart.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key? key});
@@ -100,7 +101,7 @@ class _DashboardState extends State<Dashboard> {
                                     style: const TextStyle(fontSize: 14),
                                     gradient: LinearGradient(colors: [
                                       Colors.teal.shade900,
-                                      Colors.teal.shade400,
+                                      Colors.teal.shade900,
                                     ]),
                                   ),
                                 ] else ...[
@@ -139,7 +140,7 @@ class _DashboardState extends State<Dashboard> {
                                     style: const TextStyle(fontSize: 14),
                                     gradient: LinearGradient(colors: [
                                       Colors.teal.shade900,
-                                      Colors.teal.shade400,
+                                      Colors.teal.shade900,
                                     ]),
                                   ),
                                 ] else ...[
@@ -182,7 +183,7 @@ class _DashboardState extends State<Dashboard> {
                                     style: const TextStyle(fontSize: 14),
                                     gradient: LinearGradient(colors: [
                                       Colors.teal.shade900,
-                                      Colors.teal.shade400,
+                                      Colors.teal.shade900,
                                     ]),
                                   ),
                                 ] else ...[
@@ -221,7 +222,7 @@ class _DashboardState extends State<Dashboard> {
                                     style: const TextStyle(fontSize: 14),
                                     gradient: LinearGradient(colors: [
                                       Colors.teal.shade900,
-                                      Colors.teal.shade400,
+                                      Colors.teal.shade900,
                                     ]),
                                   ),
                                 ] else ...[
@@ -304,7 +305,7 @@ class _DashboardState extends State<Dashboard> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Home(),
+                      builder: (_) => ShoppingCart(),
                     ),
                   ),
                   child: Icon(
@@ -321,7 +322,7 @@ class _DashboardState extends State<Dashboard> {
                   height: 20.0,
                   width: 20.0,
                   decoration: BoxDecoration(
-                    color: Colors.teal.shade600,
+                    color: Colors.teal.shade800,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Center(
