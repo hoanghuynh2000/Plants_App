@@ -40,12 +40,12 @@ class _LoginState extends State<Login> {
             width: width*0.7,
            child: TextField(
              style: TextStyle(fontSize: 20),
-            keyboardType: TextInputType.phone,
+            keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               fillColor: Colors.grey[300]!.withOpacity(0.9),
               filled: true,
-              prefixIcon: Icon(Icons.phone, color: Colorbtn,),
-              hintText: 'Số điện thoại',
+              prefixIcon: Icon(Icons.email, color: Colorbtn,),
+              hintText: 'Email',
               labelStyle: TextStyle(color: Colorbtn),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20)),

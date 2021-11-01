@@ -35,7 +35,7 @@ var FakeProduct = [
       descrip: "..............",
       quantity: 20),
   DetailProduct(
-      id: '1',
+      id: '5',
       namePro:
           'Cây Sen Đá 1 Cây Sen Đá 1 Cây Sen Đá 1 Cây Sen Đá 1 Cây Sen Đá 1',
       imgProduct: 'assets/images/cay1.png',
@@ -44,7 +44,7 @@ var FakeProduct = [
       descrip: "..............",
       quantity: 20),
   DetailProduct(
-      id: '2',
+      id: '6',
       namePro: 'Cây Sen Đá2',
       imgProduct: 'assets/images/cay1.png',
       pricePro: 120000,
@@ -52,7 +52,7 @@ var FakeProduct = [
       descrip: "..............",
       quantity: 20),
   DetailProduct(
-      id: '3',
+      id: '7',
       namePro: 'Cây Sen Đá3',
       imgProduct: 'assets/images/cay1.png',
       pricePro: 120000,
@@ -60,7 +60,7 @@ var FakeProduct = [
       descrip: "..............",
       quantity: 20),
   DetailProduct(
-      id: '4',
+      id: '8',
       namePro: 'Cây Sen Đá4',
       imgProduct: 'assets/images/cay1.png',
       pricePro: 120000,

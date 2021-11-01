@@ -206,7 +206,7 @@ class _HomeState extends State<Home> {
               ])),
             )));
   }
-
+//CATEGORY
   Widget _buildCategory() {
     //print(listCate[0].imgCate);
     return ListView.builder(
@@ -271,7 +271,7 @@ class _HomeState extends State<Home> {
                   )));
         });
   }
-
+// TIN TỨC
   Widget _buildNews() {
     return ListView.builder(
         itemCount: lsNews.length,
