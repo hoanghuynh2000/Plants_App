@@ -12,6 +12,7 @@ import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/model/mdfeedback.dart';
 import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/feedback.dart';
+import 'package:plants_app/screens/shoppingcart.dart';
 
 class DetailsProduct extends StatefulWidget {
   DetailProduct detailProduct;
@@ -211,19 +212,46 @@ class _DetailsProductState extends State<DetailsProduct> {
   //AppBar chi tiết sản phẩm
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.teal.shade400,
-      elevation: 0,
-      actions: <Widget>[
-        IconButton(
-          iconSize: 30,
-          color: Colors.teal.shade900,
-          icon: Icon(
-            Icons.shopping_basket,
+        backgroundColor: Colors.teal.shade300,
+        elevation: 0,
+        actions: <Widget>[
+          Stack(
+            children: <Widget>[
+              IconButton(
+                iconSize: 30,
+                color: Colors.black,
+                icon: Icon(
+                  Icons.shopping_basket,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ShoppingCart()));
+                },
+              ),
+              Positioned(
+                bottom: 8.0,
+                left: 20.0,
+                child: Container(
+                  height: 20.0,
+                  width: 20.0,
+                  decoration: BoxDecoration(
+                    color: Colors.teal.shade800,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '5',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
-          onPressed: () {},
-        ),
-      ],
-    );
+        ]);
   }
 }
 

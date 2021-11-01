@@ -338,7 +338,7 @@ Stack Item(List listOrder, List listPro) {
                           DetailsOrder(mdDetail: listOrder[index].idOrder)));
                 },
                 child: Container(
-                  margin: EdgeInsets.only(left: 15, right: 15, top: 5),
+                  margin: EdgeInsets.only(left: 10, right: 10, top: 5),
                   padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
                       color: Colors.white,

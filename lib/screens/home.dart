@@ -62,7 +62,9 @@ class _HomeState extends State<Home> {
   ];
   List<Category> listCate = [
     Category(
-        id: '1', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
+        id: '1',
+        nameCate: 'Cây Cảnh Mini 1 11 1 1 1 1 1  1 1',
+        imgCate: 'assets/images/logo.png'),
     Category(
         id: '12', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
     Category(
@@ -223,14 +225,14 @@ class _HomeState extends State<Home> {
                             ListProduct(category: listCate[index])));
               },
               child: Container(
-                  width: 130,
+                  width: 150,
                   margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(6),
+                  //padding: EdgeInsets.all(2),
                   decoration: ShapeDecoration(
                       shadows: [
                         BoxShadow(
                             offset: Offset(0, 3),
-                            color: Colors.grey.shade300,
+                            color: Colors.grey.shade200,
                             blurRadius: 10)
                       ],
                       color: Colors.white,
@@ -240,10 +242,12 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: [
                       Container(
-                        width: 128,
+                        width: 150,
                         height: 90,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
                             child: Center(
                                 heightFactor: 0.7,
                                 child: FadeInImage(
@@ -254,19 +258,21 @@ class _HomeState extends State<Home> {
                                   fit: BoxFit.fitHeight,
                                 ))),
                         decoration: ShapeDecoration(
-                            color: Colors.blueGrey.shade50,
+                            color: Colors.brown.shade100.withOpacity(0.7),
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)))),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20)))),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        '${listCate[0].nameCate}',
-                        maxLines: 2,
+                      Container(
+                          child: Text(
+                        '${listCate[index].nameCate}',
+                        maxLines: 1,
                         style: TextStyle(fontSize: 14),
-                      )
+                      ))
                     ],
                   )));
         });
@@ -303,7 +309,7 @@ class _HomeState extends State<Home> {
                                     BorderRadius.all(Radius.circular(20))),
                             image: DecorationImage(
                                 image: AssetImage('${lsNews[index].imageNews}'),
-                                fit: BoxFit.fill)),
+                                fit: BoxFit.contain)),
                       ),
                       Expanded(
                           child: Container(

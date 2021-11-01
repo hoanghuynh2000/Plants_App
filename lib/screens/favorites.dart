@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:plants_app/handle/favorite.dart';
 import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/sqlite/favorites.dart';
@@ -105,10 +104,12 @@ class _FavoritesState extends State<FavoritesScreen> {
                   20,
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      height: 80,
-                      width: 80,
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           image: DecorationImage(
@@ -118,43 +119,48 @@ class _FavoritesState extends State<FavoritesScreen> {
                     SizedBox(
                       width: 18,
                     ),
-                    Container(
-                        width: 200,
-                        child: Column(
-                          children: [
-                            Text(
-                              '${productName}',
-                              style: TextStyle(
-                                  fontSize: 19, fontWeight: FontWeight.bold),
-                            ),
-                            Text('${categoryName}'),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              '${NumberFormat('###,###').format(price)}',
-                              style: TextStyle(color: Colors.red, fontSize: 20),
-                            )
-                          ],
-                        )),
                     Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${productName}',
+                          style: TextStyle(
+                              fontSize: 19, fontWeight: FontWeight.bold),
+                        ),
+                        Text('${categoryName}'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '${NumberFormat('###,###').format(price)}',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    )),
+                    Container(
+                        width: 50,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                          IconButton(
-                              onPressed: () {
-                                if (this.mounted) {
-                                  setState(() {
-                                    data.deleteFav(id);
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                Icons.favorite_sharp,
-                                color: Colors.red,
-                                size: 40,
-                              ))
-                        ]))
+                              IconButton(
+                                  onPressed: () {
+                                    if (this.mounted) {
+                                      setState(() {
+                                        data.deleteFav(id);
+                                      });
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite_sharp,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ))
+                            ]))
                   ],
                 ),
               );

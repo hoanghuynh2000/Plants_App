@@ -21,7 +21,7 @@ class _ItemProductState extends State<ItemProduct> {
                   DetailsProduct(detailProduct: widget.detailProduct)));
         },
         child: Container(
-            width: 130,
+            width: 140,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(5),
             decoration: ShapeDecoration(
@@ -40,7 +40,7 @@ class _ItemProductState extends State<ItemProduct> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 130,
+                  width: 140,
                   decoration: ShapeDecoration(
                       color: Colors.teal.shade50,
                       shape: RoundedRectangleBorder(

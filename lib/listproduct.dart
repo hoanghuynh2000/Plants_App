@@ -34,11 +34,12 @@ class _ListProductState extends State<ListProduct> {
         ),
       ),
       body: Container(
+        padding: EdgeInsets.all(10),
         child: GridView(
           children:
               _list.map((e) => ItemGridViewProduct(detailProduct: e)).toList(),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              childAspectRatio: 0.78,
+              childAspectRatio: 0.72,
               // mainAxisSpacing: 1,
               // crossAxisSpacing: 1,
               maxCrossAxisExtent: 220),

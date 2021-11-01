@@ -24,6 +24,8 @@ dependencies:
   like_button: ^2.0.3
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   firebase_core: ^1.7.0
   firebase_auth: ^3.1.2
   firebase_analytics: ^8.3.3
@@ -38,6 +40,8 @@ dependencies:
   flutter_bloc: ^7.3.1
   buttons_tabbar: ^1.3.1
   flutter_switch: ^0.3.2
+  datetime_picker_formfield: ^2.0.0
+  email_validator: '^1.0.0'
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -72,6 +76,7 @@ flutter:
     - assets/images/cut4.jpg
     - assets/images/cut5.jpg
     - assets/images/load.gif
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
