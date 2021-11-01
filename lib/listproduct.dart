@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:plants_app/fake/productfake.dart';
+import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/screens/itemgridviewproduct.dart';
@@ -11,8 +14,9 @@ class ListProduct extends StatefulWidget {
   @override
   _ListProductState createState() => _ListProductState();
 }
-
+ 
 class _ListProductState extends State<ListProduct> {
+  
   List<DetailProduct> _list = FakeProduct.toList();
   @override
   Widget build(BuildContext context) {

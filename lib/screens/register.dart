@@ -10,6 +10,14 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   bool _passwordVisible = true;
   Color colorBtn = Colors.teal.shade900;
+  String? name;
+  String? phone;
+  String? password;
+  String? email;
+  final nameController= new TextEditingController();
+  final phoneController= new TextEditingController();
+  final passwordController= new TextEditingController();
+  final emailController= new TextEditingController();
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -31,6 +39,12 @@ class _RegisterState extends State<Register> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextField(
+                            controller: nameController,
+                            onChanged:(String? value) {
+                                setState(() {
+                                  name=value;
+                                });
+                            },
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
                                 prefixIcon: Icon(
@@ -61,6 +75,12 @@ class _RegisterState extends State<Register> {
                             height: 20,
                           ),
                           TextField(
+                            controller: phoneController,
+                            onChanged: (String? value){
+                              setState(() {
+                                phone=value;
+                              });
+                            },
                             keyboardType: TextInputType.phone,
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
@@ -92,6 +112,12 @@ class _RegisterState extends State<Register> {
                             height: 20,
                           ),
                           TextField(
+                            controller: emailController,
+                            onChanged: (String? value){
+                              setState(() {
+                                email=value;
+                              });
+                            },
                             keyboardType: TextInputType.emailAddress,
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
@@ -122,8 +148,15 @@ class _RegisterState extends State<Register> {
                           SizedBox(
                             height: 20,
                           ),
+                          
                           TextField(
+                            onChanged: (String? value){
+                              setState(() {
+                                password=value;
+                              });
+                            },
                             obscureText: _passwordVisible,
+                            controller: passwordController,
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
                                 prefixIcon: Icon(
@@ -163,6 +196,7 @@ class _RegisterState extends State<Register> {
                                 fillColor:
                                     Colors.grey.shade200.withOpacity(0.95)),
                           ),
+                         
                           SizedBox(
                             height: 20,
                           ),
@@ -179,7 +213,7 @@ class _RegisterState extends State<Register> {
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
-                                  fontFamily: 'Rokkitt'),
+                                  fontFamily: 'Comfortaa'),
                             ),
                           ),
                           SizedBox(

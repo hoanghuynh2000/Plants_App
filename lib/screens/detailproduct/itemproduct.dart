@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plants_app/handle/favorite.dart';
+import 'package:plants_app/handle/favoritelistproduct.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
+import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/screens/detailsproduct.dart';
 
 class ItemProduct extends StatefulWidget {
@@ -12,8 +15,18 @@ class ItemProduct extends StatefulWidget {
 
 class _ItemProductState extends State<ItemProduct> {
   AnimationController? iconHeart;
+ 
   @override
   Widget build(BuildContext context) {
+    int isimportant=0;
+     Favorites favorites = new Favorites(
+        id: widget.detailProduct.id,
+        isImportant:0 ,
+        idProduct: widget.detailProduct.id,
+        productName: widget.detailProduct.namePro,
+        categoryName: widget.detailProduct.idCate,
+        price: widget.detailProduct.pricePro,
+        images: widget.detailProduct.imgProduct);
     return InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
@@ -74,6 +87,7 @@ class _ItemProductState extends State<ItemProduct> {
                         TextStyle(fontSize: 13, color: Colors.grey.shade600)),
                 Expanded(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '${widget.detailProduct.pricePro}',
@@ -82,6 +96,7 @@ class _ItemProductState extends State<ItemProduct> {
                           color: Colors.red.shade800,
                           fontWeight: FontWeight.bold),
                     ),
+                    FavIconListPro(favorites)
                   ],
                 ))
               ],

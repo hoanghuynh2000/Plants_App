@@ -17,7 +17,7 @@ class _FavIconState extends State<FavIcon> {
     // ignore: unused_local_variable
    Future<bool>  isFav(bool isLiked) async{
       final rowsPresent = await data.getFavById(widget.mydata.idProduct);
-    
+    print(rowsPresent);
        if (rowsPresent.length>0) {
          
           await data.deleteFav(widget.mydata.idProduct);
@@ -28,9 +28,21 @@ class _FavIconState extends State<FavIcon> {
      }
     
     }
+    Future<bool>  check() async{
+      final rowsPresent = await data.getFavById(widget.mydata.idProduct);
+ 
+       if (rowsPresent.length>0) {
+         
+        
+      return true;
+    } else {
+      return false;
+     }
+    
+    }
   @override
   Widget build(BuildContext context) {
-  isFav;
+ 
     return 
     FutureBuilder(
         
@@ -46,6 +58,7 @@ class _FavIconState extends State<FavIcon> {
             dotSecondaryColor: Color(0xFFFF3C00),
           ),
           likeBuilder: (bool isLiked) {
+            check().then((result) => isLiked = result);
                    return  
                    Icon(Icons.favorite_sharp,color:isLiked? Colors.red:Colors.grey,size: 40,) ;
               });

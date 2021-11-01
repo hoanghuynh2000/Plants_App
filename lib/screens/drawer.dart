@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/favorites.dart';
+import 'package:plants_app/screens/listorder.dart';
+import 'package:plants_app/screens/rules.dart';
 
 class MainWidget extends StatefulWidget {
   @override
@@ -79,7 +82,7 @@ class _MainWidgetState extends State<MainWidget> {
                             PageTransition(
                                 type: PageTransitionType.rightToLeftWithFade,
                                 duration: Duration(milliseconds: 500),
-                                child: Dashboard()));
+                                child: ListOrder()));
                       },
                       child: MenuItem('Đơn Hàng', Icons.receipt_long_rounded),
                     ),
@@ -89,7 +92,7 @@ class _MainWidgetState extends State<MainWidget> {
                             context,
                             PageTransition(
                                 type: PageTransitionType.rightToLeftWithFade,
-                                child: Dashboard()));
+                                child: Contact()));
                       },
                       child: MenuItem('Liên Hệ', Icons.contact_support_rounded),
                     ),
@@ -99,7 +102,7 @@ class _MainWidgetState extends State<MainWidget> {
                             context,
                             PageTransition(
                                 type: PageTransitionType.rightToLeftWithFade,
-                                child: Dashboard()));
+                                child: Rules()));
                       },
                       child: MenuItem('Điều Khoản', Icons.feed_rounded),
                     ),
@@ -110,7 +113,7 @@ class _MainWidgetState extends State<MainWidget> {
                             context,
                             PageTransition(
                                 type: PageTransitionType.rightToLeftWithFade,
-                                child: Dashboard()));
+                                child: Rules()));
                       },
                       child: MenuItem('Đăng Xuất', Icons.logout_outlined),
                     )

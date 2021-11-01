@@ -1,9 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:plants_app/fake/productfake.dart';
+import 'package:plants_app/handle/favoritelistproduct.dart';
+import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
+import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/screens/detailproduct/itemproduct.dart';
+import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/itemgridviewproduct.dart';
+import 'package:plants_app/sqlite/favorites.dart';
 
 class Product extends StatefulWidget {
   Product({Key? key}) : super(key: key);
@@ -13,6 +20,21 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
+   final keyRefresh = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> key =
+      new GlobalKey<RefreshIndicatorState>();
+  List<int> dataload = [];
+  Future loadList() async {
+    keyRefresh.currentState?.show();
+    await Future.delayed(Duration(milliseconds: 4000));
+
+    final random = Random();
+    final data = List.generate(100, (_) => random.nextInt(100));
+    if (this.mounted) {
+      setState(() => this.dataload = data);
+    }
+  }
+
   late Color colorCate = Colors.teal.shade700;
   List<Category> listCate = [
     Category(
@@ -33,6 +55,7 @@ class _ProductState extends State<Product> {
   void initState() {
     // TODO: implement initState
     _foundProduct = _list;
+    
     super.initState();
   }
 
@@ -44,6 +67,7 @@ class _ProductState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       color: Colors.grey.shade200,
       child: Column(
@@ -76,7 +100,7 @@ class _ProductState extends State<Product> {
                       )),
                 ),
                 Expanded(
-                  child: ListView.builder(
+                  child:  ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: listCate.length,
                       itemBuilder: (context, index) {
@@ -99,11 +123,15 @@ class _ProductState extends State<Product> {
                             ));
                       }),
                 )
-              ])),
+            ])),
           Expanded(
               child: Container(
                   margin: EdgeInsets.all(5),
-                  child: GridView(
+                  child:RefreshWidget(
+          onRefresh: loadList,
+          key: key,
+          keyRefresh: keyRefresh,
+          child: GridView(
                     children: _foundProduct
                         .map((e) => ItemGridViewProduct(detailProduct: e))
                         .toList(),
@@ -113,7 +141,7 @@ class _ProductState extends State<Product> {
                         // crossAxisSpacing: 1,
                         maxCrossAxisExtent: 220),
                   )))
-        ],
+             )   ],
       ),
     );
   }
