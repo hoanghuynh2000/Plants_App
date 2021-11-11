@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kf_drawer/kf_drawer.dart';
+import 'package:plants_app/bloc/drawerBloc/drawer_bloc.dart';
 import 'package:plants_app/colorsize/gradienticon.dart';
 import 'package:plants_app/colorsize/gradienttext.dart';
+import 'package:plants_app/respository/user_respon.dart';
 import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/news_screen.dart/news.dart';
@@ -11,8 +15,6 @@ import 'package:plants_app/screens/promotionscreen/promotion.dart';
 import 'package:plants_app/screens/shoppingcart.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({Key? key});
-
   @override
   _DashboardState createState() => _DashboardState();
 }

@@ -54,6 +54,14 @@ cupertino_icons
 2.12
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.3/
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.3/lib/
+datetime_picker_formfield
+2.12
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/datetime_picker_formfield-2.0.0/
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/datetime_picker_formfield-2.0.0/lib/
+equatable
+2.12
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/equatable-2.0.3/
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/equatable-2.0.3/lib/
 fake_async
 2.12
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/
@@ -106,6 +114,10 @@ flutter_search_bar
 2.7
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_search_bar-2.1.0/
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_search_bar-2.1.0/lib/
+flutter_staggered_grid_view
+2.12
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_staggered_grid_view-0.4.1/
+file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_staggered_grid_view-0.4.1/lib/
 flutter_switch
 2.12
 file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_switch-0.3.2/
@@ -226,6 +238,10 @@ flutter
 2.12
 file:///C:/flutter/packages/flutter/
 file:///C:/flutter/packages/flutter/lib/
+flutter_localizations
+2.12
+file:///C:/flutter/packages/flutter_localizations/
+file:///C:/flutter/packages/flutter_localizations/lib/
 flutter_test
 2.12
 file:///C:/flutter/packages/flutter_test/
@@ -236,6 +252,6 @@ file:///C:/flutter/packages/flutter_web_plugins/
 file:///C:/flutter/packages/flutter_web_plugins/lib/
 plants_app
 2.12
-file:///D:/DoAnCayCanh/Plants_App/
-file:///D:/DoAnCayCanh/Plants_App/lib/
+file:///D:/FlutterApp/Plants_App/
+file:///D:/FlutterApp/Plants_App/lib/
 2

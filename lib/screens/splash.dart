@@ -20,10 +20,10 @@ class _SplashState extends State<Splash> {
     // TODO: implement initState
     super.initState();
     Timer(Duration(milliseconds: 6000), () {
-      Navigator.of(context).push(
-        PageTransition(
-            type: PageTransitionType.rightToLeft, child: LayoutDrawer()),
-      );
+      // Navigator.of(context).push(
+      //   PageTransition(
+      //       type: PageTransitionType.rightToLeft, child: LayoutDrawer()),
+      // );
     });
   }
 
