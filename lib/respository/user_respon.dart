@@ -13,7 +13,6 @@ class UserResponsitory {
     try {
       var result = await firebaseAuth!
           .createUserWithEmailAndPassword(email: email, password: password);
-
       return result.user;
     } on PlatformException catch (e) {
       throw Exception(e.toString());
@@ -21,10 +20,14 @@ class UserResponsitory {
   }
 
   Future<User?> SignInUser(String email, String password) async {
-    var result = await firebaseAuth!
-        .signInWithEmailAndPassword(email: email, password: password);
+    try {
+      var result = await firebaseAuth!
+          .signInWithEmailAndPassword(email: email, password: password);
 
-    return result.user;
+      return result.user;
+    } on PlatformException catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   Future<void> userSetup(String displayName, String phoneNumber) async {
@@ -55,7 +58,7 @@ class UserResponsitory {
   }
 
   Future<void> SignOut() async {
-    firebaseAuth!.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 
   Future<bool> IsSignIn() async {

@@ -2,7 +2,7 @@ import 'package:animator/animator.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:kf_drawer/kf_drawer.dart';
+
 import 'package:plants_app/listproduct.dart';
 import 'package:plants_app/model/mdcategory.dart';
 

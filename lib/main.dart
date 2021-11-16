@@ -45,11 +45,11 @@ class App extends StatelessWidget {
       } else if (state is AuthenticatedState) {
         return LayoutDrawer(user: state.user, userResponsitory: userRepository);
       } else if (state is UnAuthenticatedState) {
-        return LoginPageParent(
-          userRepository: userRepository,
+        return LayoutDrawer(
+          userResponsitory: userRepository,
         );
       }
-      return Dashboard();
+      return LayoutDrawer(userResponsitory: userRepository);
     });
   }
 }

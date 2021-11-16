@@ -43,7 +43,7 @@ class _RegisterState extends State<Register> {
   final emailController = new TextEditingController();
   String? authResult;
   UserRegBloc? userRegBloc;
-  UserResponsitory? userRepository;
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -77,7 +77,7 @@ class _RegisterState extends State<Register> {
                               BlocListener<UserRegBloc, UserRegState>(
                                 listener: (context, state) {
                                   if (state is UserRegSuccessful) {
-                                    navigateToLoginPage(context);
+                                    navigateToLoginPage(context, state.user);
                                   }
                                 },
                                 child: BlocBuilder<UserRegBloc, UserRegState>(
@@ -116,19 +116,17 @@ class _RegisterState extends State<Register> {
                                         color: Colors.lightGreen.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade300),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                    fillColor:
-                                        Colors.grey.shade200.withOpacity(0.95)),
+                                    fillColor: Colors.white),
                               ),
                               SizedBox(
                                 height: 20,
@@ -153,19 +151,17 @@ class _RegisterState extends State<Register> {
                                         color: Colors.lightGreen.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade300),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                    fillColor:
-                                        Colors.grey.shade200.withOpacity(0.95)),
+                                    fillColor: Colors.white),
                               ),
                               SizedBox(
                                 height: 20,
@@ -190,19 +186,17 @@ class _RegisterState extends State<Register> {
                                         color: Colors.lightGreen.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade300),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                    fillColor:
-                                        Colors.grey.shade200.withOpacity(0.95)),
+                                    fillColor: Colors.white),
                               ),
                               SizedBox(
                                 height: 20,
@@ -240,19 +234,17 @@ class _RegisterState extends State<Register> {
                                     hintStyle: TextStyle(
                                         color: colorBtn, fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade300),
+                                    ),
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.grey.shade200,
-                                            width: 2.0),
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))),
-                                    fillColor:
-                                        Colors.grey.shade200.withOpacity(0.95)),
+                                    fillColor: Colors.white),
                               ),
                               SizedBox(
                                 height: 20,
@@ -302,10 +294,13 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  void navigateToLoginPage(BuildContext context) {
+  void navigateToLoginPage(BuildContext context, User user) {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return LoginPageParent(userRepository: userRepository);
+        return LayoutDrawer(
+          userResponsitory: widget.userRepository,
+          user: user,
+        );
       }));
     });
   }

@@ -18,7 +18,7 @@ class LoginLoadingState extends LoginState {
 
 class LoginSucessfulState extends LoginState {
   User user;
-  LoginSucessfulState({required this.user});
+  LoginSucessfulState(this.user);
 
   @override
   // TODO: implement props

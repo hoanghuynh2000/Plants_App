@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +15,6 @@ import 'package:plants_app/screens/fogetpassword1.dart';
 import 'package:plants_app/screens/register.dart';
 
 class LoginPageParent extends StatelessWidget {
-  User? user;
   UserResponsitory? userRepository;
 
   LoginPageParent({@required this.userRepository});
@@ -39,13 +38,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = true;
-  String? email;
-  String? password;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  String? email = 'hoangde1@gmail.com';
+  String? password = '123456';
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   UserRegBloc? userRegBloc;
   late LoginBloc loginBloc;
-  late UserResponsitory userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +51,8 @@ class _LoginPageState extends State<LoginPage> {
     double height = MediaQuery.of(context).size.height;
     Color Colorbtn = Colors.teal.shade900;
     loginBloc = BlocProvider.of<LoginBloc>(context);
-
+    email = 'hoangde1@gmail.com';
+    password = '123456';
     return WillPopScope(
         onWillPop: () async => false,
         child: Stack(
@@ -78,8 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                                   child: BlocListener<LoginBloc, LoginState>(
                                     listener: (context, state) {
                                       if (state is LoginSucessfulState) {
-                                        emailController.text = "";
-                                        passwordController.text = "";
                                         navigateToHomeScreen(
                                             context, state.user);
                                       }
@@ -91,12 +88,12 @@ class _LoginPageState extends State<LoginPage> {
                                         } else if (state is LoginLoadingState) {
                                           return buildLoadingUi();
                                         } else if (state is LoginFailureState) {
-                                          return buildFailureUi(state.massage);
-                                        } else {
                                           // emailController.text = "";
                                           // passwordController.text = "";
-                                          return Container();
+                                          return buildFailureUi(state.massage);
                                         }
+
+                                        return Container();
                                       },
                                     ),
                                   ),
@@ -105,16 +102,13 @@ class _LoginPageState extends State<LoginPage> {
                                     width: width * 0.8,
                                     child: TextField(
                                       onChanged: (value) {
-                                        setState(() {
-                                          email = value;
-                                        });
+                                        email = value;
                                       },
-                                      controller: emailController,
+                                      controller: _emailController,
                                       style: TextStyle(fontSize: 16),
                                       keyboardType: TextInputType.emailAddress,
                                       decoration: InputDecoration(
-                                          fillColor: Colors.grey[300]!
-                                              .withOpacity(0.9),
+                                          fillColor: Colors.white,
                                           filled: true,
                                           prefixIcon: Icon(
                                             Icons.email,
@@ -127,11 +121,11 @@ class _LoginPageState extends State<LoginPage> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20)),
                                             borderSide: BorderSide(
-                                                color: Colors.grey.shade200),
+                                                color: Colors.teal.shade300),
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: Colors.grey.shade200),
+                                                  color: Colors.white),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(20)))),
                                     )),
@@ -146,13 +140,12 @@ class _LoginPageState extends State<LoginPage> {
                                           password = value;
                                         });
                                       },
-                                      controller: passwordController,
+                                      controller: _passwordController,
                                       style: TextStyle(fontSize: 16),
                                       obscureText: _passwordVisible,
                                       decoration: InputDecoration(
                                           hintText: 'Mật khẩu',
-                                          fillColor: Colors.grey[300]!
-                                              .withOpacity(0.9),
+                                          fillColor: Colors.white,
                                           filled: true,
                                           suffixIcon: IconButton(
                                             icon: Icon(
@@ -178,11 +171,11 @@ class _LoginPageState extends State<LoginPage> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20)),
                                             borderSide: BorderSide(
-                                                color: Colors.grey.shade200),
+                                                color: Colors.teal.shade300),
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: Colors.grey.shade200),
+                                                  color: Colors.white),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(20)))),
                                     )),
@@ -238,7 +231,10 @@ class _LoginPageState extends State<LoginPage> {
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        SignUpPageParent()));
+                                                        SignUpPageParent(
+                                                          userRepository: widget
+                                                              .userResponsitory,
+                                                        )));
                                           },
                                           child: Text('Đăng Kí',
                                               style: TextStyle(

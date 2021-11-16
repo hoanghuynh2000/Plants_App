@@ -10,11 +10,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is LoginButtonOnPressEvent) {
+      yield LoginLoadingState();
       try {
-        yield LoginLoadingState();
         var user =
             await userResponsitory!.SignInUser(event.email!, event.password!);
-        yield LoginSucessfulState(user: user!);
+        yield LoginSucessfulState(user!);
       } catch (e) {
         yield LoginFailureState(massage: e.toString());
       }

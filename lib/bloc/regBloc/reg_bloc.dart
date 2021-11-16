@@ -17,6 +17,8 @@ class UserRegBloc extends Bloc<UserRegEvent, UserRegState> {
             await userResponsitory!.CreateUser(event.email, event.password);
         var userStore =
             await userResponsitory!.userSetup(event.name, event.phoneNumber);
+        var userLogin =
+            await userResponsitory!.SignInUser(event.email, event.password);
         yield UserRegSuccessful(user: user!);
       } catch (e) {
         yield UserRegFailure(massage: e.toString());
