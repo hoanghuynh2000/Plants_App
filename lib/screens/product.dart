@@ -1,17 +1,13 @@
 import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:plants_app/fake/productfake.dart';
-import 'package:plants_app/handle/favoritelistproduct.dart';
+import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
-import 'package:plants_app/model/mdfavorites.dart';
-import 'package:plants_app/screens/detailproduct/itemproduct.dart';
-import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/itemgridviewproduct.dart';
-import 'package:plants_app/sqlite/favorites.dart';
 
 class Product extends StatefulWidget {
   Product({Key? key}) : super(key: key);
@@ -38,31 +34,35 @@ class _ProductState extends State<Product> {
 
   late Color colorCate = Colors.teal.shade700;
   List<Category> listCate = [
-    Category(
-        id: '1', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '2', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '3', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '4', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '5', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png')
+    
   ];
-  List<DetailProduct> _list = FakeProduct.toList();
-
+  
+ List<DetailProduct> _list =[];
+   
+   FetchData()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result= await DataProduct().getAllProductList();
+    dynamic category= await DataProduct().getAllCategory();
+    if(result==null){
+      print('unable');
+    }else{
+      setState(() {
+        _list=result;
+        listCate=category;
+      });
+    }
+   }
   List<DetailProduct> _foundProduct = [];
   @override
   void initState() {
-    // TODO: implement initState
-    _foundProduct = _list;
-
     super.initState();
+    FetchData();
   }
 
-  void _FilterPro(String id) {
+  void _FilterPro(String nameCate) {
     setState(() {
-      _foundProduct = _list.where((e) => e.id == id).toList();
+      _foundProduct = _list.where((e) => e.idCate == nameCate).toList();
     });
   }
 
@@ -106,7 +106,7 @@ class _ProductState extends State<Product> {
                       itemBuilder: (context, index) {
                         return InkWell(
                             onTap: () {
-                              _FilterPro(_list[index].idCate.toString());
+                              _FilterPro(listCate[index].nameCate.toString());
                             },
                             child: Container(
                               margin: EdgeInsets.only(top: 10, left: 10),
@@ -117,7 +117,7 @@ class _ProductState extends State<Product> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15))),
                               child: Text(
-                                '${listCate[1].nameCate}',
+                                '${listCate[index].nameCate}',
                                 style: TextStyle(fontSize: 15),
                               ),
                             ));
