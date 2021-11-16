@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:plants_app/firebase/promotion.dart';
 import 'package:plants_app/model/mdpromotion.dart';
 import 'package:plants_app/screens/promotionscreen/detail_promotion.dart';
+import 'package:sqflite/sqflite.dart';
 
 class Promotion extends StatefulWidget {
   Promotion({Key? key}) : super(key: key);
@@ -10,42 +14,68 @@ class Promotion extends StatefulWidget {
 }
 
 class _PromotionState extends State<Promotion> {
-  List<MDPromotion> lsPromo = [
-    MDPromotion(
-        id: '1',
-        namePromo: 'Khuyến Mãi mùa hè  ',
-        discount: '10',
-        discountMax: '100.000',
-        dateStart: '10/10/2021',
-        dateEnd: '20/10/2021'),
-    MDPromotion(
-        id: '1',
-        namePromo: 'Khuyến Mãi',
-        discount: '10',
-        discountMax: '100.000',
-        dateStart: '10/10/2021',
-        dateEnd: '20/10/2021'),
-    MDPromotion(
-        id: '1',
-        namePromo: 'HKhuyến Mãi',
-        discount: '10',
-        discountMax: '100.000',
-        dateStart: '10/10/2021',
-        dateEnd: '20/10/2021')
-  ];
+  List<MDPromotion> lsPromo = [];
+  @override
+  void initState(){
+    super.initState();
+    FetchData();
+
+  }
+   
+  FetchData()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result= await DataPromotion().getPromotionList();
+    if(result==null){
+      print('unable');
+    }else{
+      setState(() {
+        lsPromo=result;
+      });
+        
+    
+    }
+  }
+  
+
+  // [
+  //   MDPromotion(
+  //       id: '1',
+  //       namePromo: 'Khuyến Mãi mùa hè  ',
+  //       discount: '10',
+  //       discountMax: '100.000',
+  //       dateStart: '10/10/2021',
+  //       dateEnd: '20/10/2021'),
+  //   MDPromotion(
+  //       id: '1',
+  //       namePromo: 'Khuyến Mãi',
+  //       discount: '10',
+  //       discountMax: '100.000',
+  //       dateStart: '10/10/2021',
+  //       dateEnd: '20/10/2021'),
+  //   MDPromotion(
+  //       id: '1',
+  //       namePromo: 'HKhuyến Mãi',
+  //       discount: '10',
+  //       discountMax: '100.000',
+  //       dateStart: '10/10/2021',
+  //       dateEnd: '20/10/2021')
+  // ];
   @override
   Widget build(BuildContext context) {
-    return Container(
+    
+    return SafeArea(child:Scaffold(body: Container(
       color: Colors.grey.shade200,
       child: ListView.builder(
           itemCount: lsPromo.length,
           itemBuilder: (context, index) {
             return _itemPromo(index);
           }),
-    );
+    )));
   }
 
   Widget _itemPromo(int index) {
+    
     return InkWell(
         onTap: () {
           Navigator.push(
@@ -60,55 +90,20 @@ class _PromotionState extends State<Promotion> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(20))),
-            // child: Column(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-
-            //     Text(
-            //       '${lsPromo[index].namePromo} | Giảm ${lsPromo[index].discount}% tối đa ${lsPromo[index].discountMax} VND ',
-            //       maxLines: 1,
-            //       overflow: TextOverflow.ellipsis,
-            //       style: TextStyle(
-            //         fontWeight: FontWeight.bold,
-            //         fontSize: 16,
-            //       ),
-            //     ),
-            //     SizedBox(
-            //       height: 3,
-            //     ),
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.end,
-            //       children: [
-            //         Text(
-            //           '${lsPromo[index].dateStart} - ',
-            //           maxLines: 1,
-            //           overflow: TextOverflow.ellipsis,
-            //           style: TextStyle(color: Colors.grey.shade600),
-            //         ),
-            //         Text(
-            //           '${lsPromo[index].dateEnd}',
-            //           maxLines: 1,
-            //           overflow: TextOverflow.ellipsis,
-            //           style: TextStyle(color: Colors.grey.shade600),
-            //         ),
-            //       ],
-            //     )
-            //   ],
-            // )
+          
             child: ListTile(
               minLeadingWidth: 5,
               subtitle: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    '${lsPromo[index].dateStart} - ',
+                    '${DateFormat('dd/MM/yyyy').format(lsPromo[index].dateStart!.toDate())} - ',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                   Text(
-                    '${lsPromo[index].dateEnd}',
+                    '${DateFormat('dd/MM/yyyy').format( lsPromo[index].dateEnd!.toDate())}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.grey.shade600),
@@ -118,7 +113,7 @@ class _PromotionState extends State<Promotion> {
               leading: Icon(Icons.card_giftcard_outlined,
                   color: Colors.teal.shade800),
               title: Text(
-                '${lsPromo[index].namePromo} | Giảm ${lsPromo[index].discount}% tối đa ${lsPromo[index].discountMax} VND ',
+                '${lsPromo[index].namePromo} | Giảm ${lsPromo[index].discount}% tối đa ${NumberFormat('###,###').format(int.parse(lsPromo[index].discountMax as String))} VND ',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -126,6 +121,6 @@ class _PromotionState extends State<Promotion> {
                   fontSize: 16,
                 ),
               ),
-            )));
-  }
+            ))
+  );  }
 }

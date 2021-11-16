@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:plants_app/fake/productfake.dart';
@@ -7,6 +8,8 @@ import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/screens/itemgridviewproduct.dart';
+
+import 'firebase/product.dart';
 
 class ListProduct extends StatefulWidget {
   Category category;
@@ -17,11 +20,30 @@ class ListProduct extends StatefulWidget {
 }
 
 class _ListProductState extends State<ListProduct> {
-  List<DetailProduct> _list = FakeProduct.toList();
+   List<DetailProduct> _list =[];
+   
+   FetchData()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result= await DataProduct().getAllProductList();
+    if(result==null){
+      print('unable');
+    }else{
+      setState(() {
+        _list=result;
+      });
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchData();
+  }
   @override
   Widget build(BuildContext context) {
     _list =
-        _list.where((element) => element.idCate == widget.category.id).toList();
+        _list.where((element) => element.idCate == widget.category.nameCate).toList();
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 50,

@@ -24,25 +24,25 @@ class _ShoppingCartState extends State<ShoppingCart> {
         id: '123',
         namePro: 'Cây Xương Rồng',
         idCate: 'xương rồng',
-        pricePro: 120000,
+        pricePro: '120000',
         imgProduct: "assets/images/cay1.png",
-        quantity: 2,
+        quantity: '2',
         descrip: '0......'),
     DetailProduct(
         id: '123',
         namePro: 'Cây Hoa Sen Nước',
         idCate: 'xương rồng',
-        pricePro: 120000,
+        pricePro: '120000',
         imgProduct: "assets/images/cay1.png",
-        quantity: 2,
+        quantity: '2',
         descrip: '0......'),
     DetailProduct(
         id: '123',
         namePro: 'Cây Bông Bụp',
         idCate: 'xương rồng',
-        pricePro: 120000,
+        pricePro: '120000',
         imgProduct: "assets/images/cay1.png",
-        quantity: 2,
+        quantity: '2',
         descrip: '0......')
   ];
   @override
@@ -113,7 +113,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                           color: Colors.teal.shade500),
                                     ),
                                     Text(
-                                        '  ${NumberFormat('###,###').format(listPro[index].pricePro)}',
+                                        '  ${NumberFormat('###,###').format(int.parse(listPro[index].pricePro.toString()))}',
                                         style: TextStyle(
                                             color: Colors.red, fontSize: 17))
                                   ],

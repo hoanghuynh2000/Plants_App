@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/handle/favorite.dart';
 import 'package:plants_app/handle/favoritelistproduct.dart';
+import 'package:plants_app/model/mdcategory.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/screens/detailsproduct.dart';
@@ -16,6 +20,25 @@ class ItemProduct extends StatefulWidget {
 class _ItemProductState extends State<ItemProduct> {
   AnimationController? iconHeart;
  
+//  List<Category> listCategory = [];
+//    FetchCate()async{
+//     WidgetsFlutterBinding.ensureInitialized();
+//     await Firebase.initializeApp();
+//     dynamic result= await DataProduct().showCategory(widget.detailProduct.idCate);
+//     if(result==null){
+//       print('unable');
+//     }else{
+//       setState(() {
+//         listCategory=result;
+//       });
+//     }
+//   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //FetchCate();
+  }
   @override
   Widget build(BuildContext context) {
     int isimportant=0;
@@ -64,8 +87,8 @@ class _ItemProductState extends State<ItemProduct> {
                       child: Center(
                           heightFactor: 0.7,
                           child: FadeInImage(
-                            placeholder: AssetImage('./assets/images/load.gif'),
-                            image: AssetImage(
+                            placeholder: NetworkImage('${widget.detailProduct.imgProduct}'),
+                            image: NetworkImage(
                                 '${widget.detailProduct.imgProduct}'),
                             fit: BoxFit.fitHeight,
                           ))),
@@ -90,7 +113,7 @@ class _ItemProductState extends State<ItemProduct> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.detailProduct.pricePro}',
+                      '${NumberFormat('###,###').format(int.parse(widget.detailProduct.pricePro.toString()))}',
                       style: TextStyle(
                           fontSize: 14,
                           color: Colors.red.shade800,

@@ -51,7 +51,7 @@ class _OrderState extends State<Order> {
         idCate: 'xương rồng',
         pricePro: 120000,
         imgProduct: "assets/images/caydemo.png",
-        quantity: 2,
+        quantity: '2',
         descrip: '0......'),
   ];
 
@@ -152,7 +152,7 @@ class _OrderState extends State<Order> {
                                 style: TextStyle(color: Colors.teal.shade500),
                               ),
                               Text(
-                                  '  ${NumberFormat('###,###').format(listPro[index].pricePro)}',
+                                  '  ${NumberFormat('###,###').format(int.parse(listPro[index].pricePro.toString()))}',
                                   style: TextStyle(
                                       color: Colors.red, fontSize: 16))
                             ],

@@ -24,7 +24,7 @@ class _FavoritesState extends State<FavoritesScreen> {
   String idProduct = "";
   String productName = "";
   String categoryName = "";
-  int price = 1;
+  String price = '';
   String images = "";
   late Favorites favorites;
   // ignore: deprecated_member_use
@@ -134,7 +134,7 @@ class _FavoritesState extends State<FavoritesScreen> {
                           height: 10,
                         ),
                         Text(
-                          '${NumberFormat('###,###').format(price)}',
+                          '${NumberFormat('###,###').format(int.parse(price))}',
                           style: TextStyle(
                               color: Colors.red,
                               fontSize: 20,

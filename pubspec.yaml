@@ -76,6 +76,7 @@ flutter:
     - assets/images/cut4.jpg
     - assets/images/cut5.jpg
     - assets/images/load.gif
+    - assets/images/caydemo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

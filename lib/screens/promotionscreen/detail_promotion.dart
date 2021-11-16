@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:plants_app/model/mdpromotion.dart';
 
 class ItemPromotion extends StatefulWidget {
@@ -56,7 +57,7 @@ class _ItemPromotionState extends State<ItemPromotion> {
                         children: [
                           Center(
                             child: Text(
-                              '${widget.promotion!.namePromo} | Giảm ${widget.promotion!.discount}% tối đa ${widget.promotion!.discountMax} VND ',
+                              '''${widget.promotion!.namePromo} | Giảm ${widget.promotion!.discount}% tối đa ${NumberFormat('###,###').format(int.parse(widget.promotion!.discountMax.toString()))} VND ''',
                               maxLines: 3,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
@@ -66,7 +67,7 @@ class _ItemPromotionState extends State<ItemPromotion> {
                             height: 10,
                           ),
                           Text(
-                            'Hạn sử dụng: ${widget.promotion!.dateEnd}',
+                            'Hạn sử dụng: ${DateFormat('dd/MM/yyyy').format(widget.promotion!.dateEnd!.toDate())}',
                             maxLines: 1,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -79,31 +80,31 @@ class _ItemPromotionState extends State<ItemPromotion> {
                     height: 5,
                   ),
                   Container(
+                    padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(15))),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 30,
                         ),
                         Container(
-                            height: 30,
-                            width: 130,
+                          padding: EdgeInsets.only(left:20),
+                            height: 40,
+                            width: 170,
                             decoration: BoxDecoration(
                                 border: Border.all(),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
-                            child: Center(
-                              child: Text('${widget.promotion!.id}'),
-                            )),
-                        MaterialButton(
-                          height: 30,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [Text('${widget.promotion!.id}'),
+                              IconButton(
+                          icon: Icon(Icons.copy_sharp),
+                          iconSize: 20,
                           onPressed: () {
                             Clipboard.setData(
                                 ClipboardData(text: '${widget.promotion!.id}'));
@@ -111,12 +112,12 @@ class _ItemPromotionState extends State<ItemPromotion> {
                               content: const Text('Sao chép thành công !'),
                             ));
                           },
-                          color: Colors.teal.shade800,
-                          child: Text(
-                            'Sao Chép',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                          color: Colors.teal.shade900,
+                          
+                        ), ],
+                            )),
+                        
+                        
                         SizedBox(
                           width: 30,
                         ),
@@ -164,7 +165,7 @@ class _ItemPromotionState extends State<ItemPromotion> {
                                       color: Colors.teal.shade800,
                                     ),
                                     title: Text(
-                                        'Voucher áp dụng giảm giá ${widget.promotion!.discount}% trên tổng hóa đơn tối đa ${widget.promotion!.discountMax}VND.')),
+                                        'Voucher áp dụng giảm giá ${widget.promotion!.discount}% trên tổng hóa đơn tối đa ${NumberFormat('###,###').format(int.parse(widget.promotion!.discountMax.toString()))}VND.')),
                                 ListTile(
                                     minLeadingWidth: 5,
                                     leading: Icon(
@@ -182,7 +183,7 @@ class _ItemPromotionState extends State<ItemPromotion> {
                                       color: Colors.teal.shade800,
                                     ),
                                     title: Text(
-                                        'Thời gian áp dụng voucher từ ngày ${widget.promotion!.dateStart} đến ngày ${widget.promotion!.dateEnd}. Voucher có thể kế thúc sớm tùy vào chính sách của cửa hàng.')),
+                                        'Thời gian áp dụng voucher từ ngày ${DateFormat('dd/MM/yyyy').format(widget.promotion!.dateStart!.toDate())} đến ngày ${DateFormat('dd/MM/yyyy').format(widget.promotion!.dateEnd!.toDate())}. Voucher có thể kế thúc sớm tùy vào chính sách của cửa hàng.')),
                                 ListTile(
                                     minLeadingWidth: 5,
                                     leading: Icon(

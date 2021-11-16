@@ -1,8 +1,10 @@
 import 'package:animator/animator.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kf_drawer/kf_drawer.dart';
+import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/listproduct.dart';
 import 'package:plants_app/model/mdcategory.dart';
 
@@ -61,56 +63,29 @@ class _HomeState extends State<Home> {
             'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
   ];
   List<Category> listCate = [
-    Category(
-        id: '1', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '12', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '123',
-        nameCate: 'Cây Cảnh Mini',
-        imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '123',
-        nameCate: 'Cây Cảnh Mini',
-        imgCate: 'assets/images/logo.png'),
-    Category(
-        id: '123', nameCate: 'Cây Cảnh Mini', imgCate: 'assets/images/logo.png')
+   
   ];
-  List<DetailProduct> listPro = [
-    DetailProduct(
-        id: '123',
-        namePro: 'Cây Xương Rồng',
-        pricePro: 120000,
-        descrip: 'Hihi',
-        quantity: 20,
-        imgProduct: 'assets/images/logo.png',
-        idCate: '1'),
-    DetailProduct(
-        id: '123',
-        namePro: 'Cây Xương Rồng qqqqqqqqqqqqqqqqqqqqq',
-        pricePro: 120000,
-        descrip: 'Hihi',
-        quantity: 20,
-        imgProduct: 'assets/images/logo.png',
-        idCate: '1'),
-    DetailProduct(
-        id: '123',
-        namePro: 'Cây Xương Rồngqqqqqqqqqqqqqqqqqqqqqqqqqqqq',
-        pricePro: 120000,
-        descrip: 'Hihi',
-        quantity: 20,
-        imgProduct: 'assets/images/logo.png',
-        idCate: '3'),
-    DetailProduct(
-        id: '123',
-        namePro: 'Cây Xương Rồng',
-        pricePro: 120000,
-        descrip: 'Hihi',
-        quantity: 20,
-        imgProduct: 'assets/images/logo.png',
-        idCate: '2')
-  ];
-
+  List<DetailProduct> listPro = [];
+   FetchData()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result= await DataProduct().getAllProductList();
+    dynamic category=await DataProduct().getAllCategory();
+    if(result==null){
+      print('unable');
+    }else{
+      setState(() {
+        listPro=result;
+        listCate=category;
+      });
+    }
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchData();
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -250,9 +225,9 @@ class _HomeState extends State<Home> {
                                 heightFactor: 0.7,
                                 child: FadeInImage(
                                   placeholder:
-                                      AssetImage('./assets/images/load.gif'),
+                                      NetworkImage('${listCate[index].imgCate}'),
                                   image:
-                                      AssetImage('${listCate[index].imgCate}'),
+                                      NetworkImage('${listCate[index].imgCate}'),
                                   fit: BoxFit.fitHeight,
                                 ))),
                         decoration: ShapeDecoration(
@@ -266,7 +241,7 @@ class _HomeState extends State<Home> {
                         height: 10,
                       ),
                       Text(
-                        '${listCate[0].nameCate}',
+                        '${listCate[index].nameCate}',
                         maxLines: 1,
                         style: TextStyle(fontSize: 14),
                       )

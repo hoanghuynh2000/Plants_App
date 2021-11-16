@@ -59,8 +59,8 @@ class _ItemGridViewProductState extends State<ItemGridViewProduct> {
                       child: Center(
                           heightFactor: 0.7,
                           child: FadeInImage(
-                            placeholder: AssetImage('./assets/images/load.gif'),
-                            image: AssetImage(
+                            placeholder: NetworkImage('${widget.detailProduct.imgProduct}'),
+                            image: NetworkImage(
                                 '${widget.detailProduct.imgProduct}'),
                             fit: BoxFit.fitHeight,
                           ))),

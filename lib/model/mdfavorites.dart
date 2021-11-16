@@ -4,9 +4,9 @@ class Favorites {
   final int? isImportant;
   final String? idProduct;
   final String? productName;
-  final String? categoryName;
-  final int? price;
-  final String? images;
+  dynamic categoryName;
+  dynamic price;
+  dynamic images;
 
 Favorites 
 ({
