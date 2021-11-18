@@ -47,7 +47,7 @@ class _FavIconState extends State<FavIcon> {
     FutureBuilder(
         
         builder: (context, snapshot) {
-             
+             //Xử lí yêu thích sản phẩm
               return LikeButton(
                 onTap: isFav,
           size: 40,
