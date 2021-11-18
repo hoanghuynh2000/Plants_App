@@ -175,17 +175,6 @@ class _MainWidgetState extends State<MainWidget> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  FavoritesScreen()));
-                                    },
-                                    child: MenuItem(
-                                        'Yêu Thích', Icons.favorite_rounded),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
                                                   ListOrder()));
                                     },
                                     child: MenuItem('Lịch Sử Hóa Đơn',
@@ -208,6 +197,17 @@ class _MainWidgetState extends State<MainWidget> {
                                     ),
                                   )
                                 ],
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                FavoritesScreen()));
+                                  },
+                                  child: MenuItem(
+                                      'Yêu Thích', Icons.favorite_rounded),
+                                ),
                                 InkWell(
                                   onTap: () {
                                     Navigator.push(
