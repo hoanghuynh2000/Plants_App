@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:kf_drawer/kf_drawer.dart';
+
 import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/listproduct.dart';
 import 'package:plants_app/model/mdcategory.dart';
@@ -62,30 +62,30 @@ class _HomeState extends State<Home> {
         detailNews:
             'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
   ];
-  List<Category> listCate = [
-   
-  ];
+  List<Category> listCate = [];
   List<DetailProduct> listPro = [];
-   FetchData()async{
+  FetchData() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    dynamic result= await DataProduct().getAllProductList();
-    dynamic category=await DataProduct().getAllCategory();
-    if(result==null){
+    dynamic result = await DataProduct().getAllProductList();
+    dynamic category = await DataProduct().getAllCategory();
+    if (result == null) {
       print('unable');
-    }else{
+    } else {
       setState(() {
-        listPro=result;
-        listCate=category;
+        listPro = result;
+        listCate = category;
       });
     }
   }
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FetchData();
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -182,6 +182,16 @@ class _HomeState extends State<Home> {
             )));
   }
 
+  String _setImage(int index) {
+    String _mTitle = "${listCate[index].imgCate}";
+    String a = "";
+    if (_mTitle == a) {
+      return "https://firebasestorage.googleapis.com/v0/b/appplants-fbbf8.appspot.com/o/images%2Fload.gif?alt=media&token=b9762554-540b-4122-9465-9df0fcc8ef40";
+    } else {
+      return "${listCate[index].imgCate}";
+    }
+  }
+
 //CATEGORY
   Widget _buildCategory() {
     //print(listCate[0].imgCate);
@@ -225,9 +235,8 @@ class _HomeState extends State<Home> {
                                 heightFactor: 0.7,
                                 child: FadeInImage(
                                   placeholder:
-                                      NetworkImage('${listCate[index].imgCate}'),
-                                  image:
-                                      NetworkImage('${listCate[index].imgCate}'),
+                                      AssetImage('./assets/images/load.gif'),
+                                  image: NetworkImage(_setImage(index)),
                                   fit: BoxFit.fitHeight,
                                 ))),
                         decoration: ShapeDecoration(

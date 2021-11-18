@@ -14,6 +14,7 @@ import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/model/mdfeedback.dart';
 import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/feedback.dart';
+import 'package:plants_app/screens/shoppingcart.dart';
 
 class DetailsProduct extends StatefulWidget {
   DetailProduct detailProduct;
@@ -26,28 +27,30 @@ class _DetailsProductState extends State<DetailsProduct> {
   @override
   Widget build(BuildContext context) {
     String? id = widget.detailProduct.id;
-     FirebaseServices _firebaseServices = FirebaseServices();
-  String _selectedQuantity = "0";
+    FirebaseServices _firebaseServices = FirebaseServices();
+    String _selectedQuantity = "0";
 
-      void AddToShoppingCart(){
-        final getUser= _firebaseServices.usersRef.doc(_firebaseServices.getUserId());
-        // ignore: unnecessary_null_comparison
-        if(getUser !=null)
-        {
-          _firebaseServices.usersRef
-        .doc(_firebaseServices.getUserId())
-        .collection("Cart")
-        .doc(id)
-        .set({"size": _selectedQuantity});
-        }else{
-           // ignore: deprecated_member_use
-           Scaffold.of(context).showSnackBar(SnackBar(content: Text("Vui lòng đăng nhập"),));
-        }
-
-        
-          
+    void AddToShoppingCart() {
+      final getUser =
+          _firebaseServices.usersRef.doc(_firebaseServices.getUserId());
+      // ignore: unnecessary_null_comparison
+      if (getUser != null) {
+        _firebaseServices.usersRef
+            .doc(_firebaseServices.getUserId())
+            .collection("Cart")
+            .doc(id)
+            .set({"size": _selectedQuantity});
+      } else {
+        // ignore: deprecated_member_use
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Vui lòng đăng nhập"),
+        ));
       }
- final SnackBar _snackBar = SnackBar(content: Text("Thêm vào giỏ hàng thành công"),);
+    }
+
+    final SnackBar _snackBar = SnackBar(
+      content: Text("Thêm vào giỏ hàng thành công"),
+    );
     int isImportant = 0;
     String? idProduct = widget.detailProduct.id;
     String? productName = widget.detailProduct.namePro;
@@ -90,9 +93,9 @@ class _DetailsProductState extends State<DetailsProduct> {
                   ),
                   MaterialButton(
                     onPressed: () {
-                      AddToShoppingCart();
-                                // ignore: deprecated_member_use
-                                Scaffold.of(context).showSnackBar(_snackBar);
+                      // AddToShoppingCart();
+                      //           // ignore: deprecated_member_use
+                      //           Scaffold.of(context).showSnackBar(_snackBar);
                     },
                     child: Text('Thêm Vào Giỏ Hàng',
                         style: TextStyle(
@@ -235,7 +238,7 @@ class _DetailsProductState extends State<DetailsProduct> {
   //AppBar chi tiết sản phẩm
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.teal.shade400,
+      backgroundColor: Colors.teal.shade300,
       elevation: 0,
       actions: <Widget>[
         IconButton(
@@ -244,14 +247,15 @@ class _DetailsProductState extends State<DetailsProduct> {
           icon: Icon(
             Icons.shopping_basket,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => ShoppingCart()));
+          },
         ),
       ],
     );
   }
-  
 }
-
 
 class Feedback extends StatelessWidget {
   List<MDFeedback> mdFeedback =
@@ -369,14 +373,14 @@ class ItemFeedback extends StatelessWidget {
 
 class CartCounter extends StatefulWidget {
   String? quantity;
-  CartCounter( this.quantity);
+  CartCounter(this.quantity);
   @override
   _CartCounterState createState() => _CartCounterState();
 }
 
 class _CartCounterState extends State<CartCounter> {
   int numOfItems = 1;
-  
+
   @override
   Widget build(BuildContext context) {
     if (widget.quantity == null) {
@@ -387,7 +391,7 @@ class _CartCounterState extends State<CartCounter> {
         create: (context) => CouterBloc(),
         child: BlocBuilder<CouterBloc, int>(
           builder: (context, couter) {
-            widget.quantity=couter.toString();
+            widget.quantity = couter.toString();
             final CouterBloc couterBloc = context.read<CouterBloc>();
             return Container(
                 child: Row(
@@ -399,9 +403,7 @@ class _CartCounterState extends State<CartCounter> {
                   child: IconButton(
                       onPressed: () {
                         couterBloc.add(CouterEvent.decre);
-                        setState(() {
-                          
-                        });
+                        setState(() {});
                       },
                       icon: Icon(Icons.remove)),
                 ),

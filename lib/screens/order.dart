@@ -86,23 +86,17 @@ class _OrderState extends State<Order> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 250,
-                        child: Text(nameCus,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Lemonada')),
-                      ),
-                      Text(
-                        phoneCus,
+                  Container(
+                    width: 250,
+                    child: Text(nameCus,
                         style: TextStyle(
-                            color: Colors.grey.shade700, fontSize: 15),
-                      )
-                    ],
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Lemonada')),
+                  ),
+                  Text(
+                    phoneCus,
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
                   ),
                   SizedBox(
                     height: 10,

@@ -19,7 +19,7 @@ class ItemProduct extends StatefulWidget {
 
 class _ItemProductState extends State<ItemProduct> {
   AnimationController? iconHeart;
- 
+
 //  List<Category> listCategory = [];
 //    FetchCate()async{
 //     WidgetsFlutterBinding.ensureInitialized();
@@ -39,12 +39,13 @@ class _ItemProductState extends State<ItemProduct> {
     super.initState();
     //FetchCate();
   }
+
   @override
   Widget build(BuildContext context) {
-    int isimportant=0;
-     Favorites favorites = new Favorites(
+    int isimportant = 0;
+    Favorites favorites = new Favorites(
         id: widget.detailProduct.id,
-        isImportant:0 ,
+        isImportant: 0,
         idProduct: widget.detailProduct.id,
         productName: widget.detailProduct.namePro,
         categoryName: widget.detailProduct.idCate,
@@ -87,7 +88,7 @@ class _ItemProductState extends State<ItemProduct> {
                       child: Center(
                           heightFactor: 0.7,
                           child: FadeInImage(
-                            placeholder: NetworkImage('${widget.detailProduct.imgProduct}'),
+                            placeholder: AssetImage('./assets/images/load.gif'),
                             image: NetworkImage(
                                 '${widget.detailProduct.imgProduct}'),
                             fit: BoxFit.fitHeight,
@@ -110,7 +111,7 @@ class _ItemProductState extends State<ItemProduct> {
                         TextStyle(fontSize: 13, color: Colors.grey.shade600)),
                 Expanded(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '${NumberFormat('###,###').format(int.parse(widget.detailProduct.pricePro.toString()))}',

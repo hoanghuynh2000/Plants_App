@@ -8,16 +8,13 @@ import 'package:plants_app/bloc/authBloc/auth_state.dart';
 import 'package:plants_app/layoutdrawer.dart';
 import 'package:plants_app/respository/user_respon.dart';
 import 'package:plants_app/screens/contact.dart';
-
 import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/listorder.dart';
 import 'package:plants_app/screens/login.dart';
-import 'package:plants_app/screens/promotionscreen/promotion.dart';
-
+import 'package:plants_app/screens/register.dart';
 
 import 'package:plants_app/screens/splash.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +22,6 @@ void main() async {
   UserResponsitory userRepository = UserResponsitory();
 
   runApp(MaterialApp(
-    
       localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       supportedLocales: [const Locale('en'), const Locale('vi')],
       home: BlocProvider(
@@ -49,11 +45,11 @@ class App extends StatelessWidget {
       } else if (state is AuthenticatedState) {
         return LayoutDrawer(user: state.user, userResponsitory: userRepository);
       } else if (state is UnAuthenticatedState) {
-        return LoginPageParent(
-          userRepository: userRepository,
+        return LayoutDrawer(
+          userResponsitory: userRepository,
         );
       }
-      return Dashboard();
+      return LayoutDrawer(userResponsitory: userRepository);
     });
   }
 }

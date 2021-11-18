@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/handle/cartcounter.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
+import 'package:plants_app/screens/order.dart';
 import 'package:plants_app/screens/product.dart';
 
 class ShoppingCart extends StatefulWidget {
@@ -79,14 +80,14 @@ class _ShoppingCartState extends State<ShoppingCart> {
                           return Container(
                             margin:
                                 EdgeInsets.only(top: 10, left: 10, right: 10),
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
                               color: Colors.white,
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   height: 60,
@@ -121,7 +122,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                 SizedBox(
                                   width: 25,
                                 ),
-                                Expanded(child: CartCounter())
+                                Container(
+                                    alignment: Alignment.centerRight,
+                                    child: CartCounter())
                               ],
                             ),
                           );
@@ -161,7 +164,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Order()));
+                              },
                               child: Text(
                                 'Thanh Toán',
                                 style: TextStyle(fontSize: 17),

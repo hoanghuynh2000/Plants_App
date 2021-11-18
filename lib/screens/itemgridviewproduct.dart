@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:plants_app/handle/favoritelistproduct.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdfavorites.dart';
@@ -59,7 +60,8 @@ class _ItemGridViewProductState extends State<ItemGridViewProduct> {
                       child: Center(
                           heightFactor: 0.7,
                           child: FadeInImage(
-                            placeholder: NetworkImage('${widget.detailProduct.imgProduct}'),
+                            placeholder: NetworkImage(
+                                '${widget.detailProduct.imgProduct}'),
                             image: NetworkImage(
                                 '${widget.detailProduct.imgProduct}'),
                             fit: BoxFit.fitHeight,
@@ -88,7 +90,7 @@ class _ItemGridViewProductState extends State<ItemGridViewProduct> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '${widget.detailProduct.pricePro}',
+                            '${NumberFormat('###,###').format(int.parse(widget.detailProduct.pricePro.toString()))}',
                             style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.red.shade800,

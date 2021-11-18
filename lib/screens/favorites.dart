@@ -24,7 +24,7 @@ class _FavoritesState extends State<FavoritesScreen> {
   String idProduct = "";
   String productName = "";
   String categoryName = "";
-  String price = '';
+  dynamic price = '';
   String images = "";
   late Favorites favorites;
   // ignore: deprecated_member_use
@@ -101,19 +101,19 @@ class _FavoritesState extends State<FavoritesScreen> {
                     color: Colors.grey.shade300,
                     borderRadius: BorderRadius.all(Radius.circular(20))),
                 padding: EdgeInsets.all(
-                  20,
+                  10,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      height: 50,
-                      width: 50,
+                      height: 80,
+                      width: 80,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           image: DecorationImage(
-                              image: AssetImage('${images}'),
+                              image: NetworkImage('${images}'),
                               fit: BoxFit.cover)),
                     ),
                     SizedBox(
@@ -134,7 +134,7 @@ class _FavoritesState extends State<FavoritesScreen> {
                           height: 10,
                         ),
                         Text(
-                          '${NumberFormat('###,###').format(int.parse(price))}',
+                          '${NumberFormat('###,###').format(int.parse(price.toString()))}',
                           style: TextStyle(
                               color: Colors.red,
                               fontSize: 20,

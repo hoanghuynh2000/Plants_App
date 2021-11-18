@@ -20,6 +20,8 @@ class _ProductState extends State<Product> {
   final keyRefresh = GlobalKey<RefreshIndicatorState>();
   final GlobalKey<RefreshIndicatorState> key =
       new GlobalKey<RefreshIndicatorState>();
+  bool _isSeclected = true;
+  int _selectedIndex = -1;
   List<int> dataload = [];
   Future loadList() async {
     keyRefresh.currentState?.show();
@@ -32,30 +34,35 @@ class _ProductState extends State<Product> {
     }
   }
 
+  _onSelected(int index) {
+    setState(() => _selectedIndex = index);
+  }
+
   late Color colorCate = Colors.teal.shade700;
-  List<Category> listCate = [
-    
-  ];
-  
- List<DetailProduct> _list =[];
-   
-   FetchData()async{
+  List<Category> listCate = [];
+
+  List<DetailProduct> _list = [];
+
+  FetchData() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    dynamic result= await DataProduct().getAllProductList();
-    dynamic category= await DataProduct().getAllCategory();
-    if(result==null){
+    dynamic result = await DataProduct().getAllProductList();
+    dynamic category = await DataProduct().getAllCategory();
+    if (result == null) {
       print('unable');
-    }else{
+    } else {
       setState(() {
-        _list=result;
-        listCate=category;
+        _list = result;
+        _foundProduct = result;
+        listCate = category;
       });
     }
-   }
+  }
+
   List<DetailProduct> _foundProduct = [];
   @override
   void initState() {
+    _foundProduct = _list;
     super.initState();
     FetchData();
   }
@@ -81,6 +88,8 @@ class _ProductState extends State<Product> {
                       onTap: () {
                         setState(() {
                           _foundProduct = _list;
+                          _onSelected(-1);
+                          _isSeclected = true;
                         });
                       },
                       child: Container(
@@ -88,14 +97,18 @@ class _ProductState extends State<Product> {
                         padding: EdgeInsets.all(10),
                         height: 40,
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: _isSeclected
+                                ? Colors.teal.shade700
+                                : Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           'Tất cả',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              color: _isSeclected ? Colors.white : Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
                         ),
                       )),
                 ),
@@ -106,6 +119,8 @@ class _ProductState extends State<Product> {
                       itemBuilder: (context, index) {
                         return InkWell(
                             onTap: () {
+                              _onSelected(index);
+                              _isSeclected = false;
                               _FilterPro(listCate[index].nameCate.toString());
                             },
                             child: Container(
@@ -113,12 +128,21 @@ class _ProductState extends State<Product> {
                               padding: EdgeInsets.all(10),
                               height: 30,
                               decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: _selectedIndex != null &&
+                                          _selectedIndex == index
+                                      ? Colors.teal.shade700
+                                      : Colors.white,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15))),
                               child: Text(
                                 '${listCate[index].nameCate}',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: _selectedIndex != null &&
+                                          _selectedIndex == index
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
                             ));
                       }),
