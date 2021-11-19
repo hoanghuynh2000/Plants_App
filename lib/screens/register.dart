@@ -63,39 +63,28 @@ class _RegisterState extends State<Register> {
               backgroundColor: Color(0xF0F8FF),
               elevation: 0,
             ),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.grey.shade500.withOpacity(0.3),
             body: SingleChildScrollView(
                 child: Center(
                     child: Container(
-                        // margin: EdgeInsets.only(top: 50),
-                        padding: EdgeInsets.all(20),
+                        // margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.only(left: 30, right: 30),
 
                         // width: width * 0.8,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              BlocListener<UserRegBloc, UserRegState>(
-                                listener: (context, state) {
-                                  if (state is UserRegSuccessful) {
-                                    navigateToLoginPage(context, state.user);
-                                  }
-                                },
-                                child: BlocBuilder<UserRegBloc, UserRegState>(
-                                  builder: (context, state) {
-                                    if (state is UserRegInitial) {
-                                      return buildInitialUi();
-                                    } else if (state is UserLoadingState) {
-                                      return buildLoadingUi();
-                                    } else if (state is UserRegFailure) {
-                                      return buildFailureUi(state.massage!);
-                                    } else if (state is UserRegSuccessful) {
-                                      // emailController.text = "";
-                                      // passwordController.text = "";
-                                      return Container();
-                                    }
-                                    return Container();
-                                  },
-                                ),
+                              Text(
+                                'Đăng Kí',
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.teal.shade800,
+                                    fontFamily: 'Comfortaa',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 30,
                               ),
                               TextField(
                                 controller: nameController,
@@ -113,7 +102,7 @@ class _RegisterState extends State<Register> {
                                     filled: true,
                                     hintText: 'Họ và tên',
                                     hintStyle: TextStyle(
-                                        color: Colors.lightGreen.shade900,
+                                        color: Colors.teal.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius:
@@ -148,7 +137,7 @@ class _RegisterState extends State<Register> {
                                     filled: true,
                                     hintText: 'Số điện thoại',
                                     hintStyle: TextStyle(
-                                        color: Colors.lightGreen.shade900,
+                                        color: Colors.teal.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius:
@@ -183,7 +172,7 @@ class _RegisterState extends State<Register> {
                                     filled: true,
                                     hintText: 'Email',
                                     hintStyle: TextStyle(
-                                        color: Colors.lightGreen.shade900,
+                                        color: Colors.teal.shade900,
                                         fontSize: 16),
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius:
@@ -249,6 +238,32 @@ class _RegisterState extends State<Register> {
                               SizedBox(
                                 height: 20,
                               ),
+                              BlocListener<UserRegBloc, UserRegState>(
+                                listener: (context, state) {
+                                  if (state is UserRegSuccessful) {
+                                    navigateToLoginPage(context, state.user);
+                                  }
+                                },
+                                child: BlocBuilder<UserRegBloc, UserRegState>(
+                                  builder: (context, state) {
+                                    if (state is UserRegInitial) {
+                                      return buildInitialUi();
+                                    } else if (state is UserLoadingState) {
+                                      return buildLoadingUi();
+                                    } else if (state is UserRegFailure) {
+                                      return buildFailureUi(state.massage!);
+                                    } else if (state is UserRegSuccessful) {
+                                      // emailController.text = "";
+                                      // passwordController.text = "";
+                                      return Container();
+                                    }
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               MaterialButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius:
@@ -272,13 +287,32 @@ class _RegisterState extends State<Register> {
                                 ),
                               ),
                               SizedBox(
-                                height: 40,
+                                height: 10,
                               ),
+                              MaterialButton(
+                                onPressed: () async {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => LoginPageParent(
+                                            userRepository:
+                                                widget.userRepository,
+                                          )));
+                                },
+                                child: Text('Đăng Nhập',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Comfortaa',
+                                        fontSize: 18)),
+                                color: Colors.red.shade700,
+                                height: 40,
+                                minWidth: width * 0.6,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50.0)),
+                              )
                             ]))))));
   }
 
   Widget buildInitialUi() {
-    return Text("Waiting For Authentication");
+    return Text("");
   }
 
   Widget buildLoadingUi() {

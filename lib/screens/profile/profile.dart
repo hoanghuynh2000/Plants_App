@@ -1,10 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:plants_app/firebase/UserFirebase.dart';
+import 'package:plants_app/model/mdUser.dart';
+import 'package:plants_app/respository/user_respon.dart';
 import 'package:plants_app/screens/profile/changepassword.dart';
 
 class Profile extends StatefulWidget {
-  Profile({Key? key}) : super(key: key);
-
+  UserResponsitory? userResponsitory;
+  User? user;
+  MDUser? itemUser;
+  Profile({this.user, this.userResponsitory, this.itemUser});
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -12,26 +19,36 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late DateTime _selectedDate;
   final format = DateFormat("dd/MM/yyyy");
-  String name = 'HoangDe';
-  String gender = 'Nam';
-  String birthday = '13/09/2000';
-  String phoneNumber = '0364140311';
-  String email = 'hoangde092000@gamil.com';
-  String address = 'Tân Bình';
-  String image = 'assets/images/cut5.jpg';
+
+  String? name;
+  String? gender;
+  String? birthday;
+  String? phoneNumber;
+  String? email;
+  String? address;
+  String? image;
   TextEditingController _controllerName = TextEditingController();
   TextEditingController _controllerBirthday = TextEditingController();
   TextEditingController _controllerPhoneNumber = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerAddress = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controllerName.text = widget.itemUser!.name!;
+    _controllerAddress.text = widget.itemUser!.address!;
+    _controllerBirthday.text = widget.itemUser!.birthday!;
+    _controllerEmail.text = widget.itemUser!.email!;
+    _controllerPhoneNumber.text = widget.itemUser!.phoneNumber!;
+    gender = widget.itemUser!.gender;
+    image = widget.itemUser!.image;
+    birthday = widget.itemUser!.birthday;
+  }
 
   @override
   Widget build(BuildContext context) {
-    _controllerName.text = name;
-    _controllerAddress.text = address;
-    _controllerBirthday.text = birthday;
-    _controllerEmail.text = email;
-    _controllerPhoneNumber.text = phoneNumber;
+    _controllerBirthday.text = birthday!;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -128,6 +145,11 @@ class _ProfileState extends State<Profile> {
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey)),
                           ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              birthday = newValue!;
+                            });
+                          },
                           focusNode: AlwaysDisabledFocusNode(),
                           controller: _controllerBirthday,
                           onTap: () {
@@ -136,8 +158,8 @@ class _ProfileState extends State<Profile> {
                                 context: context,
                                 locale: const Locale('vi'),
                                 initialDate: DateTime.now(),
-                                firstDate: DateTime(2019, 1),
-                                lastDate: DateTime(2021, 12),
+                                firstDate: DateTime(1900, 1),
+                                lastDate: DateTime.now(),
                                 helpText: 'Ngày Sinh',
                                 builder: (context, picker) {
                                   return Theme(
@@ -203,6 +225,7 @@ class _ProfileState extends State<Profile> {
                           email = text;
                           // });
                         },
+                        enabled: false,
                         controller: _controllerEmail,
                         decoration: InputDecoration(
                           focusedBorder: UnderlineInputBorder(
@@ -319,7 +342,7 @@ class _ProfileState extends State<Profile> {
                               child: FadeInImage(
                                 placeholder:
                                     AssetImage('./assets/images/load.gif'),
-                                image: AssetImage('${image}'),
+                                image: NetworkImage('${image}'),
                                 fit: BoxFit.cover,
                               ),
                             )),

@@ -15,6 +15,7 @@ import 'package:plants_app/screens/favorites.dart';
 import 'package:plants_app/screens/listorder.dart';
 import 'package:plants_app/screens/login.dart';
 import 'package:plants_app/screens/profile/profile.dart';
+import 'package:plants_app/screens/register.dart';
 import 'package:plants_app/screens/rules.dart';
 
 class DrawerParent extends StatelessWidget {
@@ -101,7 +102,7 @@ class _MainWidgetState extends State<MainWidget> {
                                 BlocListener<DrawerBloc, DrawerState>(
                                   listener: (context, state) {
                                     if (state is LogoutSuccessfulState) {
-                                      navigateToSignUpPage(context);
+                                      navigateToSignInPage(context);
                                     }
                                   },
                                   child: BlocBuilder<DrawerBloc, DrawerState>(
@@ -164,7 +165,12 @@ class _MainWidgetState extends State<MainWidget> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => Profile()));
+                                              builder: (context) => Profile(
+                                                    userResponsitory:
+                                                        widget.userResponsitory,
+                                                    user: widget.user,
+                                                    itemUser: itemuser,
+                                                  )));
                                     },
                                     child: MenuItem(
                                         'Cá Nhân', Icons.people_alt_rounded),
@@ -183,7 +189,7 @@ class _MainWidgetState extends State<MainWidget> {
                                 ] else ...[
                                   MaterialButton(
                                     onPressed: () {
-                                      navigateToSignUpPage(context);
+                                      navigateToSignInPage(context);
                                     },
                                     minWidth: 200,
                                     color: Colors.teal,
@@ -192,6 +198,21 @@ class _MainWidgetState extends State<MainWidget> {
                                             Radius.circular(15))),
                                     child: Text(
                                       'Đăng Nhập',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                  ),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      navigateToRegisterPage(context);
+                                    },
+                                    minWidth: 200,
+                                    color: Colors.teal,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: Text(
+                                      'Đăng Kí',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16),
                                     ),
@@ -267,9 +288,15 @@ class _MainWidgetState extends State<MainWidget> {
     );
   }
 
-  void navigateToSignUpPage(BuildContext context) {
+  void navigateToSignInPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return LoginPageParent(userRepository: widget.userResponsitory);
+    }));
+  }
+
+  void navigateToRegisterPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return SignUpPageParent(userRepository: widget.userResponsitory);
     }));
   }
 }
