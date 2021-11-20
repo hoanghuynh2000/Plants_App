@@ -79,7 +79,7 @@ class _ItemProductState extends State<ItemProduct> {
                 Container(
                   width: 130,
                   decoration: ShapeDecoration(
-                      color: Colors.teal.shade50,
+                      color: Colors.teal.shade100,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)))),
                   height: 120,

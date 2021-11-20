@@ -4,12 +4,14 @@ import 'package:animator/animator.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:plants_app/layoutdrawer.dart';
+import 'package:plants_app/main.dart';
+import 'package:plants_app/respository/user_respon.dart';
 import 'package:plants_app/screens/dashboard.dart';
 import 'package:plants_app/screens/drawer.dart';
 
 class Splash extends StatefulWidget {
-  Splash({Key? key}) : super(key: key);
-
+  UserResponsitory? userRepository;
+  Splash({this.userRepository});
   @override
   _SplashState createState() => _SplashState();
 }
@@ -22,7 +24,11 @@ class _SplashState extends State<Splash> {
     Timer(Duration(milliseconds: 6000), () {
       Navigator.of(context).push(
         PageTransition(
-            type: PageTransitionType.rightToLeft, child: LayoutDrawer()),
+          type: PageTransitionType.rightToLeft,
+          child: AppParent(
+            userRepository: widget.userRepository,
+          ),
+        ),
       );
     });
   }
@@ -32,96 +38,58 @@ class _SplashState extends State<Splash> {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
-      //backgroundColor: Colors.teal.shade500,
       body: Stack(
-        children: [
-          Positioned.fill(
-              child: Image.asset('assets/images/backgroundsplash.jpg',
-                  fit: BoxFit.cover)),
+        fit: StackFit.expand,
+        children: <Widget>[
           Container(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Spacer(),
-                  Expanded(
-                      flex: 2,
-                      child: Column(
-                        children: [
-                          _buildAnimateLogo(size),
-                          // SizedBox(
-                          //   height: 10,
-                          // ),
-                          _buildAnimateName(size)
-                        ],
-                      ))
-                ],
-              ))
+            decoration: BoxDecoration(color: Colors.teal.shade600),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 70.0,
+                          child: Image(
+                            image: AssetImage('./assets/images/logo1.png'),
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                      ),
+                      Text(
+                        'Plants',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Ephesis'),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )
         ],
       ),
     ));
-  }
-
-  Widget _buildAnimateLogo(Size size) {
-    return Container(
-      child: Animator(
-          tweenMap: {
-            'opacity': Tween<double>(begin: 0, end: 1),
-            'scale': Tween<double>(begin: 10, end: 1)
-          },
-          cycles: 1,
-          curve: Curves.easeInOut,
-          duration: Duration(milliseconds: 3000),
-          // endAnimationListener: (amin) {
-          //   setState(() {
-
-          //   });
-          // },
-          builder: (_, amin, __) => FadeTransition(
-                opacity: amin.getAnimation('opacity'),
-                child: Transform.scale(
-                  scale: amin.getValue('scale'),
-                  child: Container(
-                    width: size.width * 0.8,
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                ),
-              )),
-    );
-  }
-
-  Widget _buildAnimateName(Size size) {
-    return Container(
-      child: Animator(
-          tweenMap: {
-            'opacity': Tween<double>(begin: 0, end: 1),
-            'motion': Tween<double>(begin: 10, end: 1)
-          },
-          cycles: 1,
-          curve: Curves.easeInOutCubic,
-          duration: Duration(milliseconds: 2300),
-          // endAnimationListener: (amin) {
-          //   setState(() {
-
-          //   });
-          // },
-          builder: (_, amin, __) => FadeTransition(
-                opacity: amin.getAnimation('opacity'),
-                child: Transform.scale(
-                    scale: amin.getValue('motion'),
-                    child: Text(
-                      'Plants',
-                      style: TextStyle(
-                          color: Colors.teal.shade900,
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Ephesis'),
-                    )),
-              )),
-    );
   }
 }

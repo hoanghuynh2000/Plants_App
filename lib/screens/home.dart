@@ -62,6 +62,7 @@ class _HomeState extends State<Home> {
         detailNews:
             'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
   ];
+  int _current = 0;
   List<Category> listCate = [];
   List<DetailProduct> listPro = [];
   FetchData() async {
@@ -118,12 +119,36 @@ class _HomeState extends State<Home> {
                             ))
                         .toList(),
                     options: CarouselOptions(
-                      autoPlay: true,
-                      aspectRatio: 2.0,
-                      enlargeCenterPage: true,
-                    ),
+                        autoPlay: true,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        }),
                   ),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: imgList.map((url) {
+                      int index = imgList.indexOf(url);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 2.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _current == index
+                              ? Colors.grey.shade900
+                              : Colors.grey.shade500,
+                        ),
+                      );
+                    }).toList()),
                 SizedBox(height: 20),
                 SizedBox(
                   child: Text('Danh Mục Sản Phẩm',
@@ -209,7 +234,6 @@ class _HomeState extends State<Home> {
                             ListProduct(category: listCate[index])));
               },
               child: Container(
-                  width: 160,
                   margin: EdgeInsets.all(10),
                   decoration: ShapeDecoration(
                       shadows: [
@@ -227,33 +251,36 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: [
                       Container(
-                        width: 160,
                         height: 90,
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
                             child: Center(
-                                heightFactor: 0.7,
+                                // heightFactor: 0.7,
                                 child: FadeInImage(
-                                  placeholder:
-                                      AssetImage('./assets/images/load.gif'),
-                                  image: NetworkImage(_setImage(index)),
-                                  fit: BoxFit.fitHeight,
-                                ))),
+                              placeholder:
+                                  AssetImage('./assets/images/load.gif'),
+                              image: NetworkImage(_setImage(index)),
+                              fit: BoxFit.fill,
+                            ))),
                         decoration: ShapeDecoration(
-                            color: Colors.brown.shade100.withOpacity(0.8),
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20),
                                     topRight: Radius.circular(20)))),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
-                      Text(
-                        '${listCate[index].nameCate}',
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 14),
-                      )
+                      Container(
+                          alignment: Alignment.center,
+                          width: 100,
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                            '${listCate[index].nameCate}',
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 14),
+                          ))
                     ],
                   )));
         });
@@ -285,7 +312,7 @@ class _HomeState extends State<Home> {
                         height: 80,
                         width: 80,
                         decoration: ShapeDecoration(
-                            color: Colors.grey.shade100,
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20))),
@@ -328,13 +355,12 @@ class _HomeState extends State<Home> {
 
   Widget _buildNewProduct() {
     return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Container(
-            height: 180, child: ItemProduct(detailProduct: listPro[index]));
-      },
-      itemCount: listPro.length,
-    );
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return Container(
+              height: 180, child: ItemProduct(detailProduct: listPro[index]));
+        },
+        itemCount: listPro.length);
   }
 }
