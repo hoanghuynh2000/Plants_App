@@ -5,6 +5,7 @@ import 'package:plants_app/model/mdUser.dart';
 
 class DataUser {
   final userList = FirebaseFirestore.instance.collection('Users');
+
   Future getUserList(String id) async {
     await Firebase.initializeApp();
     WidgetsFlutterBinding.ensureInitialized();
@@ -21,5 +22,24 @@ class DataUser {
     // print(itemList1);
     item = itemList1[0];
     return item;
+  }
+
+  Future UpdateUser(
+    String id,
+    String name,
+    String gender,
+    String birthday,
+    String phoneNumber,
+    String address,
+    String image,
+  ) async {
+    return userList.doc(id).update({
+      'name': name,
+      'gender': gender,
+      'phoneNumber': phoneNumber,
+      'birthday': birthday,
+      'address': address,
+      'image': image
+    });
   }
 }

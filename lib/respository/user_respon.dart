@@ -38,14 +38,15 @@ class UserResponsitory {
     mdUser.email = auth.currentUser!.email;
     mdUser.name = displayName;
     mdUser.point = 0;
-    mdUser.birthday = null;
+    mdUser.birthday = '01/01/1900';
+    mdUser.address = 'Thành Phố Hồ Chí Minh';
     mdUser.gender = 'Nam';
     mdUser.phoneNumber = phoneNumber;
     mdUser.idUser = auth.currentUser!.uid;
     mdUser.image =
         'https://firebasestorage.googleapis.com/v0/b/appplants-fbbf8.appspot.com/o/images%2FUser.jpg?alt=media&token=589ffca4-813a-4b93-bf86-841ed2e020cc';
 
-    users.add({
+    users.doc(mdUser.idUser).set({
       'name': mdUser.name,
       'email': mdUser.email,
       'idUser': mdUser.idUser,

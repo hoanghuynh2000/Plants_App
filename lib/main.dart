@@ -24,12 +24,22 @@ void main() async {
   runApp(MaterialApp(
       localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       supportedLocales: [const Locale('en'), const Locale('vi')],
-      home: BlocProvider(
+      home: Splash(
+        userRepository: userRepository,
+      )));
+}
+
+class AppParent extends StatelessWidget {
+  UserResponsitory? userRepository;
+  AppParent({this.userRepository});
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
         create: (context) => AuthBloc()..add(AppStartedEvent()),
         child: App(
           userRepository: userRepository,
-        ),
-      )));
+        ));
+  }
 }
 
 class App extends StatelessWidget {
