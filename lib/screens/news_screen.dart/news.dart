@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:plants_app/firebase/news.dart';
 import 'package:plants_app/model/mdnews.dart';
 import 'package:plants_app/screens/news_screen.dart/detail_news.dart';
 
@@ -12,24 +14,44 @@ class News extends StatefulWidget {
 class _NewsState extends State<News> {
   final _myListKey = GlobalKey<AnimatedListState>();
   List<MDNews> lsNews = [
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/backgroundreset.jpg',
-        detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews:
-            'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam')
+    // MDNews(
+    //     id: '1',
+    //     nameNews: 'Hướng dẫn chăm sóc',
+    //     imageNews: 'assets/images/backgroundreset.jpg',
+    //     detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
+    // MDNews(
+    //     id: '1',
+    //     nameNews: 'Hướng dẫn chăm sóc',
+    //     imageNews: 'assets/images/logo.png',
+    //     detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
+    // MDNews(
+    //     id: '1',
+    //     nameNews: 'Hướng dẫn chăm sóc',
+    //     imageNews: 'assets/images/logo.png',
+    //     detailNews:
+    //         'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam')
+  
   ];
+  FetchNews()async
+  {
+     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result = await FirNews().getListNews();
+    if (result == null) {
+      print('unable');
+    } else {
+      setState(() {
+        lsNews = result;
+      });
+    }
+  }
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchNews();
+  }
+   @override
   Widget build(BuildContext context) {
     return Container(
       // padding: EdgeInsets.only(left: 15, right: 15),
@@ -69,7 +91,7 @@ class _NewsState extends State<News> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     image: DecorationImage(
-                        image: AssetImage('${lsNews[index].imageNews}'),
+                        image: NetworkImage('${lsNews[index].imageNews}'),
                         fit: BoxFit.cover)),
               ),
               Expanded(

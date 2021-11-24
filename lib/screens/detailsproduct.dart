@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/bloc/CouterBloc.dart';
 import 'package:plants_app/couter/event.dart';
@@ -12,9 +13,10 @@ import 'package:plants_app/handle/favorite.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdfavorites.dart';
 import 'package:plants_app/model/mdfeedback.dart';
-import 'package:plants_app/screens/favorites.dart';
-import 'package:plants_app/screens/feedback.dart';
 import 'package:plants_app/screens/shoppingcart.dart';
+import 'package:plants_app/firebase/shoppingcart.dart';
+
+import 'detailproduct/itemproduct.dart';
 
 class DetailsProduct extends StatefulWidget {
   DetailProduct detailProduct;
@@ -24,33 +26,41 @@ class DetailsProduct extends StatefulWidget {
 }
 
 class _DetailsProductState extends State<DetailsProduct> {
+  String UID="";
+   FetchUserInfo() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    UID = user!.uid;
+  }
+  List<DetailProduct> listPro=[];
+  FetchDataPro() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result = await DataProduct().getCateProductList(widget.detailProduct.idCate);
+    if (result == null) {
+      print('unable');
+    } else {
+      setState(() {
+        listPro = result;
+      });
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchUserInfo();
+    FetchDataPro();
+  }
   @override
   Widget build(BuildContext context) {
     String? id = widget.detailProduct.id;
     FirebaseServices _firebaseServices = FirebaseServices();
     String _selectedQuantity = "0";
+    
 
-    void AddToShoppingCart() {
-      final getUser =
-          _firebaseServices.usersRef.doc(_firebaseServices.getUserId());
-      // ignore: unnecessary_null_comparison
-      if (getUser != null) {
-        _firebaseServices.usersRef
-            .doc(_firebaseServices.getUserId())
-            .collection("Cart")
-            .doc(id)
-            .set({"size": _selectedQuantity});
-      } else {
-        // ignore: deprecated_member_use
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text("Vui lòng đăng nhập"),
-        ));
-      }
-    }
-
-    final SnackBar _snackBar = SnackBar(
-      content: Text("Thêm vào giỏ hàng thành công"),
-    );
+  FirShoppingCart firShoppingCart=new FirShoppingCart();
+    
     int isImportant = 0;
     String? idProduct = widget.detailProduct.id;
     String? productName = widget.detailProduct.namePro;
@@ -93,9 +103,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                   ),
                   MaterialButton(
                     onPressed: () {
-                      // AddToShoppingCart();
-                      //           // ignore: deprecated_member_use
-                      //           Scaffold.of(context).showSnackBar(_snackBar);
+                      print(UID);
+                      firShoppingCart.addToShoppingCart(UID, idProduct!, productName!, price, categoryName!, images!);
                     },
                     child: Text('Thêm Vào Giỏ Hàng',
                         style: TextStyle(
@@ -124,7 +133,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                         padding: EdgeInsets.only(
                           top: height * 0.05,
                         ),
-                        height: height / 1.1,
+                        //height: height / 1.1,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
@@ -180,7 +189,10 @@ class _DetailsProductState extends State<DetailsProduct> {
                                   ],
                                 ),
                               ),
-                              CartCounter(_selectedQuantity),
+                              SizedBox(
+                                height: 20,
+                              ),
+    //                          CartCounter(_selectedQuantity),
                               Text(
                                 'Mô Tả Sản Phẩm',
                                 style: TextStyle(
@@ -198,9 +210,26 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     color: Colors.teal.shade900,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Expanded(
+                              SizedBox(height: 20),
+                              Container(
+                                height: 300,
                                 child: Feedback(),
-                              )
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'Gợi ý',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.teal.shade900,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                             
+                               
+                              //SizedBox(height: 10),
+                              Container(
+                                height: 250,
+                                child: _buildNewProduct(),
+                              ),
                             ],
                           ),
                         ),
@@ -234,7 +263,19 @@ class _DetailsProductState extends State<DetailsProduct> {
               ),
             )));
   }
-
+ Widget _buildNewProduct() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: EdgeInsets.only(top: 10),
+            height: 320, 
+            child: ItemProduct(detailProduct: listPro[index]));
+      },
+      itemCount: listPro.length
+    );
+  }
   //AppBar chi tiết sản phẩm
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
@@ -354,6 +395,7 @@ class ItemFeedback extends StatelessWidget {
       ),
     );
   }
+  
 }
 
 // class ProductTitleWithImage extends StatelessWidget {
@@ -371,64 +413,64 @@ class ItemFeedback extends StatelessWidget {
 //   }
 // }
 
-class CartCounter extends StatefulWidget {
-  String? quantity;
-  CartCounter(this.quantity);
-  @override
-  _CartCounterState createState() => _CartCounterState();
-}
+// class CartCounter extends StatefulWidget {
+//   String? quantity;
+//   CartCounter(this.quantity);
+//   @override
+//   _CartCounterState createState() => _CartCounterState();
+// }
 
-class _CartCounterState extends State<CartCounter> {
-  int numOfItems = 1;
+// class _CartCounterState extends State<CartCounter> {
+//   int numOfItems = 1;
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.quantity == null) {
-      widget.quantity = '1';
-    }
+//   @override
+//   Widget build(BuildContext context) {
+//     if (widget.quantity == null) {
+//       widget.quantity = '1';
+//     }
 
-    return BlocProvider<CouterBloc>(
-        create: (context) => CouterBloc(),
-        child: BlocBuilder<CouterBloc, int>(
-          builder: (context, couter) {
-            widget.quantity = couter.toString();
-            final CouterBloc couterBloc = context.read<CouterBloc>();
-            return Container(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: 15),
-                  width: 30,
-                  child: IconButton(
-                      onPressed: () {
-                        couterBloc.add(CouterEvent.decre);
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.remove)),
-                ),
-                Container(
-                    width: 50,
-                    // ignore: unnecessary_brace_in_string_interps
-                    child: Text(
-                      '${couter}',
-                      style: TextStyle(fontSize: 17),
-                      textAlign: TextAlign.center,
-                    )),
-                Container(
-                  width: 30,
-                  child: IconButton(
-                      onPressed: () {
-                        couterBloc.add(CouterEvent.incre);
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.add)),
-                )
-              ],
-            ));
-          },
-        ));
-  }
+//     return BlocProvider<CouterBloc>(
+//         create: (context) => CouterBloc(),
+//         child: BlocBuilder<CouterBloc, int>(
+//           builder: (context, couter) {
+//             widget.quantity = couter.toString();
+//             final CouterBloc couterBloc = context.read<CouterBloc>();
+//             return Container(
+//                 child: Row(
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               children: [
+//                 Container(
+//                   margin: EdgeInsets.only(right: 15),
+//                   width: 30,
+//                   child: IconButton(
+//                       onPressed: () {
+//                         couterBloc.add(CouterEvent.decre);
+//                         setState(() {});
+//                       },
+//                       icon: Icon(Icons.remove)),
+//                 ),
+//                 Container(
+//                     width: 50,
+//                     // ignore: unnecessary_brace_in_string_interps
+//                     child: Text(
+//                       '${couter}',
+//                       style: TextStyle(fontSize: 17),
+//                       textAlign: TextAlign.center,
+//                     )),
+//                 Container(
+//                   width: 30,
+//                   child: IconButton(
+//                       onPressed: () {
+//                         couterBloc.add(CouterEvent.incre);
+//                         setState(() {});
+//                       },
+//                       icon: Icon(Icons.add)),
+//                 )
+//               ],
+//             ));
+//           },
+//         ));
+//   }
 
   SizedBox buildOutlineButton(
       {required IconData icon, required Function press}) {
@@ -447,5 +489,6 @@ class _CartCounterState extends State<CartCounter> {
         child: Icon(icon),
       ),
     );
+    
   }
-}
+

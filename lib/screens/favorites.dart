@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/handle/refresh.dart';
+import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdfavorites.dart';
+import 'package:plants_app/screens/detailsproduct.dart';
 import 'package:plants_app/sqlite/favorites.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -26,20 +30,43 @@ class _FavoritesState extends State<FavoritesScreen> {
   String categoryName = "";
   dynamic price = '';
   String images = "";
-  late Favorites favorites;
+   Favorites? favorites;
   // ignore: deprecated_member_use
   List<Favorites> listFav = [];
   void isFav() async {
     listFav = await data.readfavorites();
     print(listFav);
   }
-
+  DetailProduct? listPro;
+  
+FetchDataPro(int index) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result= await DataProduct().getProductIdList(listFav[index].id.toString());
+    if (result == null) {
+      print('unable');
+    } else {
+      setState(() {
+        listPro = result;
+         Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+              
+                  DetailsProduct(detailProduct: result!,)));
+      });
+    }
+  }
+ 
   @override
   void initState() {
     loadList();
     super.initState();
+    
   }
-
+  void selectItem(int index){
+    FetchDataPro(index);
+    
+  }
+ 
   Future loadList() async {
     keyRefresh.currentState?.show();
     await Future.delayed(Duration(milliseconds: 4000));
@@ -54,7 +81,7 @@ class _FavoritesState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     isFav();
-
+    
     return Scaffold(
         appBar: AppBar(
           flexibleSpace: Container(
@@ -95,7 +122,14 @@ class _FavoritesState extends State<FavoritesScreen> {
                   price: price,
                   images: images);
               print(id);
-              return Container(
+              
+    
+              return InkWell(
+                onTap: (){
+                  selectItem(index);
+                
+                },
+                child: Container(
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
@@ -163,8 +197,7 @@ class _FavoritesState extends State<FavoritesScreen> {
                             ]))
                   ],
                 ),
-              );
-            },
+                       ),);},
           ),
         )));
   }

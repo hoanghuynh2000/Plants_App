@@ -10,7 +10,7 @@ class Favorites {
 
 Favorites 
 ({
-    required this.id,
+     this.id,
      this.isImportant,
      this.idProduct,
      this.productName,
