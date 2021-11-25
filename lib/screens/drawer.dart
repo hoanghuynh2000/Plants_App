@@ -54,7 +54,7 @@ class _MainWidgetState extends State<MainWidget> {
     if (widget.user != null) {
       FetchData();
     }
-    ;
+    
   }
 
   FetchData() async {

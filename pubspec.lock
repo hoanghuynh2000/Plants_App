@@ -202,6 +202,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.3.3"
+  flutter_elegant_number_button:
+    dependency: "direct main"
+    description:
+      name: flutter_elegant_number_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
   flutter_localizations:
     dependency: "direct main"
     description: flutter

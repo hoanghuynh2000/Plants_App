@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:plants_app/firebase/news.dart';
 
 import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/listproduct.dart';
@@ -12,6 +13,7 @@ import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdnews.dart';
 import 'package:plants_app/screens/detailproduct/itemproduct.dart';
 import 'package:plants_app/screens/news_screen.dart/detail_news.dart';
+import 'package:plants_app/screens/news_screen.dart/newshome.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key});
@@ -33,49 +35,24 @@ final List<String> imgList = [
 class _HomeState extends State<Home> {
   //fake data
   List<MDNews> lsNews = [
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews: 'Những cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews:
-            'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews:
-            'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
-    MDNews(
-        id: '1',
-        nameNews: 'Hướng dẫn chăm sóc',
-        imageNews: 'assets/images/logo.png',
-        detailNews:
-            'Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam. Những cách trồng cây hay nhất Việt Nam.Những cách trồng cây hay nhất Việt NamNhững cách trồng cây hay nhất Việt Nam'),
-  ];
+    ];
   int _current = 0;
   List<Category> listCate = [];
   List<DetailProduct> listPro = [];
+
   FetchData() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     dynamic result = await DataProduct().getAllProductList();
     dynamic category = await DataProduct().getAllCategory();
+    dynamic news=await FirNews().getListNews();
     if (result == null) {
       print('unable');
     } else {
       setState(() {
         listPro = result;
         listCate = category;
+        lsNews=news;
       });
     }
   }
@@ -191,14 +168,36 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   height: 10,
                 ),
+                Container(
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                      child:     Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    
                 SizedBox(
                   child: Text('Tin Mới Nhất',
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 25,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Dosis',
                           color: Colors.teal.shade900)),
-                ),
+                          
+                ),TextButton(onPressed: (){
+                 Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => NewsHome()));
+                }, 
+                child: Text('Xem tất cả',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Dosis',
+                          
+                          color: Colors.grey.shade600)),)
+                  ],
+                )
+                ,
+                    ),
+            
                 SizedBox(
                   height: 10,
                 ),
@@ -317,7 +316,7 @@ class _HomeState extends State<Home> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20))),
                             image: DecorationImage(
-                                image: AssetImage('${lsNews[index].imageNews}'),
+                                image: NetworkImage('${lsNews[index].imageNews}'),
                                 fit: BoxFit.cover)),
                       ),
                       Expanded(

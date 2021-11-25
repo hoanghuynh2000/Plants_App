@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:plants_app/bloc/CouterBloc.dart';
 import 'package:plants_app/couter/event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plants_app/firebase/shoppingcart.dart';
 class CartCounter extends StatefulWidget {
+  String id='';
+  String quantity='';
+  CartCounter({required this.id,required this.quantity});
   @override
   _CartCounterState createState() => _CartCounterState();
 }
@@ -12,7 +16,7 @@ class _CartCounterState extends State<CartCounter> {
   @override
   Widget build(BuildContext context) {
    
-
+    int numOfItems= int.parse(widget.quantity);
     return BlocProvider<CouterBloc>(
         create: (context) => CouterBloc(),
         child: BlocBuilder<CouterBloc, int>(
@@ -28,7 +32,10 @@ class _CartCounterState extends State<CartCounter> {
                   child: IconButton(
                       onPressed: () {
                         couterBloc.add(CouterEvent.decre);
-                        setState(() {});
+                         FirShoppingCart().updateProduct(widget.id,( numOfItems-1).toString());
+                        setState(() {
+                         
+                        });
                       },
                       icon: Icon(Icons.remove)),
                 ),
@@ -45,7 +52,10 @@ class _CartCounterState extends State<CartCounter> {
                   child: IconButton(
                       onPressed: () {
                         couterBloc.add(CouterEvent.incre);
-                        setState(() {});
+                         FirShoppingCart().updateProduct(widget.id, ( numOfItems+1).toString());
+                        setState(() {
+                         
+                        });
                       },
                       icon: Icon(Icons.add)),
                 )

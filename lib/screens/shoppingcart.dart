@@ -23,6 +23,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
   List<MDDetailShoppingCart> listPro = [
    
   ];
+ TextEditingController? countController;
+  int count=1;
    String UID="";
    FetchUserInfo() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -36,10 +38,21 @@ class _ShoppingCartState extends State<ShoppingCart> {
     if (result == null) {
       print('unable');
     } else {
-      setState(() {
-        listPro = result;
-      });
+      if (this.mounted) {
+        setState(() {
+        
+          listPro = result;
+        });
+}
+      
     }
+  }
+  @override
+  void dispose() {
+    FetchDataShoppingCart();
+    // TODO: implement dispose
+    super.dispose();
+    
   }
  @override
   void initState() {
@@ -47,6 +60,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
     super.initState();
     FetchDataShoppingCart();
     FetchUserInfo();
+    
   }
 
   int TinhTien(List<MDDetailShoppingCart> listPro){
@@ -66,6 +80,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    
     if(listPro.length>0)
                   {
     return  SafeArea(
@@ -96,72 +111,135 @@ class _ShoppingCartState extends State<ShoppingCart> {
                     child: ListView.builder(
                         itemCount: listPro.length,
                         itemBuilder: (context, index) {
+                         int dem=int.parse(listPro[index].quantity);
                           final item= listPro[index];
+                          void remove(BuildContext context) {
+                      FirShoppingCart().removeProduct(listPro[index].idProduct);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sản phẩm đã được xóa khỏi giỏ hàng')));
+                            }
+                            void doNotThing(BuildContext context) {
+                      
+                            }
                           return  Slidable(
                             endActionPane: ActionPane(
-                motion: DrawerMotion(),
-                children: [
+                          motion: DrawerMotion(),
+                          children: [
                   
-                     SlidableAction(
-                       autoClose: true,
-                    // An action can be bigger than the others.
-                    flex: 1,
-                    onPressed:doNothing,
-                    backgroundColor: Color(0xFFF74933),
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: 'Xóa',
+                              SlidableAction(
+                                autoClose: true,
+                                flex: 1,
+                                onPressed:remove,
+                                backgroundColor: Color(0xFFF74933),
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                                label: 'Xóa',
                   ),
                  
-                  
-                  
-                     SlidableAction(
+                             SlidableAction(
                     // An action can be bigger than the others.
-                    flex: 1,
-                    onPressed:doNothing,
-                    backgroundColor: Color(0xFF035C3A),
-                    foregroundColor: Colors.white,
-                    icon: Icons.close,
-                    label: 'Đóng',
+                              flex: 1,
+                              onPressed:doNotThing,
+                              backgroundColor: Color(0xFF035C3A),
+                              foregroundColor: Colors.white,
+                              icon: Icons.close,
+                              label: 'Đóng',
+
                   ),
                 ],
               ),
  
-                            child: buildListTitle(item))
-                          ;
-                          // Container(
-                          //   margin:
-                          //       EdgeInsets.only(top: 10, left: 10, right: 10),
-                          //   padding: EdgeInsets.all(15),
-                          //   decoration: BoxDecoration(
-                          //     borderRadius:
-                          //         BorderRadius.all(Radius.circular(20)),
-                          //     color: Colors.white,
-                          //   ),
-                          //   child: 
-                          //   Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //     children: [
-                          //       Container(
-                          //         height: 60,
-                          //         width: 60,
-                          //         decoration: BoxDecoration(
-                          //             image: DecorationImage(
-                          //                 image: NetworkImage(listPro[index].images),
-                          //                 fit: BoxFit.cover)),
-                          //       ),
-                          //       SizedBox(
-                          //         width: 15,
-                          //       ),
+                            child:  ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
+      leading:CircleAvatar(radius: 30,backgroundColor: Colors.teal.shade400,
+      backgroundImage: NetworkImage(item.images),) ,
+      title:Row(children: [Container(
+                                  width: 190,
+                                  child:  Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${item.productName}',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                    Text(
+                                      '${item.categoryName}',
+                                      style: TextStyle(
+                                          color: Colors.teal.shade500),
+                                    ),
+                                    Text(
+                                        '${NumberFormat('###,###').format(int.parse(item.price.toString()))}',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 17))
+                                  ],
+                                ),
+                               
+                                ),
+                                 Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                 child: 
+           Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                   margin: EdgeInsets.only(right: 18),
+                  width: 20,
+                  child: IconButton(
+                      onPressed: () {
+                       
+                        setState(() {
+                          if(dem>1){
+                            dem=dem-1;
+                         FirShoppingCart().updateProduct(listPro[index].idProduct,dem.toString());
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng chọn số lượng lớn hơn 1')));
+                          }
+                          
+                        });
+                      },
+                      icon: Icon(Icons.remove)),
+                ),
+                Container(
+                    width: 20,
+                    // ignore: unnecessary_brace_in_string_interps
+                    child: Text(
+                      '${listPro[index].quantity}',
+                      style: TextStyle(fontSize: 17),
+                      textAlign: TextAlign.center,
+                    )),
+                Container(
+                  width: 20,
+                  child: IconButton(
+                      onPressed: () {
+                        
+                         
+                        setState(() {
+                         if(dem<=20){
+                            dem=dem+1;
+                         FirShoppingCart().updateProduct(listPro[index].idProduct,dem.toString());
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Mua số lượng lớn vui lòng liên hệ cửa hàng để biết thêm thông tin')));
+                        }});
+                      },
+                      icon: Icon(Icons.add)),
+                )
+              ],
+            ))
+             )
+                                        ],
+                                      ),
+                                    ))
+                              ,]),
+                                onTap: (){},
                                 
-                          //       SizedBox(
-                          //         width: 25,
-                          //       ),
-                          //       Container(
-                          //           alignment: Alignment.centerRight,
-                          //           child: CartCounter())
-                          //     ],
-                          //   ),
+    )
+ )
+                          ;
                           
                         }, )),
                   Align(
@@ -232,44 +310,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   style: TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.teal.shade800),
-            body:Text('Giỏ hàng chưa có sản phẩm')));
+            body:Center(
+              
+              child: Text('Giỏ hàng chưa có sản phẩm',textAlign: TextAlign.center,style: TextStyle(fontSize: 18),)),));
                 }
   }
-  void doNothing(BuildContext context) {}
-  Widget buildListTitle(MDDetailShoppingCart mdDetailShoppingCart){
-   return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
-      leading: CircleAvatar(radius: 30,
-      backgroundImage: NetworkImage(mdDetailShoppingCart.images),),
-      title:Row(children: [Container(
-                                  width: 190,
-                                  child:  Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${mdDetailShoppingCart.productName}',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                    Text(
-                                      '${mdDetailShoppingCart.categoryName}',
-                                      style: TextStyle(
-                                          color: Colors.teal.shade500),
-                                    ),
-                                    Text(
-                                        '${NumberFormat('###,###').format(int.parse(mdDetailShoppingCart.price.toString()))}',
-                                        style: TextStyle(
-                                            color: Colors.red, fontSize: 17))
-                                  ],
-                                ),
-                               
-                                ),
-                                 Container(
-                                    alignment: Alignment.centerRight,
-                                    child: CartCounter())
-                              ,]),
-                                onTap: (){},
-                                
-    );
-  }
+  
+  // Widget buildListTitle(MDDetailShoppingCart mdDetailShoppingCart){
+  //  return }
 }
