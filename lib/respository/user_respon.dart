@@ -19,14 +19,25 @@ class UserResponsitory {
     }
   }
 
+  Future<void> ResetPassword(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on PlatformException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<User?> SignInUser(String email, String password) async {
+    var errorMessage = "Tài khoản không tồn tại";
     try {
       var result = await firebaseAuth!
           .signInWithEmailAndPassword(email: email, password: password);
 
       return result.user;
     } on PlatformException catch (e) {
-      throw Exception(e.toString());
+      print(e.code);
+
+      throw Exception(e.code);
     }
   }
 
@@ -70,5 +81,25 @@ class UserResponsitory {
 
   Future<User> getCurrentUser() async {
     return await firebaseAuth!.currentUser!;
+  }
+
+  Future<bool> validatePassword(String password) async {
+    User? firebaseUser = await firebaseAuth!.currentUser;
+
+    var authCredentials = EmailAuthProvider.credential(
+        email: firebaseUser!.email!, password: password);
+    try {
+      var authResult =
+          await firebaseUser.reauthenticateWithCredential(authCredentials);
+      return authResult.user != null;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<void> updatePassword(String password) async {
+    var firebaseUser = await firebaseAuth!.currentUser;
+    firebaseUser!.updatePassword(password);
   }
 }

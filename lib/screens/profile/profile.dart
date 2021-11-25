@@ -1,14 +1,13 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/firebase/UserFirebase.dart';
 import 'package:plants_app/handle/refresh.dart';
+import 'package:plants_app/layoutdrawer.dart';
 import 'package:plants_app/model/mdUser.dart';
 import 'package:plants_app/respository/user_respon.dart';
-import 'package:plants_app/screens/gender.dart';
 import 'package:plants_app/screens/profile/changepassword.dart';
 
 class Profile extends StatefulWidget {
@@ -50,6 +49,7 @@ class _ProfileState extends State<Profile> {
   TextEditingController _controllerPhoneNumber = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerAddress = TextEditingController();
+  final snackBar = SnackBar(content: Text('cập nhật thông tin thành công!'));
   @override
   void initState() {
     // TODO: implement initState
@@ -328,7 +328,14 @@ class _ProfileState extends State<Profile> {
                                 color: Colors.teal.shade800,
                                 onPressed: () {
                                   SubmitUpdate();
-                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => LayoutDrawer(
+                                            user: widget.user,
+                                            userResponsitory:
+                                                widget.userResponsitory,
+                                          )));
                                 },
                                 child: Text(
                                   'Cập Nhật',
@@ -344,7 +351,10 @@ class _ProfileState extends State<Profile> {
                                 color: Colors.red.shade900,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ChangePassword()));
+                                      builder: (context) => ChangePassword(
+                                            userResponsitory:
+                                                widget.userResponsitory!,
+                                          )));
                                 },
                                 child: Text(
                                   'Đổi Mật Khẩu',

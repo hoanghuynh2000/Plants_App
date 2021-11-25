@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -46,15 +48,33 @@ class MainWidget extends StatefulWidget {
 class _MainWidgetState extends State<MainWidget> {
   DrawerBloc? homePageBloc;
   MDUser? itemuser;
+  var list;
+  var random;
 
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    list = List.generate(3, (i) => "Item $i");
+    super.initState();
+    random = Random();
+    refreshList();
     if (widget.user != null) {
       FetchData();
     }
     ;
+  }
+
+  Future<void> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+
+    setState(() {
+      list = List.generate(random.nextInt(10), (i) => "Item $i");
+    });
+
+    return null;
   }
 
   FetchData() async {
@@ -102,7 +122,7 @@ class _MainWidgetState extends State<MainWidget> {
                                 BlocListener<DrawerBloc, DrawerState>(
                                   listener: (context, state) {
                                     if (state is LogoutSuccessfulState) {
-                                      navigateToSignInPage(context);
+                                      navigateToSignInPageLogOut(context);
                                     }
                                   },
                                   child: BlocBuilder<DrawerBloc, DrawerState>(
@@ -187,35 +207,43 @@ class _MainWidgetState extends State<MainWidget> {
                                         Icons.receipt_long_rounded),
                                   ),
                                 ] else ...[
-                                  MaterialButton(
-                                    onPressed: () {
-                                      navigateToSignInPage(context);
-                                    },
-                                    minWidth: 200,
-                                    color: Colors.teal,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15))),
-                                    child: Text(
-                                      'Đăng Nhập',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ),
-                                  ),
-                                  MaterialButton(
-                                    onPressed: () {
-                                      navigateToRegisterPage(context);
-                                    },
-                                    minWidth: 200,
-                                    color: Colors.teal,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15))),
-                                    child: Text(
-                                      'Đăng Kí',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ),
+                                  Column(
+                                    children: [
+                                      SizedBox(height: 50),
+                                      MaterialButton(
+                                        onPressed: () {
+                                          navigateToSignInPage(context);
+                                        },
+                                        minWidth: 200,
+                                        color: Colors.teal.shade700,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        child: Text(
+                                          'Đăng Nhập',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                      MaterialButton(
+                                        onPressed: () {
+                                          navigateToRegisterPage(context);
+                                        },
+                                        minWidth: 200,
+                                        color: Colors.teal.shade700,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        child: Text(
+                                          'Đăng Kí',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                      SizedBox(height: 50),
+                                    ],
                                   )
                                 ],
                                 InkWell(
@@ -290,6 +318,12 @@ class _MainWidgetState extends State<MainWidget> {
 
   void navigateToSignInPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return LoginPageParent(userRepository: widget.userResponsitory);
+    }));
+  }
+
+  void navigateToSignInPageLogOut(BuildContext context) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
       return LoginPageParent(userRepository: widget.userResponsitory);
     }));
   }

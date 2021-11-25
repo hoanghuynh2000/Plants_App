@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:plants_app/respository/user_respon.dart';
 
 class ChangePassword extends StatefulWidget {
-  ChangePassword({Key? key}) : super(key: key);
+  UserResponsitory userResponsitory;
+  ChangePassword({required this.userResponsitory});
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
@@ -12,7 +14,19 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _passwordVisible2 = true;
   bool _passwordVisible1 = true;
   bool _passwordVisible3 = true;
+  TextEditingController _passOld = TextEditingController();
+  TextEditingController _passNew = TextEditingController();
+  TextEditingController _passConfirm = TextEditingController();
   String? UID;
+
+  String? passUser;
+  var _formKey = GlobalKey<FormState>();
+  final snackBar = SnackBar(content: Text('Đổi mật khẩu thành công!'));
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+
+  bool checkCurrentPasswordValid = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -41,20 +55,32 @@ class _ChangePasswordState extends State<ChangePassword> {
           title: Text('Đổi mật khẩu'),
         ),
         body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Container(
+          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Form(
+            key: _formKey,
             child: Column(
               children: [
-                TextField(
+                TextFormField(
+                  validator: (text) {
+                    if (text != null) {
+                      if (!(text.length > 5) || text.isEmpty) {
+                        return "Vui lòng nhập mật khẩu lớn hơn 6 ký tự";
+                      }
+                      return null;
+                    }
+                  },
+                  controller: _passOld,
                   obscureText: _passwordVisible1,
+                  onChanged: (Text) {},
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.teal.shade700)),
-                    labelText: UID,
+                    labelText: 'Mật khẩu hiện tại',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _passwordVisible1
@@ -77,7 +103,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                 SizedBox(
                   height: 10,
                 ),
-                TextField(
+                TextFormField(
+                  validator: (text) {
+                    if (text != null) {
+                      if (!(text.length > 5) || text.isEmpty) {
+                        return "Vui lòng nhập mật khẩu lớn hơn 6 ký tự";
+                      }
+                      return null;
+                    }
+                  },
+                  controller: _passNew,
                   obscureText: _passwordVisible2,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
@@ -105,7 +140,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                 SizedBox(
                   height: 10,
                 ),
-                TextField(
+                TextFormField(
+                  validator: (text) {
+                    if (text != null) {
+                      if (!(text.length > 5) || text.isEmpty) {
+                        return "Vui lòng nhập mật khẩu lớn hơn 6 ký tự";
+                      }
+                      if (_passNew.text != text) {
+                        return "Please validate your entered password";
+                      }
+                      return null;
+                    }
+                  },
+                  controller: _passConfirm,
                   obscureText: _passwordVisible3,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
@@ -139,7 +186,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                   height: 40,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30))),
-                  onPressed: () {},
+                  onPressed: () async {
+                    checkCurrentPasswordValid = await widget.userResponsitory
+                        .validatePassword(_passOld.text);
+
+                    setState(() {});
+
+                    if (_formKey.currentState!.validate() &&
+                        checkCurrentPasswordValid) {
+                      widget.userResponsitory.updatePassword(_passConfirm.text);
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      Navigator.pop(context);
+                    }
+                  },
                   child: Text(
                     'Thay đổi mật khẩu',
                     style: TextStyle(color: Colors.white, fontSize: 16),
@@ -151,6 +210,6 @@ class _ChangePasswordState extends State<ChangePassword> {
               ],
             ),
           ),
-        ));
+        )));
   }
 }
