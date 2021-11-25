@@ -6,14 +6,14 @@ import 'package:plants_app/model/mdnews.dart';
 import 'package:plants_app/model/mdpromotion.dart';
 import 'package:plants_app/screens/news_screen.dart/detail_news.dart';
 
-class News extends StatefulWidget {
-  News({Key? key}) : super(key: key);
+class NewsHome extends StatefulWidget {
+  NewsHome({Key? key}) : super(key: key);
 
   @override
   _NewsState createState() => _NewsState();
 }
 
-class _NewsState extends State<News> {
+class _NewsState extends State<NewsHome> {
   final _myListKey = GlobalKey<AnimatedListState>();
  List<MDNews> lsNews = [];
  List<MDPromotion> lsPro = [];
@@ -41,7 +41,16 @@ class _NewsState extends State<News> {
   Widget build(BuildContext context) {
     print(lsNews);
     return Material(
-      child:  Container(
+      child: Scaffold(
+        appBar: AppBar(
+          flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.bottomLeft,
+                  end: Alignment.topRight,
+                  colors: <Color>[Colors.teal.shade900, Colors.teal.shade600])),
+        ),title: Text('Tin Tức', style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),) ,
+        body:Container(
       // padding: EdgeInsets.only(left: 15, right: 15),
       color: Colors.grey.shade200,
       child: ListView.builder(
@@ -108,7 +117,7 @@ class _NewsState extends State<News> {
         ));
           }),
     )
-   ,
+   ,)  ,
     );
   }
 

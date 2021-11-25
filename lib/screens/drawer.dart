@@ -63,7 +63,7 @@ class _MainWidgetState extends State<MainWidget> {
     if (widget.user != null) {
       FetchData();
     }
-    ;
+    
   }
 
   Future<void> refreshList() async {

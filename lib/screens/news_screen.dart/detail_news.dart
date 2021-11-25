@@ -35,7 +35,7 @@ class _DetailNewsState extends State<DetailNews> {
             height: size.height * (1 / 3) + 50,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('${widget.news!.imageNews}'),
+                    image: NetworkImage('${widget.news!.imageNews}'),
                     fit: BoxFit.cover)),
           ),
           Container(
@@ -56,8 +56,9 @@ class _DetailNewsState extends State<DetailNews> {
                   '${widget.news!.nameNews}',
                   maxLines: 3,
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Lemonada',
                       color: Colors.teal.shade900),
                 ),
                 SizedBox(

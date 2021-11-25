@@ -1,12 +1,10 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:plants_app/model/mddetailorder.dart';
 import 'package:plants_app/model/mddetailshoppingcart.dart';
 class FirShoppingCart{
   MDDetailShoppingCart mdDetailShoppingCart = new MDDetailShoppingCart();
-    Future<void> addToShoppingCart(String idKhachHang, String idPro,String namePro,String price,String category,String image) async {
+    Future<void> addToShoppingCart(String idKhachHang, String idPro,String namePro,String price,String category,String image,) async {
     CollectionReference shoppingCart = FirebaseFirestore.instance.collection('ShoppingCart');
     List<MDDetailShoppingCart>itemList=[];
       final shoppingCartId= FirebaseFirestore.instance.collection('ShoppingCart').where('idProduct',isEqualTo: idPro);
@@ -38,7 +36,9 @@ class FirShoppingCart{
       'images':mdDetailShoppingCart.images,
       'quantity':mdDetailShoppingCart.quantity
     });
-     SnackBar(content: Text('Thêm vào giỏ hàng thành công'),);}
+    
+     SnackBar(content: Text('Thêm vào giỏ hàng thành công'),);
+     }
      SnackBar(content: Text('Sản Phẩm đã có trong giỏ hàng'),);
     }
     else {
@@ -60,5 +60,21 @@ class FirShoppingCart{
       
         ));}));
         return itemList;
+   }
+   Future updateProduct(String idPro, String quantity) async {
+     String? id;
+    final shoppingCartId= FirebaseFirestore.instance.collection('ShoppingCart').where('idProduct',isEqualTo: idPro);
+    await shoppingCartId.get().then((value) => value.docs.forEach(
+        (element) {id=element.id;}));
+      // print(shoppingCartId.id);
+      final deshoppingCartId= FirebaseFirestore.instance.collection('ShoppingCart').doc(id).update({'quantity':quantity});
+   }
+   Future removeProduct(String idPro) async {
+     String? id;
+    final shoppingCartId= FirebaseFirestore.instance.collection('ShoppingCart').where('idProduct',isEqualTo: idPro);
+    await shoppingCartId.get().then((value) => value.docs.forEach(
+        (element) {id=element.id;}));
+      // print(shoppingCartId.id);
+      final deshoppingCartId= FirebaseFirestore.instance.collection('ShoppingCart').doc(id).delete();
    }
 }
