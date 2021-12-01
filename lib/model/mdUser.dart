@@ -6,7 +6,7 @@ class MDUser {
   String? email;
   String? birthday;
   String? address;
-  int? point;
+  String? point;
   String? image;
   MDUser(
       {this.idUser,

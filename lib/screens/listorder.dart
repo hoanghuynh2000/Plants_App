@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/colorsize/gradienticon.dart';
 import 'package:plants_app/colorsize/gradienttext.dart';
 import 'package:plants_app/fake/fakelistorder.dart';
 import 'package:plants_app/fake/productfake.dart';
+import 'package:plants_app/firebase/detailorder.dart';
+import 'package:plants_app/firebase/oder.dart';
 import 'package:plants_app/model/mdorder.dart';
 import 'package:plants_app/model/mddetailorder.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
@@ -19,9 +23,42 @@ class ListOrder extends StatefulWidget {
 
 class _ListOrderState extends State<ListOrder> {
   final controller = PageController();
-
+ String UID="";
+      List<mdDetailOrder> listProduct= [];
+      List<mdOrder>listOrder=[];
+   FetchUserInfo() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    UID = user!.uid;
+  }
+    FetchDataPro()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(); 
+    dynamic result = await FirListOder().getListOrder(UID);
+     dynamic resultPro = await FirListDetailOrder().getListDetailOrder();
+    if (result == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+        
+          listOrder = result;
+          listProduct=resultPro;
+        });
+}
+      
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchUserInfo();
+    FetchDataPro();
+  }
   @override
   Widget build(BuildContext context) {
+    FetchDataPro();
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
@@ -131,211 +168,75 @@ class _ListOrderState extends State<ListOrder> {
                 ),
               ),
             ],
-          ),
+            ),
         ));
   }
-}
-
+  
 Widget All() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/caydemo.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder = fakeListOrder.toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+
+  
+  return Item(listOrder, listProduct);
 }
 
 Widget DaHuy() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/cay1.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder =
-      fakeListOrder.where((element) => element.state == 'Đã hủy').toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+  
+  List<mdOrder> listOrder1 =
+      listOrder.where((element) => element.state == 'Đã hủy').toList();
+      FirListDetailOrder().getListDetailOrder();
+  
+  return Item(listOrder1, listProduct);
 }
 
 Widget GiaoThanhCong() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/caydemo.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder = fakeListOrder
+  
+  List<mdOrder> listOrder1 = listOrder
       .where((element) => element.state == 'Giao thành công')
       .toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+
+  return Item(listOrder1, listProduct);
 }
 
 Widget DangGiaoHang() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/caydemo.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder = fakeListOrder
+
+  List<mdOrder> listOrder1 = listOrder
       .where((element) => element.state == 'Đang giao hàng')
       .toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+ 
+  return Item(listOrder1, listProduct);
 }
 
 Widget DaXacNhan() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/caydemo.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder =
-      fakeListOrder.where((element) => element.state == 'Đã xác nhận').toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+ 
+  List<mdOrder> listOrder1 =
+      listOrder.where((element) => element.state == 'Đã xác nhận').toList();
+
+  return Item(listOrder1, listProduct);
 }
 
 Widget ChoXacNhan() {
-  String? idOrder;
-  String? state;
-  String? date;
-  String image = "assets/images/caydemo.png";
-  int soLuong = 2;
-  int total = 0;
-  List<mdOrder> listOrder = fakeListOrder
+
+  List<mdOrder> listOrder1 = listOrder
       .where((element) => element.state == 'Chờ xác nhận')
       .toList();
-  late List<mdDetailOrder> listDetailOrder = [
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    ),
-    mdDetailOrder(
-      idDetailOrder: '12345',
-      idDetailShopping: '123',
-      idOrder: '1223',
-      idPro: '123456',
-      quantity: 2,
-      totalPrice: 140000,
-    )
-  ]; //
+
   List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder, listPro);
+  return Item(listOrder1, listProduct);
 }
 
-Stack Item(List listOrder, List listPro) {
+Stack Item(List<mdOrder> listOrder, List<mdDetailOrder> listPro) {
   return Stack(
     children: [
       ListView.builder(
           shrinkWrap: true,
           itemCount: listOrder.length,
           itemBuilder: (context, index) {
+            String idOrder=listOrder[index].idOrder.toString();
+            List<mdDetailOrder>listProduct1= listPro.where((element) => element.idOrder==listOrder[index].idOrder).toList();
             return InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          DetailsOrder(mdDetail: listOrder[index].idOrder)));
+                          DetailsOrder(mdDetail: idOrder)));
                 },
                 child: Container(
                   margin: EdgeInsets.only(left: 15, right: 15, top: 5),
@@ -352,6 +253,7 @@ Stack Item(List listOrder, List listPro) {
                             width: MediaQuery.of(context).size.width * 0.5,
                             child: Text(
                               'Mã đơn hàng: ${listOrder[index].idOrder}',
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontSize: 17,
@@ -367,7 +269,7 @@ Stack Item(List listOrder, List listPro) {
                       ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          itemCount: listPro.length,
+                          itemCount: listProduct1.length,
                           itemBuilder: (context, index) {
                             return Container(
                                 margin: EdgeInsets.only(left: 5, right: 5),
@@ -383,8 +285,8 @@ Stack Item(List listOrder, List listPro) {
                                             width: 60,
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
-                                                    image: AssetImage(
-                                                        '${listPro[index].imgProduct}'),
+                                                    image: NetworkImage(
+                                                        '${listProduct1[index].imagePro}'),
                                                     fit: BoxFit.cover)),
                                           ),
                                           SizedBox(
@@ -411,7 +313,7 @@ Stack Item(List listOrder, List listPro) {
                                                   ),
                                                 ),
                                                 Text(
-                                                    '${NumberFormat('###,###').format(listPro[index].pricePro)}',
+                                                    '${NumberFormat('###,###').format(int.parse(listProduct1[index].price.toString()))}',
                                                     style: TextStyle(
                                                         color: Colors.red,
                                                         fontSize: 16))
@@ -424,7 +326,7 @@ Stack Item(List listOrder, List listPro) {
                                                 MainAxisAlignment.end,
                                             children: [
                                               Text(
-                                                  '${listPro[index].quantity}'),
+                                                  '${listProduct1[index].quantity}'),
                                               SizedBox(
                                                 width: 15,
                                               )
@@ -451,7 +353,7 @@ Stack Item(List listOrder, List listPro) {
                         children: [
                           Text('${listOrder[index].date}'),
                           Text(
-                            'Tổng tiền: ${NumberFormat('###,###').format(listOrder[index].totalPrice)}',
+                            'Tổng tiền: ${NumberFormat('###,###').format(int.parse(listOrder[index].totalPayment.toString()))}',
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
                           ),
@@ -463,4 +365,6 @@ Stack Item(List listOrder, List listPro) {
           })
     ],
   );
+}
+
 }

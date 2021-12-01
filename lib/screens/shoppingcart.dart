@@ -26,15 +26,35 @@ class _ShoppingCartState extends State<ShoppingCart> {
  TextEditingController? countController;
   int count=1;
    String UID="";
+      List<DetailProduct> listProduct= [];
    FetchUserInfo() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     UID = user!.uid;
   }
+    FetchDataPro()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(); 
+    dynamic result = await DataProduct().getAllProductList();
+     //dynamic resultPro = await DataProduct().getCateProductList(widget.detailProduct.idCate);
+    if (result == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+        
+          listProduct = result;
+        });
+}
+      
+    }
+  }
+  
   FetchDataShoppingCart()async{
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(); 
     dynamic result = await FirShoppingCart().getListShoppingCart(UID);
+     //dynamic resultPro = await DataProduct().getCateProductList(widget.detailProduct.idCate);
     if (result == null) {
       print('unable');
     } else {
@@ -60,11 +80,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
     super.initState();
     FetchDataShoppingCart();
     FetchUserInfo();
-    
+     FetchDataPro();
   }
 
   int TinhTien(List<MDDetailShoppingCart> listPro){
     FetchDataShoppingCart();
+   
     int tongPro=0;
     int tongCong=0;
     for(int i=0;i<listPro.length;i++)
@@ -76,6 +97,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
     }
     return tongCong;
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -111,8 +133,11 @@ class _ShoppingCartState extends State<ShoppingCart> {
                     child: ListView.builder(
                         itemCount: listPro.length,
                         itemBuilder: (context, index) {
+                       // FetchDataPro(listPro[index].idProduct);
                          int dem=int.parse(listPro[index].quantity);
+                         
                           final item= listPro[index];
+                          
                           void remove(BuildContext context) {
                       FirShoppingCart().removeProduct(listPro[index].idProduct);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sản phẩm đã được xóa khỏi giỏ hàng')));
@@ -193,6 +218,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                       onPressed: () {
                        
                         setState(() {
+                         
                           if(dem>1){
                             dem=dem-1;
                          FirShoppingCart().updateProduct(listPro[index].idProduct,dem.toString());
@@ -216,12 +242,22 @@ class _ShoppingCartState extends State<ShoppingCart> {
                   width: 20,
                   child: IconButton(
                       onPressed: () {
-                        
-                         
+                
                         setState(() {
-                         if(dem<=20){
-                            dem=dem+1;
+                          List<DetailProduct>listDtail=[];
+                          listDtail=listProduct.where((element) => element.id== listPro[index].idProduct).toList();
+                          print(listPro[index].idProduct);
+                         if(dem<20){
+                           
+                           if(int.parse(listPro[index].quantity) >= int.parse(listDtail[0].quantity)){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Số lượng chỉ còn ${listDtail[0].quantity}')));
+                            }
+                         else{
+                           dem=dem+1;
+                            
                          FirShoppingCart().updateProduct(listPro[index].idProduct,dem.toString());
+                       
+                         }
                           }else{
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Mua số lượng lớn vui lòng liên hệ cửa hàng để biết thêm thông tin')));
                         }});

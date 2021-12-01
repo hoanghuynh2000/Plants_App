@@ -48,7 +48,7 @@ class UserResponsitory {
     MDUser? mdUser = new MDUser();
     mdUser.email = auth.currentUser!.email;
     mdUser.name = displayName;
-    mdUser.point = 0;
+    mdUser.point = '0';
     mdUser.birthday = '01/01/1900';
     mdUser.address = 'Thành Phố Hồ Chí Minh';
     mdUser.gender = 'Nam';

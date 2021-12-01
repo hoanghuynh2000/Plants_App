@@ -1,10 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/fake/fakelistorder.dart';
 import 'package:plants_app/fake/productfake.dart';
+import 'package:plants_app/firebase/detailorder.dart';
+import 'package:plants_app/firebase/oder.dart';
 import 'package:plants_app/model/mddetailorder.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:plants_app/model/mdorder.dart';
+
+import 'listorder.dart';
 
 class DetailsOrder extends StatefulWidget {
   String mdDetail;
@@ -15,16 +21,43 @@ class DetailsOrder extends StatefulWidget {
 }
 
 class _DetailsOrderState extends State<DetailsOrder> {
-  String? nameCus = 'Nguyen Nguyen';
-  String? phoneCus = '0123456xxx';
-  String? addressCus = '828 Su Van Hanh';
+  
+  
+      List<mdDetailOrder> listProduct= [mdDetailOrder(idKhachHang: '',idOrder: '',idPro: '',namePro: '',price: '',imagePro: '')];
+      List<mdOrder>listOrder=[mdOrder(idCus: '',idOrder: '',nameCus:'',addressCus: '',phoneCus: '',promotion: '1',
+      totalPrice: '1',totalPayment: '1',state: '',statePayment: '',date:'',dateDelivery: '',payment: '',point: '1',quantity: '1',costShip: '1')];
+  
+    FetchDataPro()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(); 
+    dynamic result = await FirListOder().getListOrderid(widget.mdDetail);
+     dynamic resultPro = await FirListDetailOrder().getListDetailOrder();
+    if (result == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+        
+          listOrder = result;
+          listProduct=resultPro;
+        });
+}
+      
+    }
+  }           
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchDataPro();
+  } 
   @override
   Widget build(BuildContext context) {
+    FetchDataPro();
+    int index=0;
     double width = MediaQuery.of(context).size.width;
-    List<mdOrder> list = fakeListOrder
-        .where((element) => element.idOrder == widget.mdDetail)
-        .toList();
-    List<DetailProduct> listPro = FakeProduct.toList();
+   List<mdDetailOrder>listProduct1= listProduct.where((element) => element.idOrder==widget.mdDetail).toList();
+    FetchDataPro();
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
@@ -36,7 +69,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
             children: [
               Container(
                 margin: EdgeInsets.only(top: 15, left: 15),
-                child: Text('${list[0].state}',
+                child: Text('${listOrder[index].idOrder}',
                     style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -44,6 +77,36 @@ class _DetailsOrderState extends State<DetailsOrder> {
                         color: Colors.teal.shade700)),
               ),
               SizedBox(height: 15),
+                   Container(
+                     width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 15, right: 15),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  
+                  children: [
+                    
+                       Text(
+                            '${listOrder[0].state}!',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                               ),
+                          ),
+                        
+                        Text(
+                          '${listOrder[0].statePayment}',
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
+                     
+                   
+                  ],
+                ),
+              ),
+          SizedBox(height: 10),
               Container(
                 margin: EdgeInsets.only(left: 15, right: 15),
                 padding: EdgeInsets.all(15),
@@ -53,28 +116,27 @@ class _DetailsOrderState extends State<DetailsOrder> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                    
                         Container(
                           child: Text(
-                            '$nameCus',
+                            '${listOrder[0].nameCus}',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                fontFamily: 'itim'),
+                               ),
                           ),
-                        ),
+                        ),SizedBox(
+                      height: 10,
+                    ),
                         Text(
-                          '$phoneCus',
+                          '${listOrder[0].phoneCus}',
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
-                      ],
-                    ),
+                     
                     SizedBox(
                       height: 10,
                     ),
-                    Text('$addressCus', style: TextStyle(fontSize: 15))
+                    Text('${listOrder[0].addressCus}', style: TextStyle(fontSize: 15))
                   ],
                 ),
               ),
@@ -87,7 +149,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: listPro.length,
+                    itemCount: listProduct1.length,
                     itemBuilder: (context, index) {
                       return Container(
                           margin: EdgeInsets.only(left: 5, right: 5),
@@ -102,8 +164,8 @@ class _DetailsOrderState extends State<DetailsOrder> {
                                       width: 60,
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
-                                              image: AssetImage(
-                                                  '${listPro[index].imgProduct}'),
+                                              image: NetworkImage(
+                                                  '${listProduct[index].imagePro}'),
                                               fit: BoxFit.cover)),
                                     ),
                                     SizedBox(
@@ -119,7 +181,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${listPro[index].namePro}',
+                                            '${listProduct[index].namePro}',
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -127,7 +189,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
                                             ),
                                           ),
                                           Text(
-                                              '${NumberFormat('###,###').format(listPro[index].pricePro)}',
+                                              '${NumberFormat('###,###').format(int.parse( listProduct[index].price.toString()))}',
                                               style: TextStyle(
                                                   color: Colors.red,
                                                   fontSize: 16))
@@ -138,7 +200,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
                                         child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text('${listPro[index].quantity}'),
+                                        Text('${listProduct[index].quantity}'),
                                         SizedBox(
                                           width: 15,
                                         )
@@ -176,13 +238,13 @@ class _DetailsOrderState extends State<DetailsOrder> {
                         Text('Phí vận chuyển  ',
                             style: TextStyle(fontSize: 15)),
                         Text('Giảm giá  ', style: TextStyle(fontSize: 15)),
+                        Text('Đổi điểm  ', style: TextStyle(fontSize: 15)),
                         SizedBox(
                           height: 10,
                         ),
                         Text('Thanh Toán  ',
                             style: TextStyle(
-                                fontFamily: 'Lemonada',
-                                fontSize: 13,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold))
                       ],
                     ),
@@ -194,20 +256,24 @@ class _DetailsOrderState extends State<DetailsOrder> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                            '${NumberFormat('###,###').format(list[0].totalPrice)}',
+                            '${NumberFormat('###,###').format(int.parse(listOrder[0].totalPrice.toString()))}',
                             style: TextStyle(fontSize: 16)),
                         Text(
-                            '${NumberFormat('###,###').format(list[0].costShip)}',
+                            '${NumberFormat('###,###').format(int.parse(listOrder[0].costShip.toString()))}',
                             style: TextStyle(fontSize: 16)),
                         Text(
-                            '-${NumberFormat('###,###').format(list[0].promotion)}',
+                            '-${NumberFormat('###,###').format(int.parse(listOrder[0].promotion.toString()))}',
+                            style: TextStyle(
+                                color: Colors.red.shade800, fontSize: 16)),
+                                Text(
+                            '-${NumberFormat('###,###').format(int.parse(listOrder[0].point.toString()))}',
                             style: TextStyle(
                                 color: Colors.red.shade800, fontSize: 16)),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
-                            '${NumberFormat('###,###').format(list[0].totalPrice)}',
+                            '${NumberFormat('###,###').format(int.parse(listOrder[0].totalPayment.toString()))}',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ],
@@ -218,7 +284,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
               Container(
                 width: width,
                 margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.only(top: 20,bottom: 20,left: 15),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white),
@@ -226,20 +292,63 @@ class _DetailsOrderState extends State<DetailsOrder> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mã đơn hàng: ${list[0].idOrder}',
+                      'Mã đơn hàng: ${listOrder[0].idOrder}',
                       style: TextStyle(
                           color: Colors.teal.shade800,
                           fontSize: 17,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text('Đặt hàng vào ngày ${list[0].date}',
-                        style: TextStyle(color: Colors.grey.shade700)),
-                    Text('Phương thức thanh toán bằng ${list[0].payment}',
-                        style: TextStyle(color: Colors.grey.shade700)),
+                    SizedBox(height: 10,),
+                    Text('Đặt hàng vào ngày  ${listOrder[0].date}',
+                        style: TextStyle(color: Colors.grey.shade700,fontSize: 16)),
+                        Text('Ngày dự kiến giao hàng ${listOrder[0].dateDelivery}',
+                        style: TextStyle(fontSize: 16,color: Colors.grey.shade700)),
+                    Text('Phương thức thanh toán: ${listOrder[0].payment}',
+                        style: TextStyle(color: Colors.grey.shade700,fontSize: 16)),
                   ],
                 ),
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              button()
+            ],
+          ),
+        ));
+  }
+   _dismissDialog() {
+    Navigator.pop(context);
+  }
+  void _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Hủy đặt hàng'),
+            content: Text('Bạn có chắc là hủy đơn hàng ${listOrder[0].idOrder} ?'),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    _dismissDialog();
+                  },
+                  child: Text('Đóng')),
+              TextButton(
+                onPressed: () {
+              setState(() {
+                  FirListDetailOrder().updateOrder(listOrder[0].idOrder.toString()); 
+                    Navigator.of(context).pop(MaterialPageRoute(
+                                    builder: (context) => ListOrder()));
+              });    
+                 
+                },
+                child: Text('Đồng ý'),
+              )
+            ],
+          );
+        });
+  }
+  Widget button(){
+    if(listOrder[0].state=='Chờ xác nhận')
+              {
+             
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   margin: EdgeInsets.all(15),
                   child: MaterialButton(
@@ -248,7 +357,14 @@ class _DetailsOrderState extends State<DetailsOrder> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15))),
                     color: Colors.red.shade700,
-                    onPressed: () {},
+                    onPressed: ()  {
+                  
+                      setState(() {
+                 
+                  _showMaterialDialog();       
+                       
+                      });
+                    },
                     child: Text(
                       'Hủy Đơn Hàng',
                       style: TextStyle(
@@ -258,9 +374,13 @@ class _DetailsOrderState extends State<DetailsOrder> {
                     ),
                   ),
                 )
-              ])
-            ],
-          ),
-        ));
+              ]); }
+              else{
+               return Center(
+                 heightFactor: 4,
+                 child: Text('Không thể hủy đơn hàng',textAlign: TextAlign.center,),)
+                 
+                 ; 
+              }
   }
 }
