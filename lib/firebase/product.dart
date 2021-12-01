@@ -46,6 +46,23 @@ class DataProduct{
     
 
    }
+   Future getProductQuantityList(String? id)async{
+   await Firebase.initializeApp();
+    WidgetsFlutterBinding.ensureInitialized();
+    List<DetailProduct> itemList=[];
+    DetailProduct? item;
+      await productList.get().then((value) => value.docs.forEach(
+        (element) {itemList.add(DetailProduct.fromJson(element.data()));}));
+        
+    List<DetailProduct>itemList1=itemList.where((element) => element.id==id).toList();
+        item=itemList1[0];
+        return itemList1[0];
+        
+    
+        
+    
+
+   }
    Future getAllProductList()async{
      await Firebase.initializeApp();
     WidgetsFlutterBinding.ensureInitialized();

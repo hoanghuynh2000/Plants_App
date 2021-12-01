@@ -27,7 +27,7 @@ class DetailProduct {
     imgProduct: json['ImageURL'],
     state: json['TinhTrang'],
     quantity: json['SoluongSp'],
-
+    
   );
 }
 }

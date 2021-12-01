@@ -19,4 +19,16 @@ class DataPromotion{
     
 
    }
+   Future getIDPromotion(String id)async{
+     await Firebase.initializeApp();
+    WidgetsFlutterBinding.ensureInitialized();
+    List<MDPromotion> itemList=[];
+    List<MDPromotion> itemList1=[];
+      await promotionList.get().then((value) => value.docs.forEach(
+        (element) {itemList.add(MDPromotion.fromJson(element.data()));}));
+        itemList1=itemList.where((element) => element.id==id).toList();
+        return itemList1;
+    
+
+   }
 }

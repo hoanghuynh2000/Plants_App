@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:plants_app/colorsize/gradienticon.dart';
 import 'package:plants_app/colorsize/gradienttext.dart';
+import 'package:plants_app/firebase/shoppingcart.dart';
+import 'package:plants_app/model/mddetailshoppingcart.dart';
 import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/news_screen.dart/news.dart';
@@ -17,6 +21,37 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  String UID="";
+   List<MDDetailShoppingCart> listShopping = [];
+    FetchUserInfo() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    if(user!=null){
+    UID = user.uid;
+    }
+  }
+  
+ 
+  FetchDataPro() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+     dynamic resultshopping = await FirShoppingCart().getListShoppingCart(UID);
+    if (resultshopping == null) {
+      print('unable');
+    } else {
+      setState(() {
+       
+        listShopping=resultshopping;
+      });
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FetchUserInfo();
+    FetchDataPro();
+  }
   int currentTab = 0;
   Color noActive = Colors.grey.shade500;
   Color active = Colors.teal.shade800;
@@ -326,7 +361,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   child: Center(
                     child: Text(
-                      '5',
+                      '${listShopping.length}',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
