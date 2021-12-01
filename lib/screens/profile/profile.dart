@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/firebase/UserFirebase.dart';
 import 'package:plants_app/handle/refresh.dart';
@@ -26,6 +30,10 @@ class _ProfileState extends State<Profile> {
   final GlobalKey<RefreshIndicatorState> key =
       new GlobalKey<RefreshIndicatorState>();
   List<int> dataload = [];
+  PickedFile? _imageFile;
+  File? file;
+  bool check = false;
+  final ImagePicker _picker = ImagePicker();
   Future loadList() async {
     keyRefresh.currentState?.show();
     await Future.delayed(Duration(milliseconds: 4000));
@@ -36,6 +44,8 @@ class _ProfileState extends State<Profile> {
       setState(() => this.dataload = data);
     }
   }
+
+  final _formKey = GlobalKey<FormState>();
 
   String? name;
   String? gender;
@@ -73,10 +83,25 @@ class _ProfileState extends State<Profile> {
     String email,
     String address,
     String image,
-  ) {
+  ) async {
     String? id = widget.user!.uid;
+    if (file != null) {
+      image = await uploadImage();
+    }
     DataUser()
         .UpdateUser(id, name, gender, birthday, phoneNumber, address, image);
+  }
+
+  Future<String> uploadImage() async {
+    String? id = widget.user!.uid;
+
+    var taskSnapshot = await FirebaseStorage.instance
+        .ref()
+        .child("profile")
+        .child(id + "_" + file!.path)
+        .putFile(file!);
+
+    return taskSnapshot.ref.getDownloadURL();
   }
 
   String? _character;
@@ -114,290 +139,369 @@ class _ProfileState extends State<Profile> {
                 child: Stack(
                   children: [
                     Container(
-                      height: size.height - 150,
-                      margin: EdgeInsets.only(top: 70),
-                      padding: EdgeInsets.only(top: 80, left: 30, right: 30),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30)),
-                      ),
-                      child: Column(
-                        children: [
-                          TextField(
-                            //textDirection: TextDirection.LTR,
-                            onChanged: (text) {
-                              // setState(() {
-                              //_controllerName.text = text;
-                              name = text;
-                              // });
-                            },
-                            controller: _controllerName,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.teal.shade700)),
-                              labelText: 'Họ Tên',
-                              labelStyle: new TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                  child: Row(children: [
-                                Radio<String>(
-                                  value: 'Nam',
-                                  groupValue: _character,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      _character = value!;
-                                    });
-                                  },
-                                ),
-                                Text('Nam'),
-                              ])),
-                              Container(
-                                  child: Row(children: [
-                                Radio<String>(
-                                  value: 'Nữ',
-                                  groupValue: _character,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      _character = value!;
-                                    });
-                                  },
-                                ),
-                                Text('Nữ'),
-                              ])),
-                              Container(
-                                  child: Row(children: [
-                                Radio<String>(
-                                  value: 'Khác',
-                                  groupValue: _character,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      _character = value!;
-                                    });
-                                  },
-                                ),
-                                Text('Khác'),
-                              ])),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                              decoration: InputDecoration(
-                                suffixIcon: Icon(Icons.calendar_today_rounded),
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.teal.shade700)),
-                                labelText: 'Ngày Sinh',
-                                labelStyle: new TextStyle(color: Colors.grey),
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey)),
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  birthday = newValue!;
-                                });
-                              },
-                              focusNode: AlwaysDisabledFocusNode(),
-                              controller: _controllerBirthday,
-                              onTap: () {
-                                // _selectDate(context);
-                                showDatePicker(
-                                    context: context,
-                                    locale: const Locale('vi'),
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900, 1),
-                                    lastDate: DateTime.now(),
-                                    helpText: 'Ngày Sinh',
-                                    builder: (context, picker) {
-                                      return Theme(
-                                        //TODO: change colors
-                                        data: ThemeData.dark().copyWith(
-                                          colorScheme: ColorScheme.dark(
-                                            primary: Colors.teal.shade400,
-                                            onSecondary: Colors.white,
-                                            // primaryVariant: Colors.white,
-                                            onPrimary: Colors.white,
-                                            surface: Colors.teal.shade400,
-                                            onSurface: Colors.black,
-                                          ),
-                                          dialogBackgroundColor: Colors.white,
-                                        ),
-                                        child: picker!,
-                                      );
-                                    }).then((selectedDate) {
-                                  //pickedDate output format => 2021-03-10 00:00:00.000
-                                  String formattedDate =
-                                      DateFormat('dd/MM/yyyy')
-                                          .format(selectedDate!);
-                                  //TODO: handle selected date
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      birthday = formattedDate.toString();
-                                    });
-                                  }
-                                });
-                              }),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            keyboardType: TextInputType.phone,
-                            //textDirection: TextDirection.LTR,
-                            onChanged: (text) {
-                              // setState(() {
-                              //_controllerName.text = text;
-                              phoneNumber = text;
-                              // });
-                            },
-                            controller: _controllerPhoneNumber,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.teal.shade700)),
-                              labelText: 'Số Điện Thoại',
-                              labelStyle: new TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: (text) {
-                              email = text;
-                            },
-                            enabled: false,
-                            controller: _controllerEmail,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.teal.shade700)),
-                              labelText: 'Email',
-                              labelStyle: new TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade700)),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: (text) {
-                              address = text;
-                            },
-                            controller: _controllerAddress,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.teal.shade700)),
-                              labelText: 'Địa Chỉ',
-                              labelStyle: new TextStyle(color: Colors.grey),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        height: size.height - 150,
+                        margin: EdgeInsets.only(top: 70),
+                        padding: EdgeInsets.only(top: 80, left: 30, right: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30)),
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
                             children: [
-                              MaterialButton(
-                                minWidth: 150,
-                                height: 40,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15))),
-                                color: Colors.teal.shade800,
-                                onPressed: () {
-                                  SubmitUpdate();
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => LayoutDrawer(
-                                            user: widget.user,
-                                            userResponsitory:
-                                                widget.userResponsitory,
-                                          )));
+                              TextFormField(
+                                validator: (text) {
+                                  if (text != null) {
+                                    if (text.isEmpty) {
+                                      return "Vui lòng nhập họ tên";
+                                    }
+                                    return null;
+                                  }
                                 },
-                                child: Text(
-                                  'Cập Nhật',
-                                  style: TextStyle(color: Colors.white),
+                                //textDirection: TextDirection.LTR,
+                                onChanged: (text) {
+                                  // setState(() {
+                                  //_controllerName.text = text;
+                                  name = text;
+                                  // });
+                                },
+                                controller: _controllerName,
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade700)),
+                                  labelText: 'Họ Tên',
+                                  labelStyle: new TextStyle(color: Colors.grey),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
                                 ),
                               ),
-                              MaterialButton(
-                                minWidth: 150,
-                                height: 40,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15))),
-                                color: Colors.red.shade900,
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ChangePassword(
-                                            userResponsitory:
-                                                widget.userResponsitory!,
-                                          )));
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                      child: Row(children: [
+                                    Radio<String>(
+                                      value: 'Nam',
+                                      groupValue: _character,
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          _character = value!;
+                                        });
+                                      },
+                                    ),
+                                    Text('Nam'),
+                                  ])),
+                                  Container(
+                                      child: Row(children: [
+                                    Radio<String>(
+                                      value: 'Nữ',
+                                      groupValue: _character,
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          _character = value!;
+                                        });
+                                      },
+                                    ),
+                                    Text('Nữ'),
+                                  ])),
+                                  Container(
+                                      child: Row(children: [
+                                    Radio<String>(
+                                      value: 'Khác',
+                                      groupValue: _character,
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          _character = value!;
+                                        });
+                                      },
+                                    ),
+                                    Text('Khác'),
+                                  ])),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                  decoration: InputDecoration(
+                                    suffixIcon:
+                                        Icon(Icons.calendar_today_rounded),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.teal.shade700)),
+                                    labelText: 'Ngày Sinh',
+                                    labelStyle:
+                                        new TextStyle(color: Colors.grey),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey)),
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      birthday = newValue!;
+                                    });
+                                  },
+                                  focusNode: AlwaysDisabledFocusNode(),
+                                  controller: _controllerBirthday,
+                                  onTap: () {
+                                    // _selectDate(context);
+                                    showDatePicker(
+                                        context: context,
+                                        locale: const Locale('vi'),
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1900, 1),
+                                        lastDate: DateTime.now(),
+                                        helpText: 'Ngày Sinh',
+                                        builder: (context, picker) {
+                                          return Theme(
+                                            //TODO: change colors
+                                            data: ThemeData.dark().copyWith(
+                                              colorScheme: ColorScheme.dark(
+                                                primary: Colors.teal.shade400,
+                                                onSecondary: Colors.white,
+                                                // primaryVariant: Colors.white,
+                                                onPrimary: Colors.white,
+                                                surface: Colors.teal.shade400,
+                                                onSurface: Colors.black,
+                                              ),
+                                              dialogBackgroundColor:
+                                                  Colors.white,
+                                            ),
+                                            child: picker!,
+                                          );
+                                        }).then((selectedDate) {
+                                      //pickedDate output format => 2021-03-10 00:00:00.000
+                                      String formattedDate =
+                                          DateFormat('dd/MM/yyyy')
+                                              .format(selectedDate!);
+                                      //TODO: handle selected date
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          birthday = formattedDate.toString();
+                                        });
+                                      }
+                                    });
+                                  }),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                validator: (text) {
+                                  if (text!.isEmpty || text.length < 10) {
+                                    return "Vui lòng kiểm tra số điện thoại";
+                                  }
+                                  return null;
                                 },
-                                child: Text(
-                                  'Đổi Mật Khẩu',
-                                  style: TextStyle(color: Colors.white),
+                                keyboardType: TextInputType.phone,
+                                //textDirection: TextDirection.LTR,
+                                onChanged: (text) {
+                                  // setState(() {
+                                  //_controllerName.text = text;
+                                  phoneNumber = text;
+                                  // });
+                                },
+                                controller: _controllerPhoneNumber,
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade700)),
+                                  labelText: 'Số Điện Thoại',
+                                  labelStyle: new TextStyle(color: Colors.grey),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: (text) {
+                                  email = text;
+                                },
+                                enabled: false,
+                                controller: _controllerEmail,
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade700)),
+                                  labelText: 'Email',
+                                  labelStyle: new TextStyle(color: Colors.grey),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.grey.shade700)),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                validator: (text) {
+                                  if (text!.isEmpty) {
+                                    return "Vui lòng nhập địa chỉ";
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: (text) {
+                                  address = text;
+                                },
+                                controller: _controllerAddress,
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.teal.shade700)),
+                                  labelText: 'Địa Chỉ',
+                                  labelStyle: new TextStyle(color: Colors.grey),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey)),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              if (check == true) ...[
+                                Container(
+                                  child: buildLoadingUi(),
+                                ),
+                              ],
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  MaterialButton(
+                                    minWidth: 150,
+                                    height: 40,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                    color: Colors.teal.shade800,
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        setState(() {
+                                          SubmitUpdate();
+                                          check = true;
+                                        });
+                                        Timer(Duration(milliseconds: 5000), () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LayoutDrawer(
+                                                        userResponsitory: widget
+                                                            .userResponsitory,
+                                                      )));
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      'Cập Nhật',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  MaterialButton(
+                                    minWidth: 150,
+                                    height: 40,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                    color: Colors.red.shade900,
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChangePassword(
+                                                    userResponsitory: widget
+                                                        .userResponsitory!,
+                                                  )));
+                                    },
+                                    child: Text(
+                                      'Đổi Mật Khẩu',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                ],
                               )
                             ],
-                          )
-                        ],
-                      ),
-                    ),
+                          ),
+                        )),
                     Align(
                         alignment: Alignment.center,
                         child: Stack(
                           alignment: Alignment.center,
                           children: <Widget>[
-                            Container(
-                                width: 135,
-                                height: 135,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                      colors: [
-                                        Colors.teal.shade900,
-                                        Colors.teal.shade500,
-                                        Colors.teal.shade50
-                                      ]),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100)),
-                                ),
-                                padding: EdgeInsets.all(3),
-                                child: ClipRRect(
-                                  // width: 130,
-                                  // height: 130,
-                                  borderRadius: BorderRadius.circular(100.0),
-                                  child: FadeInImage(
-                                    placeholder:
-                                        AssetImage('./assets/images/load.gif'),
-                                    image: NetworkImage('${image}'),
-                                    fit: BoxFit.cover,
+                            if (file == null) ...[
+                              Container(
+                                  width: 135,
+                                  height: 135,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.bottomLeft,
+                                        end: Alignment.topRight,
+                                        colors: [
+                                          Colors.teal.shade900,
+                                          Colors.teal.shade500,
+                                          Colors.teal.shade50
+                                        ]),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(100)),
                                   ),
-                                )),
+                                  padding: EdgeInsets.all(3),
+                                  child: ClipRRect(
+                                    // width: 130,
+                                    // height: 130,
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    child: FadeInImage(
+                                      placeholder: AssetImage(
+                                          './assets/images/load.gif'),
+                                      image: NetworkImage('$image'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )),
+                            ] else ...[
+                              Container(
+                                  width: 135,
+                                  height: 135,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        begin: Alignment.bottomLeft,
+                                        end: Alignment.topRight,
+                                        colors: [
+                                          Colors.teal.shade900,
+                                          Colors.teal.shade500,
+                                          Colors.teal.shade50
+                                        ]),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(100)),
+                                  ),
+                                  padding: EdgeInsets.all(3),
+                                  child: ClipRRect(
+                                    // width: 130,
+                                    // height: 130,
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    child: FadeInImage(
+                                      placeholder: AssetImage(
+                                          './assets/images/load.gif'),
+                                      image: FileImage(file!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )),
+                            ],
                             Positioned(
                               bottom: 1.0,
                               right: 5.0,
@@ -411,7 +515,12 @@ class _ProfileState extends State<Profile> {
                                   borderRadius: BorderRadius.circular(50.0),
                                 ),
                                 child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: ((builder) => bottomSheet()),
+                                      );
+                                    },
                                     icon: Icon(
                                       Icons.add_a_photo_rounded,
                                       size: 20,
@@ -441,6 +550,72 @@ class _ProfileState extends State<Profile> {
         ..selection = TextSelection.fromPosition(TextPosition(
             offset: _controllerBirthday.text.length,
             affinity: TextAffinity.upstream));
+    }
+  }
+
+  Widget buildLoadingUi() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget bottomSheet() {
+    return Container(
+      height: 100.0,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Chọn hình ảnh từ ",
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            MaterialButton(
+              child: Row(
+                children: [
+                  Icon(Icons.camera_alt),
+                  Text("Máy ảnh"),
+                ],
+              ),
+              onPressed: () {
+                takePhoto(ImageSource.camera);
+                if (file != null) {
+                  uploadImage();
+                }
+              },
+            ),
+            MaterialButton(
+              child: Row(
+                children: [Icon(Icons.image), Text("Thư viện ảnh")],
+              ),
+              onPressed: () {
+                takePhoto(ImageSource.gallery);
+                if (file != null) {
+                  uploadImage();
+                }
+              },
+            ),
+          ])
+        ],
+      ),
+    );
+  }
+
+  void takePhoto(ImageSource source) async {
+    XFile? xfile = await ImagePicker().pickImage(source: source);
+    if (xfile != null) {
+      print("file " + xfile.path);
+      file = File(xfile.path);
+      setState(() {});
     }
   }
 

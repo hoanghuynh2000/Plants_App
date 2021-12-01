@@ -7,14 +7,10 @@ import 'package:plants_app/bloc/authBloc/auth_event.dart';
 import 'package:plants_app/bloc/authBloc/auth_state.dart';
 import 'package:plants_app/layoutdrawer.dart';
 import 'package:plants_app/respository/user_respon.dart';
-import 'package:plants_app/screens/contact.dart';
-import 'package:plants_app/screens/dashboard.dart';
-import 'package:plants_app/screens/home.dart';
-import 'package:plants_app/screens/listorder.dart';
 import 'package:plants_app/screens/login.dart';
-import 'package:plants_app/screens/register.dart';
 
 import 'package:plants_app/screens/splash.dart';
+// @dart=2.9
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

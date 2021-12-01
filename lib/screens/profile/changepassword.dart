@@ -147,7 +147,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         return "Vui lòng nhập mật khẩu lớn hơn 6 ký tự";
                       }
                       if (_passNew.text != text) {
-                        return "Please validate your entered password";
+                        return "Vui lòng kiểm tra lại mật khẩu";
                       }
                       return null;
                     }

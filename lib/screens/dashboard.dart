@@ -3,6 +3,7 @@ import 'package:plants_app/colorsize/gradienticon.dart';
 import 'package:plants_app/colorsize/gradienttext.dart';
 import 'package:plants_app/screens/contact.dart';
 import 'package:plants_app/screens/home.dart';
+import 'package:plants_app/screens/addess_delivery/infor_delivery.dart';
 import 'package:plants_app/screens/news_screen.dart/news.dart';
 import 'package:plants_app/screens/notification.dart';
 import 'package:plants_app/screens/product.dart';
@@ -340,7 +341,10 @@ class _DashboardState extends State<Dashboard> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: InkResponse(
-              onTap: () => print('Search'),
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => InforDelivery()));
+              },
               child: Icon(
                 Icons.search,
                 size: 30.0,

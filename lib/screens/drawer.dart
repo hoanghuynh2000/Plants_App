@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
@@ -63,8 +64,9 @@ class _MainWidgetState extends State<MainWidget> {
     if (widget.user != null) {
       FetchData();
     }
-    
   }
+
+  String? image;
 
   Future<void> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
@@ -77,6 +79,11 @@ class _MainWidgetState extends State<MainWidget> {
     return null;
   }
 
+  FetchImage() async {
+    final ref = FirebaseStorage.instance.ref().child('${itemuser!.image}');
+    image = await itemuser!.image;
+  }
+
   FetchData() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
@@ -86,6 +93,7 @@ class _MainWidgetState extends State<MainWidget> {
     } else {
       setState(() {
         itemuser = result;
+        FetchImage();
       });
     }
   }
@@ -155,8 +163,7 @@ class _MainWidgetState extends State<MainWidget> {
                                               child: FadeInImage(
                                                 placeholder: AssetImage(
                                                     './assets/images/load.gif'),
-                                                image: NetworkImage(
-                                                    '${itemuser!.image}'),
+                                                image: NetworkImage(image!),
                                                 fit: BoxFit.cover,
                                               ),
                                             )),

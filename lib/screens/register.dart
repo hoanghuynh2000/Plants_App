@@ -142,7 +142,7 @@ class _RegisterState extends State<Register> {
                                   TextFormField(
                                     validator: (text) {
                                       if (text!.isEmpty || text.length < 10) {
-                                        return "Vui lòng nhập số điện thoại";
+                                        return "Vui lòng kiểm tra số điện thoại";
                                       }
                                       return null;
                                     },

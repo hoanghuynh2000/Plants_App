@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:plants_app/model/mdUser.dart';
 
@@ -34,7 +35,7 @@ class DataUser {
     String address,
     String image,
   ) async {
-    return userList.doc(id).update({
+    return await userList.doc(id).update({
       'name': name,
       'gender': gender,
       'phoneNumber': phoneNumber,

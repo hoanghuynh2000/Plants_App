@@ -21,11 +21,18 @@ class _LayoutDrawerState extends State<LayoutDrawer>
     with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Duration duration = Duration(milliseconds: 400);
+  User? user;
+  FetchUserInfo() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    user = auth.currentUser;
+  }
+
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: duration);
 
     super.initState();
+    FetchUserInfo();
   }
 
   @override
@@ -37,7 +44,7 @@ class _LayoutDrawerState extends State<LayoutDrawer>
           body: Stack(
             children: [
               DrawerParent(
-                user: widget.user,
+                user: user,
                 userResponsitory: widget.userResponsitory,
               ),
               Dashboard()

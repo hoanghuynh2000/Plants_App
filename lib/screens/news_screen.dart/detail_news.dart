@@ -33,10 +33,14 @@ class _DetailNewsState extends State<DetailNews> {
         children: [
           Container(
             height: size.height * (1 / 3) + 50,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage('${widget.news!.imageNews}'),
-                    fit: BoxFit.cover)),
+            decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)))),
+            child: FadeInImage(
+              placeholder: AssetImage('./assets/images/load.gif'),
+              image: NetworkImage('${widget.news!.imageNews}'),
+              fit: BoxFit.fill,
+            ),
           ),
           Container(
             padding: EdgeInsets.all(20),
