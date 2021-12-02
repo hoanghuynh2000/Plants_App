@@ -40,7 +40,26 @@ class AddressFirebase {
               itemList.add(MDAddress.fromJson(element.data()));
             }));
     itemList1 = itemList.where((element) => element.idCus == uid).toList();
-    print(itemList1);
+   
+
+    return itemList;
+  }
+   Future getAddressListId(String id) async {
+    await Firebase.initializeApp();
+    WidgetsFlutterBinding.ensureInitialized();
+    List<MDAddress> itemList = [];
+    List<MDAddress> itemList1 = [];
+
+    // FirebaseAuth auth = FirebaseAuth.instance;
+    // String uid = auth.currentUser!.uid.toString();
+    await users
+        .where('idAddress', isEqualTo: id)
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              itemList.add(MDAddress.fromJson(element.data()));
+            }));
+    itemList1 = itemList.where((element) => element.idAddress == id).toList();
+
 
     return itemList;
   }

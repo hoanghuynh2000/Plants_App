@@ -337,15 +337,21 @@ class _DashboardState extends State<Dashboard> {
               Padding(
                 padding: EdgeInsets.only(top: 12.0, right: 20.0),
                 child: InkResponse(
-                  onTap: () => Navigator.push(
+                  onTap: () { if(UID.isNotEmpty){
+                        
+                         Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => ShoppingCart(),
                     ),
-                  ),
+                );
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng đăng nhập')));
+                      }
+                 },
                   child: Icon(
                     Icons.shopping_basket,
-                    size: 30.0,
+                    size: 40.0,
                     color: Colors.black,
                   ),
                 ),
@@ -377,8 +383,7 @@ class _DashboardState extends State<Dashboard> {
             padding: EdgeInsets.only(right: 20.0),
             child: InkResponse(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => InforDelivery()));
+                
               },
               child: Icon(
                 Icons.search,

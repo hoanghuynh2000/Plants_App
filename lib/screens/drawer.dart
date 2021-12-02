@@ -91,18 +91,21 @@ class _MainWidgetState extends State<MainWidget> {
     if (result == null) {
       print('unable');
     } else {
+      if (this.mounted) {
       setState(() {
         itemuser = result;
         FetchImage();
       });
-    }
+    }}
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     homePageBloc = BlocProvider.of<DrawerBloc>(context);
-
+if (widget.user != null) {
+      FetchData();
+    }
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

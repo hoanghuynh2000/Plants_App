@@ -12,6 +12,8 @@ import 'package:plants_app/model/mddetailshoppingcart.dart';
 import 'package:plants_app/screens/order.dart';
 import 'package:plants_app/screens/product.dart';
 
+import '../layoutdrawer.dart';
+
 class ShoppingCart extends StatefulWidget {
   ShoppingCart({Key? key}) : super(key: key);
 
@@ -30,7 +32,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
    FetchUserInfo() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    UID = user!.uid;
+    if(user!=null)
+    UID = user.uid;
   }
     FetchDataPro()async{
     WidgetsFlutterBinding.ensureInitialized();
@@ -108,6 +111,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
     return  SafeArea(
         child: Scaffold(
             appBar: AppBar(
+               
                 flexibleSpace: Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(

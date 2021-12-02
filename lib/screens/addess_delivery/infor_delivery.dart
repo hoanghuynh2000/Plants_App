@@ -9,6 +9,7 @@ import 'package:plants_app/firebase/address.dart';
 import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdAddress.dart';
 import 'package:plants_app/screens/addess_delivery/add_delivery.dart';
+import 'package:plants_app/screens/order.dart';
 
 class InforDelivery extends StatefulWidget {
   InforDelivery({Key? key}) : super(key: key);
@@ -46,9 +47,10 @@ class _InforDeliveryState extends State<InforDelivery> {
     if (result == null) {
       print('unable');
     } else {
+       if (this.mounted) {
       setState(() {
         address = result;
-      });
+       });}
     }
   }
 
@@ -163,7 +165,14 @@ class _InforDeliveryState extends State<InforDelivery> {
                       ),
                     ],
                   ),
-                  child: Container(
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Order(idAddress: 
+                    address[index].idAddress,)
+                    ));
+                    },
+                    child:Container(
                     height: 100,
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     child: Row(
@@ -205,7 +214,8 @@ class _InforDeliveryState extends State<InforDelivery> {
                             onPressed: () {})
                       ],
                     ),
-                  )),
+                  )) ,
+                  ) ,
               Divider(
                 color: Colors.black,
               )

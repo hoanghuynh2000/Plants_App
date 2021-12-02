@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core and cloud_firestore plugin
@@ -42,8 +43,6 @@ class DataProduct{
     List<DetailProduct>itemList1=itemList.where((element) => element.id==id).toList();
         item=itemList1[0];
         return itemList1[0];
-        
-    
 
    }
    Future getProductQuantityList(String? id)async{
@@ -57,11 +56,17 @@ class DataProduct{
     List<DetailProduct>itemList1=itemList.where((element) => element.id==id).toList();
         item=itemList1[0];
         return itemList1[0];
-        
-    
-        
-    
-
+  
+   }
+    Future updateSoLuong(String idpro, String SL) async {
+     String? id;
+    FirebaseAuth auth=FirebaseAuth.instance;
+     String uid= auth.currentUser!.uid.toString();
+    final shoppingCartId= FirebaseFirestore.instance.collection('products').where('MaSp',isEqualTo: idpro);
+    await shoppingCartId.get().then((value) => value.docs.forEach(
+        (element) {id=element.id;}));
+      // print(shoppingCartId.id);
+      FirebaseFirestore.instance.collection('products').doc(id).update({'SoluongSp':SL});
    }
    Future getAllProductList()async{
      await Firebase.initializeApp();

@@ -3,11 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:plants_app/firebase/address.dart';
 import 'package:plants_app/firebase/detailorder.dart';
 import 'package:plants_app/firebase/oder.dart';
+import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/firebase/promotion.dart';
 import 'package:plants_app/firebase/shoppingcart.dart';
 import 'package:plants_app/layoutdrawer.dart';
+import 'package:plants_app/model/mdAddress.dart';
 import 'package:plants_app/model/mdUser.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -16,8 +19,11 @@ import 'package:plants_app/model/mdpromotion.dart';
 import 'package:plants_app/screens/home.dart';
 import 'package:plants_app/screens/shoppingcart.dart';
 
+import 'addess_delivery/infor_delivery.dart';
+
 class Order extends StatefulWidget {
-  Order({Key? key}) : super(key: key);
+  String? idAddress;
+  Order({Key? key,this.idAddress}) : super(key: key);
 
   @override
   _OrderState createState() => _OrderState();
@@ -25,9 +31,10 @@ class Order extends StatefulWidget {
 
 class _OrderState extends State<Order> {
   bool status = false;
-  String nameCus = "Nguyen Nguyen Nguyen";
-  String phoneCus = "0123456789";
-  String addressCus = "828 Su Van Hanh phuong 13 quan 10 thanh pho Ho Chi Minh";
+  String nameCus = "";
+  String phoneCus = "";
+  String addressCus = "";
+  String city='';
   String dayPayment = "12/10/2021";
   String state='Chờ xác nhận';
   bool cash=false;
@@ -47,11 +54,12 @@ class _OrderState extends State<Order> {
   }
   List<MDUser> listUser=[];
   List<MDPromotion> listPromotion=[];
+  DetailProduct detailProduct= new DetailProduct();
    FetchDataPromotion(String id)async{
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(); 
     dynamic result = await DataPromotion().getIDPromotion(id);
-
+    
     
     if (result == null) {
       print('unable');
@@ -64,6 +72,31 @@ class _OrderState extends State<Order> {
 }else
        print('unable');
     }
+  }
+  List<MDAddress>listAddress=[];
+  FetchAddress() async {
+     WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(); 
+    dynamic result = await AddressFirebase().getAddressListId(widget.idAddress.toString());
+    
+    
+    if (result == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+         
+          listAddress = result;
+          if(listAddress.isNotEmpty){
+          nameCus=listAddress[0].name.toString();
+          phoneCus=listAddress[0].phonenumber.toString();
+          addressCus=listAddress[0].street.toString();
+          city=listAddress[0].address.toString();
+          }
+        });
+}
+    
+  }
   }
  FetchDataShoppingCart()async{
     WidgetsFlutterBinding.ensureInitialized();
@@ -78,7 +111,7 @@ class _OrderState extends State<Order> {
         setState(() {
          listUser=resultUser;
           listPro = result;
-          diemThuong=int.parse(listUser[0].point.toString());
+          diemThuong=int.tryParse(listUser[0].point.toString())!;
           for(int i=0;i<listPro.length;i++)
           {
             soluongtong=soluongtong+int.parse(listPro[i].quantity);
@@ -124,7 +157,7 @@ Widget DoiDiem(bool check ){
     super.initState();
     FetchUserInfo();
     FetchDataShoppingCart();
-    
+    FetchAddress();
   }
   Widget listViewPro(){
       
@@ -193,13 +226,75 @@ Widget DoiDiem(bool check ){
                 });
          
   }
+  Widget AddressDelivery(){
+    if(listAddress.isNotEmpty){
+    return Container(
+                width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                 border: Border.all(color: Colors.teal.shade800,width: 2),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              margin: EdgeInsets.only(top: 15, left: 15, right: 15),
+              padding: EdgeInsets.all(15),
+              child:Row(
+                mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                children: [
+                  
+                  Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 250,
+                    child: Text(nameCus,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                           )),
+                  ),
+                  Text(
+                    phoneCus,
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(addressCus),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(city),
+                ],
+              ),
+              Icon(Icons.navigate_next_outlined),
+              ],) 
+            );}else{
+              return Container(
+                width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.teal.shade800,width: 2),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              margin: EdgeInsets.only(top: 15, left: 15, right: 15),
+              padding: EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.pin_drop_outlined,color: Colors.teal.shade700),
+                 Text('Thêm thông tin giao hàng'),
+                 Icon(Icons.navigate_next_outlined),
+                ],
+              ),
+            );
+            }
+           
+  }
 int giamGia=0 ;
   @override
   Widget build(BuildContext context) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('dd/MM/yyyy').format(now);
       String idOrder=DateFormat('yyyyMMddhhmmss').format(now)+UID.substring(0,5);
-      
+      FetchAddress();
       int diemdoi=diemThuong * 100;
     double height = MediaQuery.of(context).size.height;
       
@@ -210,6 +305,7 @@ int giamGia=0 ;
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
+         
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -226,35 +322,15 @@ int giamGia=0 ;
         body: SingleChildScrollView(
             child: Container(
           child: Column(children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              margin: EdgeInsets.only(top: 15, left: 15, right: 15),
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 250,
-                    child: Text(nameCus,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                           )),
-                  ),
-                  Text(
-                    phoneCus,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 15),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(addressCus),
-                ],
-              ),
+            InkWell(
+              onTap: (){
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => InforDelivery()));
+              },
+              child: AddressDelivery()
             ),
-            listViewPro(),
+            
+             listViewPro(),
             
             SizedBox(height: 15),
             Row(
@@ -551,11 +627,14 @@ int giamGia=0 ;
                   minWidth: 210,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20))),
-                  onPressed: () {
+                  onPressed: () async {
                     if(cash==false&&paymentOnl==false){
                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng chọn phương thức thanh toán')));
                       
-                   }else{
+                   }else if(nameCus.isEmpty&&phoneCus.isEmpty&&addressCus.isEmpty){
+                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng chọn địa chỉ giao hàng')));
+                   }
+                   else{
                     String payment='';
                     String statePayment='';
                     if(cash==true){
@@ -571,28 +650,35 @@ int giamGia=0 ;
                       diemdoi=0;      
                       int diem=thanhToan~/10000 ;
                       diemThuong=diemThuong+diem;
-                      FirListOder().updateDiem(diemThuong);
+                      FirListOder().updateDiem(diemThuong.toString());
                     }
                     else{
                       int diem=thanhToan~/10000 ;
                       diemThuong=0;
                       diemThuong=diemThuong+diem;
-                       FirListOder().updateDiem(diemThuong);
+                       FirListOder().updateDiem(diemThuong.toString());
                     }
                  
                     for(int i=0;i<listPro.length;i++){
                       String idPro=listPro[i].idProduct;
+                      DetailProduct detailProduct= new DetailProduct();
+                      
+                      dynamic resultPro= await DataProduct().getProductIdList(idPro);
+                      detailProduct=resultPro;
+                      int slTon=int.parse( detailProduct.quantity);
+                      int slSau=slTon-int.parse(listPro[i].quantity);
+                      DataProduct().updateSoLuong(idPro, slSau.toString());            
                       //String totalPrice= (int.parse(listPro[i].price)*int.parse(listPro[i].quantity)).toString();
                       FirListDetailOrder().addListDetailOrder(UID, listPro[i].quantity, listPro[i].price, idOrder, idPro, listPro[i].images, listPro[i].productName);
                 }
-    
+                      addressCus=addressCus+city;
                     FirListOder().addListOrder(UID, nameCus, phoneCus, addressCus, idOrder, state, formattedDate, '',
                     giamGia.toString(), diemdoi.toString(), payment, soluongtong.toString(), 
                     thanhToan.toString(), statePayment, phiVanChuyen.toString(), tongTien.toString());
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt hàng thành công')));
                     FirShoppingCart().removeProductorder();
-                    Navigator.of(context).pop(MaterialPageRoute(
-                                    builder: (context) => ShoppingCart()));
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                    builder: (context) => LayoutDrawer()),(route)=>false);
                       
                 }},
                   child: Text(

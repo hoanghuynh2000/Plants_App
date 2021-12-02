@@ -88,7 +88,7 @@ class FirListOder{
         (element) {itemList.add(MDUser.fromJson(element.data()));}));
         return itemList;
    }
-  Future updateDiem(int diem) async {
+  Future updateDiem(String diem) async {
      String? id;
     FirebaseAuth auth=FirebaseAuth.instance;
      String uid= auth.currentUser!.uid.toString();

@@ -108,6 +108,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
               ),
           SizedBox(height: 10),
               Container(
+                width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 15, right: 15),
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -141,6 +142,7 @@ class _DetailsOrderState extends State<DetailsOrder> {
                 ),
               ),
               Container(
+                width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: 10, left: 15, right: 15),
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
