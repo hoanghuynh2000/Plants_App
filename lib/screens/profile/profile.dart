@@ -425,10 +425,7 @@ class _ProfileState extends State<Profile> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ChangePassword(
-                                                    userResponsitory: widget
-                                                        .userResponsitory!,
-                                                  )));
+                                                  ChangePassword()));
                                     },
                                     child: Text(
                                       'Đổi Mật Khẩu',

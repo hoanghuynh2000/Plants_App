@@ -82,24 +82,4 @@ class UserResponsitory {
   Future<User> getCurrentUser() async {
     return await firebaseAuth!.currentUser!;
   }
-
-  Future<bool> validatePassword(String password) async {
-    User? firebaseUser = await firebaseAuth!.currentUser;
-
-    var authCredentials = EmailAuthProvider.credential(
-        email: firebaseUser!.email!, password: password);
-    try {
-      var authResult =
-          await firebaseUser.reauthenticateWithCredential(authCredentials);
-      return authResult.user != null;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
-
-  Future<void> updatePassword(String password) async {
-    var firebaseUser = await firebaseAuth!.currentUser;
-    firebaseUser!.updatePassword(password);
-  }
 }

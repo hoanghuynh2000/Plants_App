@@ -7,7 +7,7 @@ import 'package:plants_app/model/mdUser.dart';
 
 class DataUser {
   final userList = FirebaseFirestore.instance.collection('Users');
-
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   Future getUserList(String id) async {
     await Firebase.initializeApp();
     WidgetsFlutterBinding.ensureInitialized();
@@ -47,14 +47,34 @@ class DataUser {
 
   Future _changePassword(String password) async {
 //Create an instance of the current user.
-    User user = await FirebaseAuth.instance.currentUser!;
+    User? user = await firebaseAuth.currentUser;
 
 //Pass in the password to updatePassword.
-    user.updatePassword(password).then((_) {
+    user!.updatePassword(password).then((_) {
       print("Successfully changed password");
     }).catchError((error) {
       print("Password can't be changed" + error.toString());
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
+  }
+
+  Future<bool> validatePassword(String password) async {
+    User? firebaseUser = await firebaseAuth.currentUser;
+
+    var authCredentials = EmailAuthProvider.credential(
+        email: firebaseUser!.email!, password: password);
+    try {
+      var authResult =
+          await firebaseUser.reauthenticateWithCredential(authCredentials);
+      return authResult.user != null;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<void> updatePassword(String password) async {
+    var firebaseUser = await firebaseAuth.currentUser;
+    firebaseUser!.updatePassword(password);
   }
 }

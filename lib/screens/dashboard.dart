@@ -22,30 +22,30 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  String UID="";
-   List<MDDetailShoppingCart> listShopping = [];
-    FetchUserInfo() async {
+  String UID = "";
+  List<MDDetailShoppingCart> listShopping = [];
+  FetchUserInfo() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    if(user!=null){
-    UID = user.uid;
+    if (user != null) {
+      UID = user.uid;
     }
   }
-  
- 
+
   FetchDataPro() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-     dynamic resultshopping = await FirShoppingCart().getListShoppingCart(UID);
+    dynamic resultshopping = await FirShoppingCart().getListShoppingCart(UID);
     if (resultshopping == null) {
       print('unable');
     } else {
-      setState(() {
-       
-        listShopping=resultshopping;
-      });
+      if (this.mounted)
+        setState(() {
+          listShopping = resultshopping;
+        });
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -53,6 +53,7 @@ class _DashboardState extends State<Dashboard> {
     FetchUserInfo();
     FetchDataPro();
   }
+
   int currentTab = 0;
   Color noActive = Colors.grey.shade500;
   Color active = Colors.teal.shade800;
@@ -337,18 +338,19 @@ class _DashboardState extends State<Dashboard> {
               Padding(
                 padding: EdgeInsets.only(top: 12.0, right: 20.0),
                 child: InkResponse(
-                  onTap: () { if(UID.isNotEmpty){
-                        
-                         Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ShoppingCart(),
-                    ),
-                );
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng đăng nhập')));
-                      }
-                 },
+                  onTap: () {
+                    if (UID.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ShoppingCart(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Vui lòng đăng nhập')));
+                    }
+                  },
                   child: Icon(
                     Icons.shopping_basket,
                     size: 40.0,
@@ -382,9 +384,7 @@ class _DashboardState extends State<Dashboard> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: InkResponse(
-              onTap: () {
-                
-              },
+              onTap: () {},
               child: Icon(
                 Icons.search,
                 size: 30.0,

@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:plants_app/firebase/UserFirebase.dart';
 import 'package:plants_app/respository/user_respon.dart';
 
 class ChangePassword extends StatefulWidget {
-  UserResponsitory userResponsitory;
-  ChangePassword({required this.userResponsitory});
+  ChangePassword();
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
@@ -187,14 +187,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30))),
                   onPressed: () async {
-                    checkCurrentPasswordValid = await widget.userResponsitory
-                        .validatePassword(_passOld.text);
+                    checkCurrentPasswordValid =
+                        await DataUser().validatePassword(_passOld.text);
 
                     setState(() {});
 
                     if (_formKey.currentState!.validate() &&
                         checkCurrentPasswordValid) {
-                      widget.userResponsitory.updatePassword(_passConfirm.text);
+                      DataUser().updatePassword(_passConfirm.text);
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       Navigator.pop(context);
                     }
