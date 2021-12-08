@@ -20,6 +20,7 @@ class FirListDetailOrder{
     mddetailorder.idPro=idPro;
     mddetailorder.quantity=quantity;
     mddetailorder.price=price;
+    mddetailorder.state='Chưa đánh giá';
 
     order.add({
       'namePro':mddetailorder.namePro,
@@ -29,6 +30,7 @@ class FirListDetailOrder{
       'totalPrice':mddetailorder.price,
       'idOrder':mddetailorder.idOrder,
       'idPro':mddetailorder.idPro,
+      'state':mddetailorder.state
     });
     
     
@@ -52,6 +54,15 @@ class FirListDetailOrder{
         (element) {id=element.id;}));
       // print(shoppingCartId.id);
       FirebaseFirestore.instance.collection('Orders').doc(id).update({'state':state});
+   }
+    Future updateStateDetailOrder(String idOrder, String idPro) async {
+     String? id;
+     String state='Đã đánh giá';
+    final shoppingCartId= FirebaseFirestore.instance.collection('DetailOrders').where('idOrder',isEqualTo: idOrder  ).where('idPro',isEqualTo: idPro);
+    await shoppingCartId.get().then((value) => value.docs.forEach(
+        (element) {id=element.id;}));
+      // print(shoppingCartId.id);
+      FirebaseFirestore.instance.collection('DetailOrders').doc(id).update({'state':state});
    }
    Future removeProduct(String idOder) async {
      String? id;

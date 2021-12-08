@@ -98,6 +98,15 @@ class FirListOder{
       // print(shoppingCartId.id);
       FirebaseFirestore.instance.collection('Users').doc(id).update({'point':diem});
    }
+   Future updateAddress(String idOrder,String name,String phone, String address) async {
+     String? id;
+    FirebaseAuth auth=FirebaseAuth.instance;
+     String uid= auth.currentUser!.uid.toString();
+     final shoppingCartId= FirebaseFirestore.instance.collection('Orders').where('idOrder',isEqualTo: idOrder);
+    await shoppingCartId.get().then((value) => value.docs.forEach(
+        (element) {id=element.id;}));
+      FirebaseFirestore.instance.collection('Orders').doc(id).update({'nameCus':name,'phoneCus':phone,'addressCus':address});
+   }
    Future removeProduct(String idOder) async {
      String? id;
     final shoppingCartId= FirebaseFirestore.instance.collection('Orders').where('idOrder',isEqualTo: idOder);

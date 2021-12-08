@@ -6,7 +6,8 @@ class mdDetailOrder{
   String? price;
   String?idOrder;
   String? idPro;
-  mdDetailOrder({this.idKhachHang,this.idOrder,this.quantity,this.price,this.idPro,this.imagePro,this.namePro});
+  String? state;
+  mdDetailOrder({this.idKhachHang,this.idOrder,this.quantity,this.price,this.idPro,this.imagePro,this.state,this.namePro});
   Map<String, dynamic> toMap() {
     return {
       'namePro':namePro,
@@ -16,6 +17,7 @@ class mdDetailOrder{
       'totalPrice':price,
       'idOrder':idOrder,
       'idPro':idPro,
+      'state':state
 
     };
   }
@@ -28,6 +30,7 @@ class mdDetailOrder{
       price:json['totalPrice'],
       idPro: json['idPro'],
       idOrder: json['idOrder'],
+      state: json['state']
     );
   }
 }

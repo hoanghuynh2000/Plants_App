@@ -7,11 +7,16 @@ import 'package:plants_app/colorsize/gradienttext.dart';
 import 'package:plants_app/fake/fakelistorder.dart';
 import 'package:plants_app/fake/productfake.dart';
 import 'package:plants_app/firebase/detailorder.dart';
+import 'package:plants_app/firebase/feedback.dart';
 import 'package:plants_app/firebase/oder.dart';
+import 'package:plants_app/firebase/product.dart';
+import 'package:plants_app/model/mdfeedback.dart';
 import 'package:plants_app/model/mdorder.dart';
 import 'package:plants_app/model/mddetailorder.dart';
 import 'package:plants_app/model/mddetailproduct.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'package:plants_app/screens/addfeedback.dart';
+import 'package:plants_app/screens/detailfeedback.dart';
 import 'package:plants_app/screens/detailsorder.dart';
 
 class ListOrder extends StatefulWidget {
@@ -23,39 +28,75 @@ class ListOrder extends StatefulWidget {
 
 class _ListOrderState extends State<ListOrder> {
   final controller = PageController();
- String UID="";
-      List<mdDetailOrder> listProduct= [];
-      List<mdOrder>listOrder=[];
-   FetchUserInfo() async {
+  String UID = "";
+  List<mdDetailOrder> listProduct = [];
+  List<mdOrder> listOrder = [];
+  List<MDFeedback> listFeed = [];
+  FetchUserInfo() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     UID = user!.uid;
   }
-    FetchDataPro()async{
+
+  List<DetailProduct> listProductFeed = [];
+  FetchProduct(String id) async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(); 
+    await Firebase.initializeApp();
+    dynamic resultPro = await DataProduct().getProductIdList(id);
+
+    if (resultPro == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+          listProductFeed = resultPro;
+        });
+      }
+    }
+  }
+
+  FetchDataPro() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
     dynamic result = await FirListOder().getListOrder(UID);
-     dynamic resultPro = await FirListDetailOrder().getListDetailOrder();
+    dynamic resultPro = await FirListDetailOrder().getListDetailOrder();
+
     if (result == null) {
       print('unable');
     } else {
       if (this.mounted) {
         setState(() {
-        
           listOrder = result;
-          listProduct=resultPro;
+          listProduct = resultPro;
         });
-}
-      
+      }
     }
   }
+
+  FetchDataFeed() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic resultFeed = await FirFeedback().getListFeedback();
+    if (resultFeed == null) {
+      print('unable');
+    } else {
+      if (this.mounted) {
+        setState(() {
+          listFeed = resultFeed;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FetchUserInfo();
     FetchDataPro();
+    FetchDataFeed();
   }
+
   @override
   Widget build(BuildContext context) {
     FetchDataPro();
@@ -168,203 +209,291 @@ class _ListOrderState extends State<ListOrder> {
                 ),
               ),
             ],
-            ),
+          ),
         ));
   }
-  
-Widget All() {
 
-  
-  return Item(listOrder, listProduct);
-}
+  Widget All() {
+    return Item(listOrder, listProduct);
+  }
 
-Widget DaHuy() {
-  
-  List<mdOrder> listOrder1 =
-      listOrder.where((element) => element.state == 'Đã hủy').toList();
-      FirListDetailOrder().getListDetailOrder();
-  
-  return Item(listOrder1, listProduct);
-}
+  Widget DaHuy() {
+    List<mdOrder> listOrder1 =
+        listOrder.where((element) => element.state == 'Đã hủy').toList();
+    FirListDetailOrder().getListDetailOrder();
 
-Widget GiaoThanhCong() {
-  
-  List<mdOrder> listOrder1 = listOrder
-      .where((element) => element.state == 'Giao thành công')
-      .toList();
+    return Item(listOrder1, listProduct);
+  }
 
-  return Item(listOrder1, listProduct);
-}
+  Widget GiaoThanhCong() {
+    List<mdOrder> listOrder1 = listOrder
+        .where((element) => element.state == 'Giao thành công')
+        .toList();
 
-Widget DangGiaoHang() {
+    return Item(listOrder1, listProduct);
+  }
 
-  List<mdOrder> listOrder1 = listOrder
-      .where((element) => element.state == 'Đang giao hàng')
-      .toList();
- 
-  return Item(listOrder1, listProduct);
-}
+  Widget DangGiaoHang() {
+    List<mdOrder> listOrder1 = listOrder
+        .where((element) => element.state == 'Đang giao hàng')
+        .toList();
 
-Widget DaXacNhan() {
- 
-  List<mdOrder> listOrder1 =
-      listOrder.where((element) => element.state == 'Đã xác nhận').toList();
+    return Item(listOrder1, listProduct);
+  }
 
-  return Item(listOrder1, listProduct);
-}
+  Widget DaXacNhan() {
+    List<mdOrder> listOrder1 =
+        listOrder.where((element) => element.state == 'Đã xác nhận').toList();
 
-Widget ChoXacNhan() {
+    return Item(listOrder1, listProduct);
+  }
 
-  List<mdOrder> listOrder1 = listOrder
-      .where((element) => element.state == 'Chờ xác nhận')
-      .toList();
+  Widget ChoXacNhan() {
+    List<mdOrder> listOrder1 =
+        listOrder.where((element) => element.state == 'Chờ xác nhận').toList();
 
-  List<DetailProduct> listPro = FakeProduct.toList();
-  return Item(listOrder1, listProduct);
-}
+    List<DetailProduct> listPro = FakeProduct.toList();
+    return Item(listOrder1, listProduct);
+  }
 
-Stack Item(List<mdOrder> listOrder, List<mdDetailOrder> listPro) {
-  return Stack(
-    children: [
-      ListView.builder(
-          shrinkWrap: true,
-          itemCount: listOrder.length,
-          itemBuilder: (context, index) {
-            String idOrder=listOrder[index].idOrder.toString();
-            List<mdDetailOrder>listProduct1= listPro.where((element) => element.idOrder==listOrder[index].idOrder).toList();
-            return InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          DetailsOrder(mdDetail: idOrder)));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 15, right: 15, top: 5),
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: Text(
-                              'Mã đơn hàng: ${listOrder[index].idOrder}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.teal.shade800,
-                                  fontWeight: FontWeight.bold),
+  Widget ButtonFeed(
+      int index, int indexsp, List listProduct1, List listOrder1) {
+    if (listOrder1[index].state == 'Giao thành công' &&
+        listProduct1[indexsp].state == 'Chưa đánh giá') {
+      return MaterialButton(
+        hoverColor: Colors.redAccent,
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddFeedback(listOrder1[index].idOrder,
+                  listProduct1[indexsp].idPro.toString())));
+        },
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: Colors.red)),
+        child: Text(
+          'Đánh giá',
+          style: TextStyle(color: Colors.red, fontSize: 12),
+        ),
+      );
+    } else if (listOrder1[index].state == 'Giao thành công' &&
+        listProduct1[indexsp].state == 'Đã đánh giá') {
+      return MaterialButton(
+        minWidth: 100,
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => DetailFeedback(listOrder1[index].idOrder,
+                  listProduct1[indexsp].idPro.toString())));
+        },
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: Colors.teal.shade800)),
+        child: Text(
+          'Xem đánh giá',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.teal.shade800, fontSize: 12),
+        ),
+      );
+    } else {
+      return Text('${listProduct1[indexsp].quantity}');
+    }
+  }
+
+  Stack ItemListFeedback() {
+    return Stack(
+      children: [
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: listOrder.length,
+            itemBuilder: (context, index) {
+              FetchProduct(listFeed[index].idSanPham.toString());
+              return Container(
+                child: Row(
+                  children: [
+                    ListTile(
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.teal.shade400,
+                        backgroundImage:
+                            NetworkImage(listProductFeed[0].imgProduct),
+                      ),
+                      title: Row(children: [
+                        Container(
+                          width: 190,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${listProductFeed[0].namePro}',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              Text(
+                                '${listProductFeed[0].idCate}',
+                                style: TextStyle(color: Colors.teal.shade500),
+                              ),
+                              Text(
+                                  '${NumberFormat('###,###').format(int.parse(listProductFeed[0].pricePro.toString()))}',
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 17))
+                            ],
+                          ),
+                        ),
+                      ]),
+                      onTap: () {},
+                    )
+                  ],
+                ),
+              );
+            })
+      ],
+    );
+  }
+
+  Stack Item(List<mdOrder> listOrder, List<mdDetailOrder> listPro) {
+    int indexOrder;
+
+    return Stack(
+      children: [
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: listOrder.length,
+            itemBuilder: (context, index) {
+              indexOrder = index;
+              String idOrder = listOrder[index].idOrder.toString();
+
+              List<mdDetailOrder> listProduct1 = listPro
+                  .where(
+                      (element) => element.idOrder == listOrder[index].idOrder)
+                  .toList();
+              return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetailsOrder(mdDetail: idOrder)));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(left: 15, right: 15, top: 5),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: Text(
+                                'Mã đơn hàng: ${listOrder[index].idOrder}',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.teal.shade800,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          Text('${listOrder[index].state}',
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.grey.shade600))
-                        ],
-                      ),
-                      ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: listProduct1.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                margin: EdgeInsets.only(left: 5, right: 5),
-                                padding: EdgeInsets.all(5),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 60,
-                                            width: 60,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        '${listProduct1[index].imagePro}'),
-                                                    fit: BoxFit.cover)),
-                                          ),
-                                          SizedBox(
-                                            width: 35,
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.4,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${listPro[index].namePro}',
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                Text(
-                                                    '${NumberFormat('###,###').format(int.parse(listProduct1[index].price.toString()))}',
-                                                    style: TextStyle(
-                                                        color: Colors.red,
-                                                        fontSize: 16))
-                                              ],
+                            Text('${listOrder[index].state}',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.grey.shade600))
+                          ],
+                        ),
+                        ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: listProduct1.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  padding: EdgeInsets.all(5),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              height: 60,
+                                              width: 60,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          '${listProduct1[index].imagePro}'),
+                                                      fit: BoxFit.cover)),
                                             ),
-                                          ),
-                                          Expanded(
-                                              child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                  '${listProduct1[index].quantity}'),
-                                              SizedBox(
-                                                width: 15,
-                                              )
-                                            ],
-                                          ))
-                                        ]),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10.0),
-                                      child: Container(
-                                        height: 1.0,
-                                        width: 250.0,
-                                        color: Colors.grey.shade300,
+                                            SizedBox(
+                                              width: 25,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.4,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${listProduct1[index].namePro}',
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                      '${NumberFormat('###,###').format(int.parse(listProduct1[index].price.toString()))}',
+                                                      style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 16))
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  ButtonFeed(indexOrder, index,
+                                                      listProduct1, listOrder)
+                                                ],
+                                              ),
+                                            )
+                                          ]),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Container(
+                                          height: 1.0,
+                                          width: 250.0,
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ));
-                          }),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('${listOrder[index].date}'),
-                          Text(
-                            'Tổng tiền: ${NumberFormat('###,###').format(int.parse(listOrder[index].totalPayment.toString()))}',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ));
-          })
-    ],
-  );
-}
-
+                                    ],
+                                  ));
+                            }),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('${listOrder[index].date}'),
+                            Text(
+                              'Tổng tiền: ${NumberFormat('###,###').format(int.parse(listOrder[index].totalPayment.toString()))}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ));
+            })
+      ],
+    );
+  }
 }
