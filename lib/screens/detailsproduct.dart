@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:plants_app/bloc/CouterBloc.dart';
 import 'package:plants_app/couter/event.dart';
 import 'package:plants_app/fake/feedfake.dart';
+import 'package:plants_app/firebase/feedback.dart';
 import 'package:plants_app/firebase/firebaseservice.dart';
 import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/handle/favorite.dart';
@@ -27,47 +28,67 @@ class DetailsProduct extends StatefulWidget {
 }
 
 class _DetailsProductState extends State<DetailsProduct> {
-  String UID="";
-  List<MDDetailShoppingCart> listShopping = [];
-   FetchUserInfo() async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
-    if(user!=null){
-    UID = user.uid;
+  String UID = "";
+  List<MDFeedback> mdFeedback = [];
+  FetchFeed() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+
+    dynamic result = await FirFeedback()
+        .getListFeedbackPro(widget.detailProduct.id.toString());
+    if (result == null) {
+      print('unable');
+    } else {
+      setState(() {
+        mdFeedback = result;
+      });
     }
   }
-  List<DetailProduct> listPro=[];
- 
+
+  List<MDDetailShoppingCart> listShopping = [];
+  FetchUserInfo() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    if (user != null) {
+      UID = user.uid;
+    }
+  }
+
+  List<DetailProduct> listPro = [];
+
   FetchDataPro() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    dynamic result = await DataProduct().getCateProductList(widget.detailProduct.idCate);
-     dynamic resultshopping = await FirShoppingCart().getListShoppingCart(UID);
+    dynamic result =
+        await DataProduct().getCateProductList(widget.detailProduct.idCate);
+    dynamic resultshopping = await FirShoppingCart().getListShoppingCart(UID);
     if (result == null) {
       print('unable');
     } else {
       setState(() {
         listPro = result;
-        listShopping=resultshopping;
+        listShopping = resultshopping;
       });
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     FetchUserInfo();
     FetchDataPro();
+    FetchFeed();
   }
+
   @override
   Widget build(BuildContext context) {
     String? id = widget.detailProduct.id;
     FirebaseServices _firebaseServices = FirebaseServices();
     String _selectedQuantity = "0";
-    
 
-  FirShoppingCart firShoppingCart=new FirShoppingCart();
-    
+    FirShoppingCart firShoppingCart = new FirShoppingCart();
+
     int isImportant = 0;
     String? idProduct = widget.detailProduct.id;
     String? productName = widget.detailProduct.namePro;
@@ -108,29 +129,46 @@ class _DetailsProductState extends State<DetailsProduct> {
                   SizedBox(
                     width: 40,
                   ),
-                  MaterialButton(
-                    onPressed: () {
-                      if(UID.isNotEmpty){
-                        
-                         firShoppingCart.addToShoppingCart(UID, idProduct!, productName!, price, categoryName!, images!);
-                         
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Thêm vào giỏ hàng thành công')));
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng đăng nhập')));
-                      }
-                     
-                    },
-                    child: Text('Thêm Vào Giỏ Hàng',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Rokkitt',
-                            fontSize: 24)),
-                    color: Colors.teal.shade800,
-                    height: 50,
-                    minWidth: width * 0.6,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                  ),
+                  if (int.parse(widget.detailProduct.quantity) > 0) ...[
+                    MaterialButton(
+                      onPressed: () {
+                        if (UID.isNotEmpty) {
+                          firShoppingCart.addToShoppingCart(UID, idProduct!,
+                              productName!, price, categoryName!, images!);
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Thêm vào giỏ hàng thành công')));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Vui lòng đăng nhập')));
+                        }
+                      },
+                      child: Text('Thêm Vào Giỏ Hàng',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Rokkitt',
+                              fontSize: 24)),
+                      color: Colors.teal.shade800,
+                      height: 50,
+                      minWidth: width * 0.6,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)),
+                    ),
+                  ] else ...[
+                    MaterialButton(
+                      onPressed: () {},
+                      child: Text('Hết hàng',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Rokkitt',
+                              fontSize: 24)),
+                      color: Colors.red.shade800,
+                      height: 50,
+                      minWidth: width * 0.6,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)),
+                    ),
+                  ]
                 ],
               ))
             ],
@@ -160,22 +198,20 @@ class _DetailsProductState extends State<DetailsProduct> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                         
-                                  Container(
-                                    width: width/2.2,
-                                    child:Text(
-                                    '${productName}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4!
-                                        .copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 24),
-                                  ),
-                                  ),
-                                  
-                              
+                              Container(
+                                width: width / 2.2,
+                                child: Text(
+                                  '${productName}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 24),
+                                ),
+                              ),
+
                               SizedBox(height: 10),
                               RichText(
                                 text: TextSpan(
@@ -196,13 +232,11 @@ class _DetailsProductState extends State<DetailsProduct> {
                               ),
                               SizedBox(
                                 height: 15,
-                                child: Divider(
-                               color: Colors.black
+                                child: Divider(color: Colors.black),
                               ),
-                              ),
-                             SizedBox(height: 10),
-    //                          CartCounter(_selectedQuantity),
-                             Text(
+                              SizedBox(height: 10),
+                              //                          CartCounter(_selectedQuantity),
+                              Text(
                                 'Mô Tả Sản Phẩm',
                                 style: TextStyle(
                                     fontSize: 20,
@@ -211,27 +245,28 @@ class _DetailsProductState extends State<DetailsProduct> {
                               ),
                               SizedBox(height: 10),
                               Container(
-                                width: width,
-                                padding: EdgeInsets.all(15),
-                                //margin:EdgeInsets.only(left: 5,right: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.all(Radius.circular(15))),
-                                child:
-                                Column(
-                                  crossAxisAlignment:CrossAxisAlignment.start,
-                                  children: [
-                              
-                              Text(
-                                '${categoryName}',
-                                style: TextStyle(
-                                        fontSize: 17),
-                              ),
-                              Text("${descript}",style:TextStyle(fontSize: 17,)),
-                                  ],
-                                ) 
-                              ),
-                              
+                                  width: width,
+                                  padding: EdgeInsets.all(15),
+                                  //margin:EdgeInsets.only(left: 5,right: 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${categoryName}',
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                      Text("${descript}",
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                          )),
+                                    ],
+                                  )),
+
                               SizedBox(height: 20),
                               Text(
                                 'Đánh Giá Sản Phẩm',
@@ -241,9 +276,115 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 20),
-                              Container(
-                                height: 300,
-                                child: Feedback(),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(maxHeight: 300),
+                                child: Container(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: mdFeedback.length,
+                                      itemBuilder: (context, index) {
+                                        if (mdFeedback.isNotEmpty) {
+                                          return Container(
+                                            padding: EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            margin: EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey.shade200,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            30)),
+                                                            image:
+                                                                DecorationImage(
+                                                                    image:
+                                                                        NetworkImage(
+                                                                      '${mdFeedback[index].anhKhachHang}',
+                                                                    ),
+                                                                    fit: BoxFit
+                                                                        .fill),
+                                                          ),
+                                                          height: 40,
+                                                          width: 40,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                            width: width / 2,
+                                                            height: 20,
+                                                            child: Text(
+                                                              '${mdFeedback[index].tenKhachHang}',
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )),
+                                                        Container(
+                                                            width: width * 0.2,
+                                                            child: Text(
+                                                              '${mdFeedback[index].ngay}',
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .right,
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                              ),
+                                                            ))
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Container(
+                                                            width: width * 0.8,
+                                                            child: Text(
+                                                                '${mdFeedback[index].noiDung}')),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return Text(
+                                            'Chưa có đánh giá',
+                                            textAlign: TextAlign.center,
+                                          );
+                                        }
+                                      }),
+                                ),
                               ),
                               SizedBox(height: 20),
                               Text(
@@ -253,8 +394,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     color: Colors.teal.shade900,
                                     fontWeight: FontWeight.bold),
                               ),
-                             
-                               
+
                               //SizedBox(height: 10),
                               Container(
                                 height: 250,
@@ -275,42 +415,40 @@ class _DetailsProductState extends State<DetailsProduct> {
                           ),
                           Expanded(
                             child: Hero(
-                              tag: "${id}",
-                              child:Column(
-                                children: [
-                              Image.network(
-                                '${widget.detailProduct.imgProduct}',
-                                fit: BoxFit.cover,
-                              ),
-                            Container(
-                              //margin: EdgeInsets.only(left: 15),
-                              height: 10,
-                              width: 140,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              stops: [
-                0,
-                0.4,
-                0.8,
-                
-              ],
-              colors: [
-                Colors.white,
-                Colors.grey.shade400,
-                Colors.white,
-                
-              ],
-            )
-          ),)
-                              ],
-                              )
-                          ),
-                          // SizedBox(
-                          //   width: ,
-                          // ),
-                          )],
+                                tag: "${id}",
+                                child: Column(
+                                  children: [
+                                    Image.network(
+                                      '${widget.detailProduct.imgProduct}',
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Container(
+                                      //margin: EdgeInsets.only(left: 15),
+                                      height: 10,
+                                      width: 140,
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                        begin: Alignment.topRight,
+                                        end: Alignment.bottomLeft,
+                                        stops: [
+                                          0,
+                                          0.4,
+                                          0.8,
+                                        ],
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey.shade400,
+                                          Colors.white,
+                                        ],
+                                      )),
+                                    )
+                                  ],
+                                )),
+                            // SizedBox(
+                            //   width: ,
+                            // ),
+                          )
+                        ],
                       )
                     ],
                   ),
@@ -318,19 +456,20 @@ class _DetailsProductState extends State<DetailsProduct> {
               ),
             )));
   }
- Widget _buildNewProduct() {
+
+  Widget _buildNewProduct() {
     return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Container(
-          margin: EdgeInsets.only(top: 10),
-            height: 320, 
-            child: ItemProduct(detailProduct: listPro[index]));
-      },
-      itemCount: listPro.length
-    );
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return Container(
+              margin: EdgeInsets.only(top: 10),
+              height: 320,
+              child: ItemProduct(detailProduct: listPro[index]));
+        },
+        itemCount: listPro.length);
   }
+
   //AppBar chi tiết sản phẩm
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
@@ -338,251 +477,160 @@ class _DetailsProductState extends State<DetailsProduct> {
       elevation: 0,
       actions: <Widget>[
         Stack(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 12.0, right: 20.0),
-                child: InkResponse(
-                  onTap: () { if(UID.isNotEmpty){
-                        
-                         Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ShoppingCart(),
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 12.0, right: 20.0),
+              child: InkResponse(
+                onTap: () {
+                  if (UID.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ShoppingCart(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Vui lòng đăng nhập')));
+                  }
+                },
+                child: Icon(
+                  Icons.shopping_basket,
+                  size: 40.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 8.0,
+              right: 16.0,
+              child: Container(
+                height: 20.0,
+                width: 20.0,
+                decoration: BoxDecoration(
+                  color: Colors.teal.shade800,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    '${listShopping.length}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                );
-                         
-                    
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng đăng nhập')));
-                      }
-                 },
-                  child: Icon(
-                    Icons.shopping_basket,
-                    size: 40.0,
-                    color: Colors.black,
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 8.0,
-                right: 16.0,
-                child: Container(
-                  height: 20.0,
-                  width: 20.0,
-                  decoration: BoxDecoration(
-                    color: Colors.teal.shade800,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    
-                    child: Text(
-                      '${listShopping.length}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
+        ),
       ],
     );
   }
 }
 
-class Feedback extends StatelessWidget {
-  List<MDFeedback> mdFeedback =
-      FakeFeedback.where((element) => element.idSanPham == '123').toList();
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: mdFeedback.length,
-      itemBuilder: (context, index) {
-        return Container(
-            //
-            child: ItemFeedback(mdFeedback: mdFeedback[index]));
-      },
-    );
-
-    // return GridView(scrollDirection: Axis.vertical,
-    //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-    //     maxCrossAxisExtent: 300,
-    //     childAspectRatio: 1,
-    //     mainAxisSpacing: 15,
-    //     crossAxisSpacing: 12),
-    //     children: mdFeedback.map((e) => ItemFeedback(mdFeedback: e)).toList());
-  }
-}
-
-class ItemFeedback extends StatelessWidget {
-  MDFeedback mdFeedback = new MDFeedback();
-  ItemFeedback({required this.mdFeedback});
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    return Container(
-      padding: EdgeInsets.only(top: 5, bottom: 5),
-      margin: EdgeInsets.only(top: 5, bottom: 5),
-      decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(40)),
-                      image: DecorationImage(
-                          image: AssetImage(
-                            '${mdFeedback.anhKhachHang}',
-                          ),
-                          fit: BoxFit.fill),
-                    ),
-                    height: 40,
-                    width: 40,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      width: width / 2,
-                      height: 20,
-                      child: Text(
-                        '${mdFeedback.tenKhachHang}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )),
-                  Container(
-                      width: width * 0.2,
-                      child: Text(
-                        '${mdFeedback.ngay}',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade700,
-                        ),
-                      ))
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                  width: width * 0.8, child: Text('${mdFeedback.noiDung}')),
-              SizedBox(
-                height: 10,
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-  
-}
-
-// class ProductTitleWithImage extends StatelessWidget {
-//   String TenSanPham = 'Tên Sản Phẩm Tên SảnPhaamr...';
-//   int GiaSanPham = 123000;
-//   String DanhMucSanPham = 'Danh Muc San Pham';
-//   String HinhSanPham = 'Hinh San Pham';
-//   String MoTaChiTietSanPham =
-//       'Mô tả chi tiết sản phẩm ........................................................................................................................................................';
+// class Feedback extends StatelessWidget {
+//   String idpro;
+//   Feedback(this.idpro);
 
 //   @override
 //   Widget build(BuildContext context) {
-//     double width = MediaQuery.of(context).size.width;
+//      FetchFeed();
+//       double width = MediaQuery.of(context).size.width;
 //     return
 //   }
 // }
 
-// class CartCounter extends StatefulWidget {
-//   String? quantity;
-//   CartCounter(this.quantity);
-//   @override
-//   _CartCounterState createState() => _CartCounterState();
-// }
-
-// class _CartCounterState extends State<CartCounter> {
-//   int numOfItems = 1;
-
+// class ItemFeedback extends StatelessWidget {
+//   MDFeedback mdFeedback = new MDFeedback();
+//   ItemFeedback({required this.mdFeedback});
 //   @override
 //   Widget build(BuildContext context) {
-//     if (widget.quantity == null) {
-//       widget.quantity = '1';
-//     }
-
-//     return BlocProvider<CouterBloc>(
-//         create: (context) => CouterBloc(),
-//         child: BlocBuilder<CouterBloc, int>(
-//           builder: (context, couter) {
-//             widget.quantity = couter.toString();
-//             final CouterBloc couterBloc = context.read<CouterBloc>();
-//             return Container(
-//                 child: Row(
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               children: [
-//                 Container(
-//                   margin: EdgeInsets.only(right: 15),
-//                   width: 30,
-//                   child: IconButton(
-//                       onPressed: () {
-//                         couterBloc.add(CouterEvent.decre);
-//                         setState(() {});
-//                       },
-//                       icon: Icon(Icons.remove)),
-//                 ),
-//                 Container(
-//                     width: 50,
-//                     // ignore: unnecessary_brace_in_string_interps
-//                     child: Text(
-//                       '${couter}',
-//                       style: TextStyle(fontSize: 17),
-//                       textAlign: TextAlign.center,
-//                     )),
-//                 Container(
-//                   width: 30,
-//                   child: IconButton(
-//                       onPressed: () {
-//                         couterBloc.add(CouterEvent.incre);
-//                         setState(() {});
-//                       },
-//                       icon: Icon(Icons.add)),
-//                 )
-//               ],
-//             ));
-//           },
-//         ));
+//     double width = MediaQuery.of(context).size.width;
+//     return Container(
+//       padding: EdgeInsets.only(top: 5, bottom: 5),
+//       margin: EdgeInsets.only(top: 5, bottom: 5),
+//       decoration: BoxDecoration(
+//           color: Colors.grey.shade200,
+//           borderRadius: BorderRadius.all(Radius.circular(15))),
+//       child: Row(
+//         children: [
+//           SizedBox(
+//             width: 10,
+//           ),
+//           Column(
+//             children: [
+//               SizedBox(
+//                 width: 10,
+//               ),
+//               Row(
+//                 children: [
+//                   Container(
+//                     decoration: BoxDecoration(
+//                       borderRadius: BorderRadius.all(Radius.circular(40)),
+//                       image: DecorationImage(
+//                           image: NetworkImage(
+//                             '${mdFeedback.anhKhachHang}',
+//                           ),
+//                           fit: BoxFit.fill),
+//                     ),
+//                     height: 40,
+//                     width: 40,
+//                   ),
+//                   SizedBox(
+//                     width: 10,
+//                   ),
+//                   Container(
+//                       width: width / 2,
+//                       height: 20,
+//                       child: Text(
+//                         '${mdFeedback.tenKhachHang}',
+//                         style: TextStyle(
+//                             fontSize: 16, fontWeight: FontWeight.bold),
+//                       )),
+//                   Container(
+//                       width: width * 0.2,
+//                       child: Text(
+//                         '${mdFeedback.ngay}',
+//                         textAlign: TextAlign.right,
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey.shade700,
+//                         ),
+//                       ))
+//                 ],
+//               ),
+//               SizedBox(
+//                 height: 10,
+//               ),
+//               Container(
+//                   width: width * 0.8, child: Text('${mdFeedback.noiDung}')),
+//               SizedBox(
+//                 height: 10,
+//               )
+//             ],
+//           )
+//         ],
+//       ),
+//     );
 //   }
 
-  SizedBox buildOutlineButton(
-      {required IconData icon, required Function press}) {
-    return SizedBox(
-      width: 40,
-      height: 32,
-      // ignore: deprecated_member_use
-      child: OutlineButton(
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(13),
-        ),
-        onPressed: () {
-          press;
-        },
-        child: Icon(icon),
-      ),
-    );
-    
-  }
+// }
 
+SizedBox buildOutlineButton({required IconData icon, required Function press}) {
+  return SizedBox(
+    width: 40,
+    height: 32,
+    // ignore: deprecated_member_use
+    child: OutlineButton(
+      padding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(13),
+      ),
+      onPressed: () {
+        press;
+      },
+      child: Icon(icon),
+    ),
+  );
+}

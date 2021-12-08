@@ -47,6 +47,7 @@ dependencies:
   flutter_elegant_number_button: ^0.0.6
   image_picker: ^0.8.4+4
   firebase_storage: ^10.1.0
+  # momo_payment: ^0.0.2
   address_picker:
     git:
       url: git://github.com/vulemicom/address_picker_flutter.git
@@ -54,6 +55,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
+  
   
 dev_dependencies:
   flutter_test:
