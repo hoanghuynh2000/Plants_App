@@ -38,7 +38,7 @@ class FirFeedback {
     mdFeedback.noiDung = mdFeedback1.noiDung;
     mdFeedback.tenKhachHang = itemList1[0].name;
     mdFeedback.idFeedback = uid + mdFeedback1.idSanPham.toString();
-    mdFeedback.state = 'Hiển thị';
+    mdFeedback.state = 'Chờ duyệt';
 
     order.add({
       'idKhachHang': mdFeedback.idKhachHang,
@@ -59,6 +59,7 @@ class FirFeedback {
     final shoppingCartId = FirebaseFirestore.instance
         .collection('Feedback')
         .where('idKhachHang', isEqualTo: uid);
+
     await shoppingCartId.get().then((value) => value.docs.forEach((element) {
           itemList.add(MDFeedback.fromJson(element.data()));
         }));
@@ -99,7 +100,8 @@ class FirFeedback {
     List<MDFeedback> itemList = [];
     final shoppingCartId = FirebaseFirestore.instance
         .collection('Feedback')
-        .where('idProduct', isEqualTo: id);
+        .where('idProduct', isEqualTo: id)
+        .where('state', isEqualTo: 'Hiển thị');
     await shoppingCartId.get().then((value) => value.docs.forEach((element) {
           itemList.add(MDFeedback.fromJson(element.data()));
         }));

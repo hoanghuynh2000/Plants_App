@@ -269,7 +269,7 @@ class _DetailsProductState extends State<DetailsProduct> {
 
                               SizedBox(height: 20),
                               Text(
-                                'Đánh Giá Sản Phẩm',
+                                'Đánh Giá Sản Phẩm (${mdFeedback.length})',
                                 style: TextStyle(
                                     fontSize: 20,
                                     color: Colors.teal.shade900,
@@ -380,7 +380,6 @@ class _DetailsProductState extends State<DetailsProduct> {
                                         } else {
                                           return Text(
                                             'Chưa có đánh giá',
-                                            textAlign: TextAlign.center,
                                           );
                                         }
                                       }),
@@ -473,7 +472,7 @@ class _DetailsProductState extends State<DetailsProduct> {
   //AppBar chi tiết sản phẩm
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.teal.shade400,
+      backgroundColor: Colors.teal.shade300,
       elevation: 0,
       actions: <Widget>[
         Stack(

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plants_app/firebase/address.dart';
 import 'package:plants_app/firebase/detailorder.dart';
+import 'package:plants_app/firebase/notification.dart';
 import 'package:plants_app/firebase/oder.dart';
 import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/firebase/promotion.dart';
@@ -298,10 +299,17 @@ class _OrderState extends State<Order> {
     int diemdoi = diemThuong * 100;
     double height = MediaQuery.of(context).size.height;
 
-    if (status == true)
+    if (status == true) {
       thanhToan = tongTien + phiVanChuyen - giamGia - (diemThuong * 100);
-    else
+      if (thanhToan < 0) {
+        thanhToan = 0;
+      }
+    } else {
       thanhToan = tongTien + phiVanChuyen - giamGia;
+      if (thanhToan < 0) {
+        thanhToan = 0;
+      }
+    }
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
@@ -665,77 +673,150 @@ class _OrderState extends State<Order> {
                           if (cash == true) {
                             payment = 'Thanh toán khi nhận hàng';
                             statePayment = 'Chưa thanh toán';
+                            if (status == false) {
+                              diemdoi = 0;
+                            }
+
+                            for (int i = 0; i < listPro.length; i++) {
+                              String idPro = listPro[i].idProduct;
+                              DetailProduct detailProduct = new DetailProduct();
+
+                              dynamic resultPro =
+                                  await DataProduct().getProductIdList(idPro);
+                              detailProduct = resultPro;
+                              int slTon = int.parse(detailProduct.quantity);
+                              int slSau =
+                                  slTon - int.parse(listPro[i].quantity);
+                              DataProduct()
+                                  .updateSoLuong(idPro, slSau.toString());
+                              //String totalPrice= (int.parse(listPro[i].price)*int.parse(listPro[i].quantity)).toString();
+                              FirListDetailOrder().addListDetailOrder(
+                                  UID,
+                                  listPro[i].quantity,
+                                  listPro[i].price,
+                                  idOrder,
+                                  idPro,
+                                  listPro[i].images,
+                                  listPro[i].productName);
+                            }
+                            addressCus = addressCus + " " + city;
+                            FirListOder().addListOrder(
+                                UID,
+                                nameCus,
+                                phoneCus,
+                                addressCus,
+                                idOrder,
+                                state,
+                                formattedDate,
+                                '',
+                                giamGia.toString(),
+                                diemdoi.toString(),
+                                payment,
+                                soluongtong.toString(),
+                                thanhToan.toString(),
+                                statePayment,
+                                phiVanChuyen.toString(),
+                                tongTien.toString());
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(content: Text('Đặt hàng thành công')));
+                            FirShoppingCart().removeProductorder();
+                            if (status == false) {
+                              diemdoi = 0;
+                              int diem = thanhToan ~/ 10000;
+                              diemThuong = diemThuong + diem;
+                              FirListOder().updateDiem(diemThuong.toString());
+                            } else {
+                              int diem = thanhToan ~/ 10000;
+                              diemThuong = 0;
+                              diemThuong = diemThuong + diem;
+                              FirListOder().updateDiem(diemThuong.toString());
+                            }
+                            FirNotification().addListNoti(
+                                'Bạn đã đặt hàng thành công ' + idOrder,
+                                formattedDate);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Đặt hàng thành công')));
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => LayoutDrawer()),
+                                (route) => false);
                           } else if (paymentOnl == true) {
                             payment = 'Paypal';
                             statePayment = 'Đã thanh toán';
-                          }
-                          if (status == false) {
-                            diemdoi = 0;
-                          }
+                            if (status == false) {
+                              diemdoi = 0;
+                            }
 
-                          for (int i = 0; i < listPro.length; i++) {
-                            String idPro = listPro[i].idProduct;
-                            DetailProduct detailProduct = new DetailProduct();
+                            for (int i = 0; i < listPro.length; i++) {
+                              String idPro = listPro[i].idProduct;
+                              DetailProduct detailProduct = new DetailProduct();
 
-                            dynamic resultPro =
-                                await DataProduct().getProductIdList(idPro);
-                            detailProduct = resultPro;
-                            int slTon = int.parse(detailProduct.quantity);
-                            int slSau = slTon - int.parse(listPro[i].quantity);
-                            DataProduct()
-                                .updateSoLuong(idPro, slSau.toString());
-                            //String totalPrice= (int.parse(listPro[i].price)*int.parse(listPro[i].quantity)).toString();
-                            FirListDetailOrder().addListDetailOrder(
+                              dynamic resultPro =
+                                  await DataProduct().getProductIdList(idPro);
+                              detailProduct = resultPro;
+                              int slTon = int.parse(detailProduct.quantity);
+                              int slSau =
+                                  slTon - int.parse(listPro[i].quantity);
+                              DataProduct()
+                                  .updateSoLuong(idPro, slSau.toString());
+                              //String totalPrice= (int.parse(listPro[i].price)*int.parse(listPro[i].quantity)).toString();
+                              FirListDetailOrder().addListDetailOrder(
+                                  UID,
+                                  listPro[i].quantity,
+                                  listPro[i].price,
+                                  idOrder,
+                                  idPro,
+                                  listPro[i].images,
+                                  listPro[i].productName);
+                            }
+                            addressCus = addressCus + city;
+                            FirListOder().addListOrder(
                                 UID,
-                                listPro[i].quantity,
-                                listPro[i].price,
+                                nameCus,
+                                phoneCus,
+                                addressCus,
                                 idOrder,
-                                idPro,
-                                listPro[i].images,
-                                listPro[i].productName);
+                                state,
+                                formattedDate,
+                                '',
+                                giamGia.toString(),
+                                diemdoi.toString(),
+                                payment,
+                                soluongtong.toString(),
+                                thanhToan.toString(),
+                                statePayment,
+                                phiVanChuyen.toString(),
+                                tongTien.toString());
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(content: Text('Đặt hàng thành công')));
+                            FirShoppingCart().removeProductorder();
+                            if (status == false) {
+                              diemdoi = 0;
+                              int diem = thanhToan ~/ 10000;
+                              diemThuong = diemThuong + diem;
+                              FirListOder().updateDiem(diemThuong.toString());
+                            } else {
+                              int diem = thanhToan ~/ 10000;
+                              diemThuong = 0;
+                              diemThuong = diemThuong + diem;
+                              FirListOder().updateDiem(diemThuong.toString());
+                            }
+                            String thanhToanPaypal =
+                                (thanhToan / 22930).toStringAsFixed(2);
+                            FirNotification().addListNoti(
+                                'Bạn đã đặt hàng thành công đơn hàng' + idOrder,
+                                formattedDate);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    PaypalPayment(
+                                        nameCus: nameCus,
+                                        phoneCus: phoneCus,
+                                        addressCus: addressCus,
+                                        price: thanhToanPaypal,
+                                        idOrder: idOrder,
+                                        onFinish: (number) async {})));
                           }
-                          addressCus = addressCus + city;
-                          FirListOder().addListOrder(
-                              UID,
-                              nameCus,
-                              phoneCus,
-                              addressCus,
-                              idOrder,
-                              state,
-                              formattedDate,
-                              '',
-                              giamGia.toString(),
-                              diemdoi.toString(),
-                              payment,
-                              soluongtong.toString(),
-                              thanhToan.toString(),
-                              statePayment,
-                              phiVanChuyen.toString(),
-                              tongTien.toString());
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //     SnackBar(content: Text('Đặt hàng thành công')));
-                          FirShoppingCart().removeProductorder();
-                          if (status == false) {
-                            diemdoi = 0;
-                            int diem = thanhToan ~/ 10000;
-                            diemThuong = diemThuong + diem;
-                            FirListOder().updateDiem(diemThuong.toString());
-                          } else {
-                            int diem = thanhToan ~/ 10000;
-                            diemThuong = 0;
-                            diemThuong = diemThuong + diem;
-                            FirListOder().updateDiem(diemThuong.toString());
-                          }
-                          String thanhToanPaypal =
-                              (thanhToan / 22930).toStringAsFixed(2);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => PaypalPayment(
-                                  nameCus: nameCus,
-                                  phoneCus: phoneCus,
-                                  addressCus: addressCus,
-                                  price: thanhToanPaypal,
-                                  idOrder: idOrder,
-                                  onFinish: (number) async {})));
+
                           //     UsePaypal(
                           //         sandboxMode: true,
                           //         clientId:
@@ -802,8 +883,6 @@ class _OrderState extends State<Order> {
                           //         }),
                           //   ),
                           // );
-                          // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                          //                 builder: (context) => LayoutDrawer()),(route)=>false);
 
                         }
                       },

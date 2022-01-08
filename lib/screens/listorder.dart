@@ -226,9 +226,8 @@ class _ListOrderState extends State<ListOrder> {
   }
 
   Widget GiaoThanhCong() {
-    List<mdOrder> listOrder1 = listOrder
-        .where((element) => element.state == 'Giao thành công')
-        .toList();
+    List<mdOrder> listOrder1 =
+        listOrder.where((element) => element.state == 'Thành công').toList();
 
     return Item(listOrder1, listProduct);
   }
@@ -258,7 +257,7 @@ class _ListOrderState extends State<ListOrder> {
 
   Widget ButtonFeed(
       int index, int indexsp, List listProduct1, List listOrder1) {
-    if (listOrder1[index].state == 'Giao thành công' &&
+    if (listOrder1[index].state == 'Thành công' &&
         listProduct1[indexsp].state == 'Chưa đánh giá') {
       return MaterialButton(
         hoverColor: Colors.redAccent,
@@ -275,7 +274,7 @@ class _ListOrderState extends State<ListOrder> {
           style: TextStyle(color: Colors.red, fontSize: 12),
         ),
       );
-    } else if (listOrder1[index].state == 'Giao thành công' &&
+    } else if (listOrder1[index].state == 'Thành công' &&
         listProduct1[indexsp].state == 'Đã đánh giá') {
       return MaterialButton(
         minWidth: 100,

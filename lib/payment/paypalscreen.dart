@@ -224,20 +224,28 @@ class _PaypalPaymentState extends State<PaypalPayment> {
                     .executePayment(executeUrl, payerID, accessToken)
                     .then((id) {
                   widget.onFinish(id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Đặt hàng thành công')));
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => LayoutDrawer()),
                       (route) => false);
                 });
               } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Đặt hàng thành công')));
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => LayoutDrawer()),
                     (route) => false);
               }
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Đặt hàng thành công')));
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => LayoutDrawer()),
                   (route) => false);
             }
             if (request.url.contains(cancelURL)) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Đặt hàng thành công')));
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => LayoutDrawer()),
                   (route) => false);

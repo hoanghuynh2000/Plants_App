@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:plants_app/firebase/notification.dart';
 import 'package:plants_app/model/mdnotification.dart';
 
 class Noti extends StatefulWidget {
@@ -9,31 +11,24 @@ class Noti extends StatefulWidget {
 }
 
 class _NotificationState extends State<Noti> {
-  List<MDNotification> lsNoti = [
-    MDNotification(
-        id: '1',
-        infoNoti: 'Bạn đã đặt hàng thành công ',
-        dateNoti: '20/10/2021',
-        idCus: '1'),
-    MDNotification(
-        id: '1',
-        infoNoti: 'Bạn đã đặt hàng thành công ',
-        dateNoti: '20/10/2021',
-        idCus: '1'),
-    MDNotification(
-        id: '1',
-        infoNoti: 'Bạn đã đặt hàng thành công ',
-        dateNoti: '20/10/2021',
-        idCus: '1'),
-    MDNotification(
-        id: '1',
-        infoNoti:
-            'Bạn đã đặt hàng thành công 11111111111111111111111111111111111111111111111111111111111111111 ',
-        dateNoti: '20/10/2021',
-        idCus: '1'),
-  ];
+  List<MDNotification> lsNoti = [];
+  fetchNoti() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    dynamic result = await FirNotification().getListNoti();
+    if (result == null) {
+      print('enable');
+    } else {
+      if (this.mounted)
+        setState(() {
+          lsNoti = result;
+        });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    fetchNoti();
     return Container(
       color: Colors.grey.shade200,
       child: ListView.builder(
