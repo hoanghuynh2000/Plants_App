@@ -6,6 +6,7 @@ import 'package:plants_app/fake/fakelistorder.dart';
 import 'package:plants_app/fake/productfake.dart';
 import 'package:plants_app/firebase/address.dart';
 import 'package:plants_app/firebase/detailorder.dart';
+import 'package:plants_app/firebase/notification.dart';
 import 'package:plants_app/firebase/oder.dart';
 import 'package:plants_app/firebase/product.dart';
 import 'package:plants_app/model/mdAddress.dart';
@@ -38,21 +39,21 @@ class _DetailsOrderState extends State<DetailsOrder> {
   ];
   List<mdOrder> listOrder = [
     mdOrder(
-        idCus: '',
-        idOrder: '',
-        nameCus: '',
-        addressCus: '',
-        phoneCus: '',
+        idCus: '1',
+        idOrder: '1',
+        nameCus: '1',
+        addressCus: '1',
+        phoneCus: '1',
         promotion: '1',
         totalPrice: '1',
         totalPayment: '1',
-        state: '',
-        statePayment: '',
-        date: '',
-        dateDelivery: '',
-        payment: '',
+        dateDelivery: "1",
+        state: '1',
+        statePayment: '1',
+        date: '1',
+        payment: '1',
         point: '1',
-        quantity: '',
+        quantity: '1',
         costShip: '1')
   ];
 
@@ -382,7 +383,8 @@ class _DetailsOrderState extends State<DetailsOrder> {
                     Text('Đặt hàng vào ngày  ${listOrder[0].date}',
                         style: TextStyle(
                             color: Colors.grey.shade700, fontSize: 16)),
-                    Text('Ngày dự kiến giao hàng ${listOrder[0].dateDelivery}',
+                    Text(
+                        'Thời gian dự kiến giao hàng ${listOrder[0].dateDelivery}',
                         style: TextStyle(
                             fontSize: 16, color: Colors.grey.shade700)),
                     Text('Phương thức thanh toán: ${listOrder[0].payment}',
@@ -432,6 +434,9 @@ class _DetailsOrderState extends State<DetailsOrder> {
                   setState(() {
                     FirListDetailOrder()
                         .updateOrder(listOrder[0].idOrder.toString());
+                    FirNotification().addListNoti(
+                        'Đơn hàng ${listOrder[0].idOrder} của bạn đã được hủy ',
+                        listOrder[0].date.toString());
                     Navigator.of(context).pop(
                         MaterialPageRoute(builder: (context) => ListOrder()));
                   });

@@ -71,8 +71,15 @@ class _MainWidgetState extends State<MainWidget> {
   Future<void> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
+<<<<<<< HEAD
 
     list = List.generate(random.nextInt(10), (i) => "Item $i");
+=======
+    if (this.mounted)
+      setState(() {
+        list = List.generate(random.nextInt(10), (i) => "Item $i");
+      });
+>>>>>>> 352e6054cf794b3a6c84a1142e5af2a26b77d7a8
 
     return null;
   }

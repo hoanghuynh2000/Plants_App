@@ -12,6 +12,7 @@ import 'package:plants_app/screens/news_screen.dart/news.dart';
 import 'package:plants_app/screens/notification.dart';
 import 'package:plants_app/screens/product.dart';
 import 'package:plants_app/screens/promotionscreen/promotion.dart';
+import 'package:plants_app/screens/search.dart';
 import 'package:plants_app/screens/shoppingcart.dart';
 
 class Dashboard extends StatefulWidget {
@@ -384,7 +385,10 @@ class _DashboardState extends State<Dashboard> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: InkResponse(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => Search()));
+              },
               child: Icon(
                 Icons.search,
                 size: 30.0,

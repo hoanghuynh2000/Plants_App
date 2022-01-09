@@ -34,8 +34,7 @@ final List<String> imgList = [
 
 class _HomeState extends State<Home> {
   //fake data
-  List<MDNews> lsNews = [
-    ];
+  List<MDNews> lsNews = [];
   int _current = 0;
   List<Category> listCate = [];
   List<DetailProduct> listPro = [];
@@ -45,15 +44,16 @@ class _HomeState extends State<Home> {
     await Firebase.initializeApp();
     dynamic result = await DataProduct().getAllProductList();
     dynamic category = await DataProduct().getAllCategory();
-    dynamic news=await FirNews().getListNews();
+    dynamic news = await FirNews().getListNews();
     if (result == null) {
       print('unable');
     } else {
-      setState(() {
-        listPro = result;
-        listCate = category;
-        lsNews=news;
-      });
+      if (this.mounted)
+        setState(() {
+          listPro = result;
+          listCate = category;
+          lsNews = news;
+        });
     }
   }
 
@@ -169,35 +169,33 @@ class _HomeState extends State<Home> {
                   height: 10,
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 20,right: 20),
-                      child:     Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    
-                SizedBox(
-                  child: Text('Tin Mới Nhất',
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Dosis',
-                          color: Colors.teal.shade900)),
-                          
-                ),TextButton(onPressed: (){
-                 Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => NewsHome()));
-                }, 
-                child: Text('Xem tất cả',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Dosis',
-                          
-                          color: Colors.grey.shade600)),)
-                  ],
-                )
-                ,
-                    ),
-            
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        child: Text('Tin Mới Nhất',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Dosis',
+                                color: Colors.teal.shade900)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NewsHome()));
+                        },
+                        child: Text('Xem tất cả',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Dosis',
+                                color: Colors.grey.shade600)),
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 10,
                 ),
@@ -316,7 +314,8 @@ class _HomeState extends State<Home> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20))),
                             image: DecorationImage(
-                                image: NetworkImage('${lsNews[index].imageNews}'),
+                                image:
+                                    NetworkImage('${lsNews[index].imageNews}'),
                                 fit: BoxFit.cover)),
                       ),
                       Expanded(
