@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:plants_app/firebase/contact_firebase.dart';
 
 class Contact extends StatefulWidget {
   Contact({Key? key}) : super(key: key);
@@ -11,6 +13,15 @@ class _ContactState extends State<Contact> {
   final phoneController = new TextEditingController();
   final nameController = new TextEditingController();
   final contentController = new TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    phoneController.text = '';
+    nameController.text = '';
+    contentController.text = '';
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,7 +214,23 @@ class _ContactState extends State<Contact> {
                     child: MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      onPressed: () {},
+                      onPressed: () async {
+                        ContactFirebase().userSetup(
+                            nameController.text,
+                            phoneController.text,
+                            contentController.text,
+                            nameController.text);
+                        final Email email = Email(
+                          body: contentController.text,
+                          subject: nameController.text,
+                          recipients: ['hoangde092000@gmail.com'],
+                          isHTML: false,
+                        );
+
+                        await FlutterEmailSender.send(email);
+
+                        Navigator.pop(context);
+                      },
                       child: Text('Xác nhận',
                           style: TextStyle(
                               fontSize: 18,

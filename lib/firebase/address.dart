@@ -40,11 +40,11 @@ class AddressFirebase {
               itemList.add(MDAddress.fromJson(element.data()));
             }));
     itemList1 = itemList.where((element) => element.idCus == uid).toList();
-   
 
     return itemList;
   }
-   Future getAddressListId(String id) async {
+
+  Future getAddressListId(String id) async {
     await Firebase.initializeApp();
     WidgetsFlutterBinding.ensureInitialized();
     List<MDAddress> itemList = [];
@@ -59,7 +59,6 @@ class AddressFirebase {
               itemList.add(MDAddress.fromJson(element.data()));
             }));
     itemList1 = itemList.where((element) => element.idAddress == id).toList();
-
 
     return itemList;
   }
@@ -76,5 +75,18 @@ class AddressFirebase {
         .collection('AddressDelivery')
         .doc(idAddress)
         .delete();
+  }
+
+  Future UpdateAddress(
+    String id,
+    String name,
+    String phoneNumber,
+    String address,
+  ) async {
+    return await users.doc(id).update({
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'address': address,
+    });
   }
 }

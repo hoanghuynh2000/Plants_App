@@ -36,6 +36,12 @@
 @import firebase_storage;
 #endif
 
+#if __has_include(<flutter_email_sender/FlutterEmailSenderPlugin.h>)
+#import <flutter_email_sender/FlutterEmailSenderPlugin.h>
+#else
+@import flutter_email_sender;
+#endif
+
 #if __has_include(<image_picker/FLTImagePickerPlugin.h>)
 #import <image_picker/FLTImagePickerPlugin.h>
 #else
@@ -62,6 +68,7 @@
   [FLTFirebaseAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseAuthPlugin"]];
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
   [FLTFirebaseStoragePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseStoragePlugin"]];
+  [FlutterEmailSenderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterEmailSenderPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   [FLTWebViewFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTWebViewFlutterPlugin"]];

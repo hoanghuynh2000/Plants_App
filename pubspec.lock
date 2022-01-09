@@ -260,6 +260,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.6"
+  flutter_email_sender:
+    dependency: "direct main"
+    description:
+      name: flutter_email_sender
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.2"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -337,8 +344,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
-    version: "0.13.3"
+    version: "0.13.4"
   http_auth:
     dependency: "direct main"
     description:
@@ -346,9 +352,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-=======
-    version: "0.13.4"
->>>>>>> 2c4cf70665ed69236ea18447b2712fb2b6394602
   http_parser:
     dependency: transitive
     description:

@@ -59,8 +59,8 @@ class _MainWidgetState extends State<MainWidget> {
     super.initState();
     list = List.generate(3, (i) => "Item $i");
     super.initState();
-    random = Random();
-    refreshList();
+    //random = Random();
+    //refreshList();
     if (widget.user != null) {
       FetchData();
     }
@@ -72,9 +72,7 @@ class _MainWidgetState extends State<MainWidget> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
 
-    setState(() {
-      list = List.generate(random.nextInt(10), (i) => "Item $i");
-    });
+    list = List.generate(random.nextInt(10), (i) => "Item $i");
 
     return null;
   }
@@ -92,18 +90,19 @@ class _MainWidgetState extends State<MainWidget> {
       print('unable');
     } else {
       if (this.mounted) {
-      setState(() {
-        itemuser = result;
-        FetchImage();
-      });
-    }}
+        setState(() {
+          itemuser = result;
+          FetchImage();
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     homePageBloc = BlocProvider.of<DrawerBloc>(context);
-if (widget.user != null) {
+    if (widget.user != null) {
       FetchData();
     }
     return WillPopScope(

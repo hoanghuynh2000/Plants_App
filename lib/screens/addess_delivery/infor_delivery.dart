@@ -8,6 +8,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:plants_app/firebase/address.dart';
 import 'package:plants_app/handle/refresh.dart';
 import 'package:plants_app/model/mdAddress.dart';
+import 'package:plants_app/screens/addess_delivery/UpdateAddress.dart';
 import 'package:plants_app/screens/addess_delivery/add_delivery.dart';
 import 'package:plants_app/screens/order.dart';
 
@@ -47,10 +48,11 @@ class _InforDeliveryState extends State<InforDelivery> {
     if (result == null) {
       print('unable');
     } else {
-       if (this.mounted) {
-      setState(() {
-        address = result;
-       });}
+      if (this.mounted) {
+        setState(() {
+          address = result;
+        });
+      }
     }
   }
 
@@ -142,80 +144,91 @@ class _InforDeliveryState extends State<InforDelivery> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Slidable(
-                  endActionPane: ActionPane(
-                    motion: DrawerMotion(),
-                    children: [
-                      SlidableAction(
-                        autoClose: true,
-                        flex: 1,
-                        onPressed: remove,
-                        backgroundColor: Color(0xFFF74933),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Xóa',
-                      ),
-                      SlidableAction(
-                        // An action can be bigger than the others.
-                        flex: 1,
-                        onPressed: doNotThing,
-                        backgroundColor: Color(0xFF035C3A),
-                        foregroundColor: Colors.white,
-                        icon: Icons.close,
-                        label: 'Đóng',
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Order(idAddress: 
-                    address[index].idAddress,)
-                    ));
-                    },
-                    child:Container(
-                    height: 100,
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              address[index].name!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              address[index].phonenumber!,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              address[index].street!,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(address[index].address!,
-                                overflow: TextOverflow.ellipsis, maxLines: 1)
-                          ],
-                        )),
-                        IconButton(
-                            icon: Icon(
-                              Icons.edit_location_outlined,
-                              color: Colors.teal.shade700,
-                            ),
-                            onPressed: () {})
-                      ],
+                endActionPane: ActionPane(
+                  motion: DrawerMotion(),
+                  children: [
+                    SlidableAction(
+                      autoClose: true,
+                      flex: 1,
+                      onPressed: remove,
+                      backgroundColor: Color(0xFFF74933),
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Xóa',
                     ),
-                  )) ,
-                  ) ,
+                    SlidableAction(
+                      // An action can be bigger than the others.
+                      flex: 1,
+                      onPressed: doNotThing,
+                      backgroundColor: Color(0xFF035C3A),
+                      foregroundColor: Colors.white,
+                      icon: Icons.close,
+                      label: 'Đóng',
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Order(
+                                    idAddress: address[index].idAddress,
+                                  )));
+                    },
+                    child: Container(
+                      height: 100,
+                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                address[index].name!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                address[index].phonenumber!,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                address[index].street!,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(address[index].address!,
+                                  overflow: TextOverflow.ellipsis, maxLines: 1)
+                            ],
+                          )),
+                          IconButton(
+                              icon: Icon(
+                                Icons.edit_location_outlined,
+                                color: Colors.teal.shade700,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UpdateAddress(
+                                              id: address[index].idAddress,
+                                              name: address[index].name,
+                                              phone: address[index].phonenumber,
+                                            )));
+                              })
+                        ],
+                      ),
+                    )),
+              ),
               Divider(
                 color: Colors.black,
               )
